@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - FitFusion</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-primary: #070a13;
+            --bg-secondary: #0f1424;
+            --accent-primary: #6366f1;
+            --accent-secondary: #ec4899;
+            --accent-tertiary: #a855f7;
+            --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --glass-bg: rgba(15, 20, 36, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Abstract Background Objects */
+        .bg-blob {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(140px);
+            opacity: 0.12;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .blob-1 {
+            top: -150px;
+            left: -150px;
+            background: var(--accent-primary);
+        }
+
+        .blob-2 {
+            bottom: -150px;
+            right: -150px;
+            background: var(--accent-secondary);
+        }
+
+        /* Navigation Bar */
+        nav {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 5%;
+            background: rgba(7, 10, 19, 0.5);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .nav-logo h1 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6366f1 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .role-badge {
+            background: rgba(236, 72, 153, 0.12);
+            border: 1px solid rgba(236, 72, 153, 0.3);
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent-secondary);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .btn-view-site {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border: 1px solid var(--glass-border);
+            padding: 0.5rem 1.25rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .btn-view-site:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .btn-logout {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--glass-border);
+            padding: 0.5rem 1.25rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .btn-logout:hover {
+            color: #ffffff;
+            background: rgba(239, 68, 68, 0.15);
+            border-color: rgba(239, 68, 68, 0.4);
+        }
+
+        /* Main Content Container */
+        main {
+            position: relative;
+            z-index: 1;
+            flex-grow: 1;
+            padding: 3rem 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .welcome-header {
+            margin-bottom: 3rem;
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .welcome-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Success alerts */
+        .messages {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .message {
+            padding: 1rem 1.5rem;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+            animation: slideIn 0.3s ease-out;
+            max-width: 600px;
+        }
+
+        .message.success {
+            background-color: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #34d399;
+        }
+
+        /* Statistics Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3.5rem;
+            animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .stat-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.75rem;
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            transition: background 0.3s ease;
+        }
+
+        .stat-card.total::after { background: linear-gradient(90deg, #6366f1, #3b82f6); }
+        .stat-card.male::after { background: linear-gradient(90deg, #a855f7, #6366f1); }
+        .stat-card.female::after { background: linear-gradient(90deg, #ec4899, #f43f5e); }
+        .stat-card.age::after { background: linear-gradient(90deg, #10b981, #06b6d4); }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .stat-value {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* User Management Table Section */
+        .table-section {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2rem;
+            backdrop-filter: blur(12px);
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .table-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            padding: 1rem 1.25rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        td {
+            padding: 1.1rem 1.25rem;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            white-space: nowrap;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Table pill badges */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .badge.admin {
+            background: rgba(236, 72, 153, 0.15);
+            color: #f472b6;
+            border: 1px solid rgba(236, 72, 153, 0.3);
+        }
+
+        .badge.user {
+            background: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .badge.male {
+            background: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+        }
+
+        .badge.female {
+            background: rgba(236, 72, 153, 0.1);
+            color: #f472b6;
+        }
+
+        .badge.other {
+            background: rgba(168, 85, 247, 0.1);
+            color: #c084fc;
+        }
+
+        /* Action buttons styling */
+        .btn-action {
+            padding: 0.4rem 0.9rem;
+            border-radius: 8px;
+            font-size: 0.825rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: capitalize;
+            display: inline-block;
+            outline: none;
+        }
+        .btn-action.block {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .btn-action.block:hover {
+            background: rgba(239, 68, 68, 0.3);
+            transform: translateY(-1px);
+        }
+        .btn-action.unblock {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .btn-action.unblock:hover {
+            background: rgba(16, 185, 129, 0.3);
+            transform: translateY(-1px);
+        }
+        .btn-action.disabled {
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.3);
+            border: 1px solid var(--glass-border);
+            cursor: not-allowed;
+        }
+        .badge.active {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .badge.blocked {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+
+    <nav>
+        <div class="nav-logo">
+            <h1>FitFusion</h1>
+        </div>
+        <div class="nav-user">
+            <span class="role-badge">🛡️ Admin Portal</span>
+            <a href="{% url 'home' %}" class="btn-view-site">View User Site</a>
+            <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
+        </div>
+    </nav>
+
+    <main>
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li class="message {{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <div class="welcome-header">
+            <h2>Welcome, Admin Chief {{ request.user.name }}!</h2>
+            <p>Here is an administrative overview of the registered FitFusion community and user registrations.</p>
+        </div>
+
+        <!-- Statistics Grid -->
+        <div class="stats-grid">
+            <div class="stat-card total">
+                <span class="stat-label">Total Registered Users</span>
+                <span class="stat-value">{{ total_users }}</span>
+            </div>
+            <div class="stat-card male">
+                <span class="stat-label">Male Registrants</span>
+                <span class="stat-value">{{ male_users }}</span>
+            </div>
+            <div class="stat-card female">
+                <span class="stat-label">Female Registrants</span>
+                <span class="stat-value">{{ female_users }}</span>
+            </div>
+            <div class="stat-card age">
+                <span class="stat-label">Average User Age</span>
+                <span class="stat-value">{% if avg_age %}{{ avg_age }} yrs{% else %}N/A{% endif %}</span>
+            </div>
+        </div>
+
+        <!-- User Management Table Section -->
+        <div class="table-section">
+            <div class="table-header">
+                <h3>FitFusion Member Directory</h3>
+                <span style="color: var(--text-secondary); font-size: 0.9rem; font-weight: 500;">
+                    Showing {{ users|length }} active records
+                </span>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Email Address</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Account Type</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td style="font-weight: 600;">{{ user.name }}</td>
+                            <td style="color: var(--text-secondary);">{{ user.email }}</td>
+                            <td>{% if user.age %}{{ user.age }}{% else %}<span style="color: rgba(255,255,255,0.25);">—</span>{% endif %}</td>
+                            <td>
+                                {% if user.gender == 'M' %}
+                                <span class="badge male">Male</span>
+                                {% elif user.gender == 'F' %}
+                                <span class="badge female">Female</span>
+                                {% elif user.gender == 'O' %}
+                                <span class="badge other">Other</span>
+                                {% else %}
+                                <span style="color: rgba(255,255,255,0.25);">—</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if user.is_staff or user.is_superuser %}
+                                <span class="badge admin">Admin Staff</span>
+                                {% else %}
+                                <span class="badge user">Standard User</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if user.is_active %}
+                                <span class="badge active">Active</span>
+                                {% else %}
+                                <span class="badge blocked">Blocked</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if user == request.user %}
+                                <button class="btn-action disabled" disabled>Self</button>
+                                {% else %}
+                                <form method="POST" action="{% url 'toggle_user_status' user.id %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    {% if user.is_active %}
+                                    <button type="submit" class="btn-action block">Block</button>
+                                    {% else %}
+                                    <button type="submit" class="btn-action unblock">Unblock</button>
+                                    {% endif %}
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" style="text-align: center; color: var(--text-secondary); padding: 3rem;">
+                                No registered users found.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

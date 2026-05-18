@@ -1,0 +1,43 @@
+{% extends 'fit/base_auth.html' %}
+
+{% block title %}Login - FitFusion{% endblock %}
+{% block subtitle %}Welcome back! Access your account{% endblock %}
+
+{% block content %}
+<form method="POST" action="{% url 'login' %}" autocomplete="off">
+    {% csrf_token %}
+
+    <!-- Non-field errors if any -->
+    {% if form.non_field_errors %}
+    <div class="messages">
+        {% for error in form.non_field_errors %}
+        <div class="message error">{{ error }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Email Address Field -->
+    <div class="form-group">
+        <label for="{{ form.email.id_for_label }}">Email Address</label>
+        {{ form.email }}
+        {% if form.email.errors %}
+        <div class="form-error">{{ form.email.errors.0 }}</div>
+        {% endif %}
+    </div>
+
+    <!-- Password Field -->
+    <div class="form-group">
+        <label for="{{ form.password.id_for_label }}">Password</label>
+        {{ form.password }}
+        {% if form.password.errors %}
+        <div class="form-error">{{ form.password.errors.0 }}</div>
+        {% endif %}
+    </div>
+
+    <button type="submit" class="btn-submit">Login</button>
+
+    <div class="auth-footer">
+        Don't have an account? <a href="{% url 'signup' %}">Sign up here</a>
+    </div>
+</form>
+{% endblock %}

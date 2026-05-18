@@ -1,0 +1,2337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Dashboard - FitFusion</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-primary: #070a13;
+            --bg-secondary: #0f1424;
+            --accent-primary: #6366f1;
+            --accent-secondary: #a855f7;
+            --accent-tertiary: #ec4899;
+            --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --glass-bg: rgba(15, 20, 36, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --card-hover: rgba(99, 102, 241, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Ambient glowing background blobs */
+        .bg-blob {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(160px);
+            opacity: 0.12;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .blob-1 {
+            top: -150px;
+            left: -150px;
+            background: var(--accent-primary);
+        }
+
+        .blob-2 {
+            bottom: -150px;
+            right: -150px;
+            background: var(--accent-secondary);
+        }
+
+        /* Top Navbar */
+        nav {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 5%;
+            background: rgba(7, 10, 19, 0.5);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .nav-logo h1 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .user-badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .btn-logout {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--glass-border);
+            padding: 0.5rem 1.25rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .btn-logout:hover {
+            color: #ffffff;
+            background: rgba(239, 68, 68, 0.15);
+            border-color: rgba(239, 68, 68, 0.4);
+        }
+
+        /* Main Portal Layout */
+        .portal-container {
+            display: flex;
+            flex: 1;
+            position: relative;
+            z-index: 5;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: rgba(15, 20, 36, 0.3);
+            border-right: 1px solid var(--glass-border);
+            padding: 2.5rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            backdrop-filter: blur(12px);
+        }
+
+        .sidebar-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            letter-spacing: 1.5px;
+            margin-bottom: 0.75rem;
+            padding-left: 0.75rem;
+        }
+
+        .tab-btn {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.85rem 1.25rem;
+            border-radius: 14px;
+            border: 1px solid transparent;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .tab-btn.active {
+            color: var(--text-primary);
+            background: rgba(99, 102, 241, 0.12);
+            border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.15);
+        }
+
+        .tab-icon {
+            font-size: 1.2rem;
+        }
+
+        /* Dashboard Workspace */
+        .workspace {
+            flex: 1;
+            padding: 2.5rem 3rem;
+            overflow-y: auto;
+            max-height: calc(100vh - 75px);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Page Headers */
+        .workspace-header {
+            margin-bottom: 2.5rem;
+        }
+
+        .workspace-header h2 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .workspace-header p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+        }
+
+        /* Grid Layouts */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Premium Glass Cards */
+        .glass-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2rem;
+            backdrop-filter: blur(12px);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title-badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            padding: 0.35rem 0.85rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Mini indicators */
+        .mini-stat {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-top: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .mini-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            margin-top: 1rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--accent-gradient);
+            width: 0%;
+            border-radius: 10px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Buttons styling */
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: #ffffff;
+            border: none;
+            padding: 0.85rem 1.5rem;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
+            text-decoration: none;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.35);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border: 1px solid var(--glass-border);
+            padding: 0.85rem 1.5rem;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Tab panels nested */
+        .nested-tabs {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 1rem;
+        }
+
+        .nested-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            padding: 0.5rem 1.25rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .nested-btn:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .nested-btn.active {
+            background: var(--accent-gradient);
+            color: #ffffff;
+            border-color: transparent;
+        }
+
+        .nested-content {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .nested-content.active {
+            display: block;
+        }
+
+        /* Inputs and Selects styling */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 0.85rem 1.1rem;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-primary);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.25);
+        }
+
+        /* Calculators panel output block */
+        .calculator-output-card {
+            background: rgba(99, 102, 241, 0.08);
+            border: 1px dashed rgba(99, 102, 241, 0.4);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .calculator-output-card h4 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .calculator-output-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Habit checklist */
+        .habit-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.85rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .habit-row:last-child {
+            border-bottom: none;
+        }
+
+        .habit-left {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .checkbox-custom {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--glass-border);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .checkbox-custom.checked {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .checkbox-custom.checked::after {
+            content: '✓';
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 0.8rem;
+        }
+
+        /* AI Coach Chatbot styling */
+        .chatbot-container {
+            display: flex;
+            flex-direction: column;
+            height: 500px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            overflow: hidden;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .chat-bubble {
+            max-width: 75%;
+            padding: 1rem 1.25rem;
+            border-radius: 18px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .chat-bubble.bot {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-bubble.user {
+            background: var(--accent-gradient);
+            color: #ffffff;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.15);
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--glass-border);
+            background: rgba(7, 10, 19, 0.3);
+        }
+
+        /* SVG Graph styling */
+        .graph-svg {
+            width: 100%;
+            height: 200px;
+            margin-top: 1rem;
+        }
+
+        .graph-line {
+            fill: none;
+            stroke: url(#gradient-line);
+            stroke-width: 4;
+            stroke-linecap: round;
+        }
+
+        .graph-area {
+            fill: url(#gradient-area);
+            opacity: 0.2;
+        }
+
+        .graph-grid {
+            stroke: rgba(255, 255, 255, 0.04);
+            stroke-width: 1;
+            stroke-dasharray: 4;
+        }
+
+        /* Challenges and rewards */
+        .challenge-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 1.25rem;
+            margin-top: 1rem;
+        }
+
+        .badge-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            text-align: center;
+            opacity: 0.3;
+            transition: opacity 0.3s ease;
+        }
+
+        .badge-item.unlocked {
+            opacity: 1;
+        }
+
+        .badge-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .badge-item.unlocked .badge-circle {
+            background: var(--accent-gradient);
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.35);
+        }
+
+        .badge-name {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .badge-item.unlocked .badge-name {
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+
+    <nav>
+        <div class="nav-logo">
+            <h1>FitFusion</h1>
+        </div>
+        <div class="nav-actions">
+            <span class="user-badge">✨ Premium Member: {{ request.user.name }}</span>
+            <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
+        </div>
+    </nav>
+
+    <div class="portal-container">
+        <!-- Sidebar Navigation Tabs -->
+        <aside class="sidebar">
+            <span class="sidebar-title">Main Portal</span>
+            <button class="tab-btn active" onclick="switchTab('dashboard')">
+                <span class="tab-icon">📊</span> Dashboard
+            </button>
+            <button class="tab-btn" onclick="switchTab('lifestyle')">
+                <span class="tab-icon">🌱</span> Healthy Lifestyle
+            </button>
+            <button class="tab-btn" onclick="switchTab('workouts')">
+                <span class="tab-icon">💪</span> Workout Library
+            </button>
+            <button class="tab-btn" onclick="switchTab('workoutplans')">
+                <span class="tab-icon">📅</span> Workout Plans
+            </button>
+            <button class="tab-btn" onclick="switchTab('goals')">
+                <span class="tab-icon">🎯</span> Goal Plans
+            </button>
+            <button class="tab-btn" onclick="switchTab('nutrition')">
+                <span class="tab-icon">🍎</span> Nutrition & Meal
+            </button>
+            <button class="tab-btn" onclick="switchTab('calculators')">
+                <span class="tab-icon">📐</span> Fitness Calculators
+            </button>
+            <button class="tab-btn" onclick="switchTab('aicoach')">
+                <span class="tab-icon">🤖</span> AI Smart Coach
+            </button>
+            <button class="tab-btn" onclick="switchTab('progress')">
+                <span class="tab-icon">📈</span> Progress & Challenges
+            </button>
+        </aside>
+
+        <!-- Main Workspace Contents -->
+        <main class="workspace">
+            
+            <!-- TAB 1: CENTRAL DASHBOARD -->
+            <div id="tab-dashboard" class="tab-content active">
+                <div class="workspace-header">
+                    <h2>Welcome to your Fitness Hub</h2>
+                    <p>Track your vitals, goals, and daily progress in real-time.</p>
+                </div>
+
+                <div class="grid-3">
+                    <div class="glass-card">
+                        <div class="card-header-flex">
+                            <span class="card-title-badge">Body Mass Index</span>
+                            <span class="tab-icon">📊</span>
+                        </div>
+                        <div class="mini-label">Current Weight BMI</div>
+                        <div class="mini-stat" id="dash-bmi">Calculating...</div>
+                        <div class="progress-container">
+                            <div class="progress-bar" id="dash-bmi-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card">
+                        <div class="card-header-flex">
+                            <span class="card-title-badge">Daily Calories</span>
+                            <span class="tab-icon">🔥</span>
+                        </div>
+                        <div class="mini-label">Logged / Daily Limit</div>
+                        <div class="mini-stat"><span id="dash-cal-logged">0</span> / 2200 <span style="font-size: 1rem; color: var(--text-secondary);">kcal</span></div>
+                        <div class="progress-container">
+                            <div class="progress-bar" id="dash-cal-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card">
+                        <div class="card-header-flex">
+                            <span class="card-title-badge">Water Tracker</span>
+                            <span class="tab-icon">💧</span>
+                        </div>
+                        <div class="mini-label">Total Water Intake</div>
+                        <div class="mini-stat"><span id="dash-water-logged">0</span> / 3.0 <span style="font-size: 1rem; color: var(--text-secondary);">L</span></div>
+                        <div class="progress-container">
+                            <div class="progress-bar" id="dash-water-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2" style="margin-top: 2rem;">
+                    <!-- Quick Bio Details -->
+                    <div class="glass-card">
+                        <div class="card-header-flex">
+                            <h3>Current Health Profile</h3>
+                            <span class="card-title-badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">Synchronized</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.5rem;">
+                                <span style="color: var(--text-secondary);">Name</span>
+                                <span style="font-weight: 600;">{{ request.user.name }}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.5rem;">
+                                <span style="color: var(--text-secondary);">Registered Email</span>
+                                <span style="font-weight: 600;">{{ request.user.email }}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.5rem;">
+                                <span style="color: var(--text-secondary);">Registered Age</span>
+                                <span style="font-weight: 600;">{% if request.user.age %}{{ request.user.age }} years old{% else %}Not set{% endif %}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: var(--text-secondary);">Gender Identity</span>
+                                <span style="font-weight: 600;">
+                                    {% if request.user.gender == 'M' %}Male
+                                    {% elif request.user.gender == 'F' %}Female
+                                    {% else %}Other{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Daily Tip Card -->
+                    <div class="glass-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <div class="card-header-flex">
+                                <h3>Daily Lifestyle Tip</h3>
+                                <span class="tab-icon">🌱</span>
+                            </div>
+                            <p id="daily-tip-text" style="font-size: 1.15rem; font-weight: 500; line-height: 1.6; margin-bottom: 1.5rem;">
+                                "Staying active is the key to energy. Take a 10-minute walk after lunch to assist digestion."
+                            </p>
+                        </div>
+                        <button class="btn-secondary" onclick="rotateTip()">Next Tip</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- TAB 2: HEALTHY LIFESTYLE SECTION -->
+            <div id="tab-lifestyle" class="tab-content">
+                <div class="workspace-header">
+                    <h2>Healthy Lifestyle Center</h2>
+                    <p>Develop optimal daily habits to supercharge your performance.</p>
+                </div>
+
+                <div class="grid-2">
+                    <!-- Daily Checklist -->
+                    <div class="glass-card">
+                        <div class="card-header-flex">
+                            <h3>Healthy Habits Checklist</h3>
+                            <span class="card-title-badge">Daily Goals</span>
+                        </div>
+                        <div id="habits-list">
+                            <div class="habit-row">
+                                <div class="habit-left">
+                                    <div class="checkbox-custom" onclick="toggleHabit(this, 15)"></div>
+                                    <span>Drink 3L water today</span>
+                                </div>
+                                <span style="color: var(--text-secondary); font-size: 0.85rem;">+15 XP</span>
+                            </div>
+                            <div class="habit-row">
+                                <div class="habit-left">
+                                    <div class="checkbox-custom" onclick="toggleHabit(this, 20)"></div>
+                                    <span>Sleep 8 hours tonight</span>
+                                </div>
+                                <span style="color: var(--text-secondary); font-size: 0.85rem;">+20 XP</span>
+                            </div>
+                            <div class="habit-row">
+                                <div class="habit-left">
+                                    <div class="checkbox-custom" onclick="toggleHabit(this, 10)"></div>
+                                    <span>10 minutes deep breathing / meditation</span>
+                                </div>
+                                <span style="color: var(--text-secondary); font-size: 0.85rem;">+10 XP</span>
+                            </div>
+                            <div class="habit-row">
+                                <div class="habit-left">
+                                    <div class="checkbox-custom" onclick="toggleHabit(this, 15)"></div>
+                                    <span>Complete morning stretching routine</span>
+                                </div>
+                                <span style="color: var(--text-secondary); font-size: 0.85rem;">+15 XP</span>
+                            </div>
+                        </div>
+                        <div class="progress-container" style="margin-top: 1.5rem;">
+                            <div class="progress-bar" id="checklist-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Water Intake Tracker -->
+                    <div class="glass-card">
+                        <div class="card-header-flex">
+                            <h3>Interactive Water Intake</h3>
+                            <span class="tab-icon" style="color: #60a5fa;">💧</span>
+                        </div>
+                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Optimal hydration supports muscle recovery and metabolic rate. Add water in increments to reach your 3L daily goal.</p>
+                        <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                            <button class="btn-primary" onclick="addWater(0.25)">+250 ml</button>
+                            <button class="btn-primary" onclick="addWater(0.5)">+500 ml</button>
+                            <button class="btn-secondary" onclick="resetWater()">Reset Log</button>
+                        </div>
+                        <div style="font-size: 1.25rem; font-weight: 600;">
+                            Logged: <span id="water-logged-text" style="color: var(--accent-primary);">0</span> / 3.0 Liters
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-3" style="margin-top: 2rem;">
+                    <!-- Sleep Tracker Info -->
+                    <div class="glass-card">
+                        <div class="card-header-flex">
+                            <h4>Sleep Tracker</h4>
+                            <span>💤</span>
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5;">Aim for 7-9 hours of quality sleep. Optimal recovery happens during deep sleep phases where growth hormones are secreted.</p>
+                    </div>
+
+                    <!-- Stress Management Info -->
+                    <div class="glass-card">
+                        <div class="card-header-flex">
+                            <h4>Stress Control</h4>
+                            <span>🧘</span>
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5;">High stress releases cortisol, promoting fat storage and muscle breakdown. Practice deep box breathing: 4s inhale, 4s hold, 4s exhale, 4s hold.</p>
+                    </div>
+
+                    <!-- Morning Routine -->
+                    <div class="glass-card">
+                        <div class="card-header-flex">
+                            <h4>Morning Routine</h4>
+                            <span>🌅</span>
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5;">Start with 500ml water to rehydrate, perform 5 mins of mobility stretch, and experience 10 mins of natural morning sunlight.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: WORKOUT PLANS (NEW DEDICATED TAB) -->
+            <div id="tab-workoutplans" class="tab-content">
+                <div class="workspace-header">
+                    <h2>📅 Weekly Workout Plans</h2>
+                    <p>Choose a weekly split plan that fits your schedule. Click any plan to view the full week — Sunday is always a rest day!</p>
+                </div>
+
+                <!-- Plan Selection Cards Grid -->
+                <div class="grid-3" style="margin-bottom: 2rem;">
+
+                    <!-- Plan 1 Card -->
+                    <div class="glass-card plan-selector-card" id="plan-card-1" onclick="selectWorkoutPlan(1)" style="cursor:pointer; border-color: rgba(99,102,241,0.5);">
+                        <div class="card-header-flex">
+                            <span class="card-title-badge" style="background:rgba(99,102,241,0.2); color:#818cf8;">Plan 1</span>
+                            <span style="font-size:1.5rem;">🔥</span>
+                        </div>
+                        <h4 style="margin-top:0.75rem; margin-bottom:0.5rem;">Classic Hypertrophy</h4>
+                        <p style="color:var(--text-secondary); font-size:0.85rem; line-height:1.5;">Chest/Tri · Back/Bi · Legs · Shoulders/Abs · Chest/Back · Arms+Cardio · Rest</p>
+                        <div style="margin-top:1rem; font-size:0.8rem; color:var(--accent-primary); font-weight:700;">6 Training Days / Week</div>
+                    </div>
+
+                    <!-- Plan 2 Card -->
+                    <div class="glass-card plan-selector-card" id="plan-card-2" onclick="selectWorkoutPlan(2)" style="cursor:pointer;">
+                        <div class="card-header-flex">
+                            <span class="card-title-badge" style="background:rgba(168,85,247,0.2); color:#c084fc;">Plan 2</span>
+                            <span style="font-size:1.5rem;">💪</span>
+                        </div>
+                        <h4 style="margin-top:0.75rem; margin-bottom:0.5rem;">Balanced Power</h4>
+                        <p style="color:var(--text-secondary); font-size:0.85rem; line-height:1.5;">Chest/Bi · Back/Tri · Legs/Abs · Shoulders · Arms · Full Body+Cardio · Rest</p>
+                        <div style="margin-top:1rem; font-size:0.8rem; color:var(--accent-secondary); font-weight:700;">6 Training Days / Week</div>
+                    </div>
+
+                    <!-- Plan 3 Card -->
+                    <div class="glass-card plan-selector-card" id="plan-card-3" onclick="selectWorkoutPlan(3)" style="cursor:pointer;">
+                        <div class="card-header-flex">
+                            <span class="card-title-badge" style="background:rgba(236,72,153,0.2); color:#f472b6;">Plan 3</span>
+                            <span style="font-size:1.5rem;">🏋️</span>
+                        </div>
+                        <h4 style="margin-top:0.75rem; margin-bottom:0.5rem;">Push / Pull / Legs</h4>
+                        <p style="color:var(--text-secondary); font-size:0.85rem; line-height:1.5;">Push · Pull · Legs · Chest/Back · Shoulders/Arms · Abs+Cardio · Rest</p>
+                        <div style="margin-top:1rem; font-size:0.8rem; color:var(--accent-tertiary); font-weight:700;">6 Training Days / Week</div>
+                    </div>
+
+                    <!-- Plan 4 Card -->
+                    <div class="glass-card plan-selector-card" id="plan-card-4" onclick="selectWorkoutPlan(4)" style="cursor:pointer;">
+                        <div class="card-header-flex">
+                            <span class="card-title-badge" style="background:rgba(16,185,129,0.2); color:#34d399;">Plan 4</span>
+                            <span style="font-size:1.5rem;">🦾</span>
+                        </div>
+                        <h4 style="margin-top:0.75rem; margin-bottom:0.5rem;">Classic Bro Split</h4>
+                        <p style="color:var(--text-secondary); font-size:0.85rem; line-height:1.5;">Chest · Back · Legs · Shoulders · Bi/Tri · Cardio+Abs · Rest</p>
+                        <div style="margin-top:1rem; font-size:0.8rem; color:var(--success); font-weight:700;">6 Training Days / Week</div>
+                    </div>
+
+                    <!-- Plan 5 Card -->
+                    <div class="glass-card plan-selector-card" id="plan-card-5" onclick="selectWorkoutPlan(5)" style="cursor:pointer;">
+                        <div class="card-header-flex">
+                            <span class="card-title-badge" style="background:rgba(245,158,11,0.2); color:#fbbf24;">Plan 5</span>
+                            <span style="font-size:1.5rem;">⚡</span>
+                        </div>
+                        <h4 style="margin-top:0.75rem; margin-bottom:0.5rem;">Full Body Finisher</h4>
+                        <p style="color:var(--text-secondary); font-size:0.85rem; line-height:1.5;">Chest/Tri · Back · Legs/Abs · Shoulders/Bi · Arms · Full Body · Rest</p>
+                        <div style="margin-top:1rem; font-size:0.8rem; color:var(--warning); font-weight:700;">6 Training Days / Week</div>
+                    </div>
+
+                </div>
+
+                <!-- Weekly Schedule Detail View -->
+                <div class="glass-card" id="plan-detail-box">
+                    <div class="card-header-flex">
+                        <h3 id="plan-detail-title">📋 Select a Plan Above to See Full Weekly Schedule</h3>
+                        <span class="card-title-badge" id="plan-detail-badge" style="background:rgba(99,102,241,0.2); color:#818cf8;">No Plan Selected</span>
+                    </div>
+                    <div id="plan-detail-schedule" style="margin-top:1.5rem; display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:1rem;">
+                        <p style="color:var(--text-secondary); font-style:italic;">Click one of the plan cards above to expand the full Mon–Sun workout schedule here.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: WORKOUT LIBRARY -->
+            <div id="tab-workouts" class="tab-content">
+                <div class="workspace-header">
+                    <h2>Workout Library</h2>
+                    <p>Filter exercises by experience level.</p>
+                </div>
+
+                <!-- Level Tabs -->
+                <div class="nested-tabs">
+                    <button class="nested-btn active" onclick="switchNested(this, 'workouts', 'beginner')">Beginner</button>
+                    <button class="nested-btn" onclick="switchNested(this, 'workouts', 'intermediate')">Intermediate</button>
+                    <button class="nested-btn" onclick="switchNested(this, 'workouts', 'advanced')">Advanced</button>
+                </div>
+
+                <!-- Beginner Workouts -->
+                <div id="nested-workouts-beginner" class="nested-content active">
+                    <div class="grid-3">
+                        <div class="glass-card">
+                            <span class="card-title-badge">Beginner</span>
+                            <h4 style="margin-top: 1rem; margin-bottom: 0.5rem;">Home Workouts</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5; margin-bottom: 1.25rem;">
+                                No equipment needed. Perfect for beginners to establish body control and joint strength.
+                            </p>
+                            <ul style="color: var(--text-secondary); font-size: 0.9rem; list-style-position: inside; display: flex; flex-direction: column; gap: 0.5rem;">
+                                <li>Bodyweight squats (3 sets of 15)</li>
+                                <li>Incline pushups (3 sets of 10)</li>
+                                <li>Reverse lunges (3 sets of 12)</li>
+                                <li>Plank hold (3 sets of 30s)</li>
+                            </ul>
+                        </div>
+                        <div class="glass-card">
+                            <span class="card-title-badge">Beginner</span>
+                            <h4 style="margin-top: 1rem; margin-bottom: 0.5rem;">Basic Cardio</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5; margin-bottom: 1.25rem;">
+                                Establish foundational cardiovascular output and improve lung capacity.
+                            </p>
+                            <ul style="color: var(--text-secondary); font-size: 0.9rem; list-style-position: inside; display: flex; flex-direction: column; gap: 0.5rem;">
+                                <li>Brisk walking (30 mins)</li>
+                                <li>Stationary cycling (20 mins)</li>
+                                <li>Jumping Jacks (3 sets of 45s)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Intermediate Workouts -->
+                <div id="nested-workouts-intermediate" class="nested-content">
+                    <div class="grid-3">
+                        <div class="glass-card">
+                            <span class="card-title-badge">Intermediate</span>
+                            <h4 style="margin-top: 1rem; margin-bottom: 0.5rem;">Gym Split Routine</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5; margin-bottom: 1.25rem;">
+                                Standard Push-Pull-Legs split to optimize hypertrophy and strength recovery.
+                            </p>
+                            <ul style="color: var(--text-secondary); font-size: 0.9rem; list-style-position: inside; display: flex; flex-direction: column; gap: 0.5rem;">
+                                <li>Day 1: Push (Chest, Shoulders, Tris)</li>
+                                <li>Day 2: Pull (Back, Rear Delts, Bis)</li>
+                                <li>Day 3: Legs (Quads, Hamstrings, Calves)</li>
+                            </ul>
+                        </div>
+                        <div class="glass-card">
+                            <span class="card-title-badge">Intermediate</span>
+                            <h4 style="margin-top: 1rem; margin-bottom: 0.5rem;">Strength Training</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5; margin-bottom: 1.25rem;">
+                                Focus on compound lifting mechanics to increase bone density and dense muscle mass.
+                            </p>
+                            <ul style="color: var(--text-secondary); font-size: 0.9rem; list-style-position: inside; display: flex; flex-direction: column; gap: 0.5rem;">
+                                <li>Barbell Squat (4 sets of 6 reps)</li>
+                                <li>Bench Press (4 sets of 6 reps)</li>
+                                <li>Deadlift (3 sets of 5 reps)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Workouts -->
+                <div id="nested-workouts-advanced" class="nested-content">
+                    <div class="grid-3">
+                        <div class="glass-card">
+                            <span class="card-title-badge">Advanced</span>
+                            <h4 style="margin-top: 1rem; margin-bottom: 0.5rem;">Bodybuilding Hypertrophy</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5; margin-bottom: 1.25rem;">
+                                Maximum isolation work utilizing high volume and dropsets to force adaptation.
+                            </p>
+                            <ul style="color: var(--text-secondary); font-size: 0.9rem; list-style-position: inside; display: flex; flex-direction: column; gap: 0.5rem;">
+                                <li>Cable Crossovers (4 sets of 12 + dropset)</li>
+                                <li>Incline Dumbbell Press (4 sets of 8)</li>
+                                <li>Preacher Curl curls (3 sets of 15)</li>
+                            </ul>
+                        </div>
+                        <div class="glass-card">
+                            <span class="card-title-badge">Advanced</span>
+                            <h4 style="margin-top: 1rem; margin-bottom: 0.5rem;">High Intensity HIIT</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5; margin-bottom: 1.25rem;">
+                                Athletic conditioning with maximum metabolic output for rapid fat incineration.
+                            </p>
+                            <ul style="color: var(--text-secondary); font-size: 0.9rem; list-style-position: inside; display: flex; flex-direction: column; gap: 0.5rem;">
+                                <li>Burpees (45s work, 15s rest)</li>
+                                <li>Kettlebell swings (45s work, 15s rest)</li>
+                                <li>Sprints (30s max output, 60s jog)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: GOAL-BASED FITNESS PLANS -->
+            <div id="tab-goals" class="tab-content">
+                <div class="workspace-header">
+                    <h2>Goal-Based Fitness Plans</h2>
+                    <p>Align your diet, caloric intake, and target training routines to your exact ambition.</p>
+                </div>
+
+                <!-- Goal Tabs -->
+                <div class="nested-tabs">
+                    <button class="nested-btn active" onclick="switchNested(this, 'goals', 'fatloss')">Fat Loss</button>
+                    <button class="nested-btn" onclick="switchNested(this, 'goals', 'bulking')">Bulking</button>
+                    <button class="nested-btn" onclick="switchNested(this, 'goals', 'cutting')">Cutting</button>
+                    <button class="nested-btn" onclick="switchNested(this, 'goals', 'weightgain')">Weight Gain</button>
+                </div>
+
+                <!-- Fat Loss -->
+                <div id="nested-goals-fatloss" class="nested-content active">
+                    <div class="grid-2">
+                        <div class="glass-card">
+                            <h3>Fat Loss Blueprint</h3>
+                            <p style="color: var(--text-secondary); margin-top: 1rem; line-height: 1.6;">
+                                Engineered to optimize lipid oxidation while preserving dense skeletal muscle tissue via an elegant negative energy balance.
+                            </p>
+                            <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem;">
+                                <div>
+                                    <strong style="color: var(--accent-tertiary);">Caloric & Water Strategy</strong>
+                                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Maintain a -500 kcal deficit. Drink 3.5L water daily to flush byproducts of lipid lipolysis.</p>
+                                </div>
+                                <div>
+                                    <strong style="color: var(--accent-tertiary);">Cardio Guidelines</strong>
+                                    <p style="color: var(--text-secondary); font-size: 0.9rem;">150 mins of Zone 2 LISS weekly + 2 HIIT sessions (e.g. sprints) to spike EPOC.</p>
+                                </div>
+                                <div>
+                                    <strong style="color: var(--accent-tertiary);">Physiological Pro-Tip</strong>
+                                    <p style="color: var(--text-secondary); font-size: 0.9rem; font-style: italic;">"Consume high-volume, low-calorie foods. Fiber increases stomach distension, signaling satiety to the brain."</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-card">
+                            <h3>Fat Burning Food Directory</h3>
+                            <div style="margin-top: 1rem; display: flex; flex-direction: column; gap: 1rem;">
+                                <div>
+                                    <span class="card-title-badge" style="background: rgba(236, 72, 153, 0.15); color: #f472b6;">Proteins (Lean)</span>
+                                    <p style="color: var(--text-primary); font-size: 0.95rem; margin-top: 0.25rem; font-weight: 500;">
+                                        Chicken Breast, Turkey Breast, Egg Whites, Cod, Tilapia, Tuna, Whey Isolate, Low-Fat Cottage Cheese.
+                                    </p>
+                                </div>
+                                <div>
+                                    <span class="card-title-badge" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa;">Carbohydrates (Fiber-Dense)</span>
+                                    <p style="color: var(--text-primary); font-size: 0.95rem; margin-top: 0.25rem; font-weight: 500;">
+                                        Rolled Oats, Quinoa, Sweet Potatoes, Cauliflower Rice, Broccoli, Spinach, Asparagus, Berries.
+                                    </p>
+                                </div>
+                                <div>
+                                    <span class="card-title-badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">Fats (Essential)</span>
+                                    <p style="color: var(--text-primary); font-size: 0.95rem; margin-top: 0.25rem; font-weight: 500;">
+                                        Avocado, Raw Almonds, Chia Seeds, Extra Virgin Olive Oil (in restricted amounts).
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card" style="margin-top: 2rem;">
+                        <h3>Sample Fat Loss Meal Schedule</h3>
+                        <div class="grid-3" style="margin-top: 1rem; gap: 1.5rem;">
+                            <div>
+                                <strong style="color: var(--accent-primary);">🌅 Breakfast</strong>
+                                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.25rem;">
+                                    Scramble: 5 Egg Whites + spinach. 40g Rolled Oats cooked in water, topped with 50g fresh blueberries.
+                                </p>
+                            </div>
+                            <div>
+                                <strong style="color: var(--accent-primary);">☀️ Lunch & Snack</strong>
+                                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.25rem;">
+                                    Lunch: 150g Grilled Chicken Breast + 1 cup steamed broccoli + 100g sweet potato.<br>
+                                    Snack: 1 scoop Whey Isolate + 15g almonds.
+                                </p>
+                            </div>
+                            <div>
+                                <strong style="color: var(--accent-primary);">🌙 Dinner</strong>
+                                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.25rem;">
+                                    150g baked Cod fillet + large mixed greens salad (cucumber, lettuce) + 1 tsp Extra Virgin Olive Oil.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bulking -->
+                <div id="nested-goals-bulking" class="nested-content">
+                    <div class="grid-2">
+                        <div class="glass-card">
+                            <h3>Bulking Blueprint</h3>
+                            <p style="color: var(--text-secondary); margin-top: 1rem; line-height: 1.6;">
+                                Formulated to maximize lean skeletal muscle mass development through a systematic calorie surplus paired with heavy compound progression lifts.
+                            </p>
+                            <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem;">
+                                <div>
+                                    <strong style="color: var(--accent-primary);">Caloric Strategy</strong>
+                                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Maintain a +300 to +500 kcal surplus above maintenance to stimulate anabolic signaling.</p>
+                                </div>
+                                <div>
+                                    <strong style="color: var(--accent-primary);">Mass Gain Workouts</strong>
+                                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Heavy compound lifts (Squat, Bench, Deadlift, Overhead Press) focused on progressive overload (3-5 mins rest between sets).</p>
+                                </div>
+                                <div>
+                                    <strong style="color: var(--accent-primary);">Physiological Pro-Tip</strong>
+                                    <p style="color: var(--text-secondary); font-size: 0.9rem; font-style: italic;">"Clean bulking is superior. Excess calorie surpluses above 500 kcal only convert to adipocytes, not additional myofibrillar proteins."</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-card">
+                            <h3>High-Calorie Mass Gain Foods</h3>
+                            <div style="margin-top: 1rem; display: flex; flex-direction: column; gap: 1rem;">
+                                <div>
+                                    <span class="card-title-badge" style="background: rgba(236, 72, 153, 0.15); color: #f472b6;">Proteins (Hormone-Supporting)</span>
+                                    <p style="color: var(--text-primary); font-size: 0.95rem; margin-top: 0.25rem; font-weight: 500;">
+                                        Whole Eggs, Ribeye Steak, Lean Ground Beef, Salmon, Paneer, Whole Milk, Chicken Thighs, Casein Protein.
+                                    </p>
+                                </div>
+                                <div>
+                                    <span class="card-title-badge" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa;">Carbohydrates (Glycogen-Replenishing)</span>
+                                    <p style="color: var(--text-primary); font-size: 0.95rem; margin-top: 0.25rem; font-weight: 500;">
+                                        White Jasmine Rice, Whole Wheat Pasta, Granola, Bananas, Sweet Potato Mash, Oats, Bagels.
+                                    </p>
+                                </div>
+                                <div>
+                                    <span class="card-title-badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">Fats (Calorie-Dense)</span>
+                                    <p style="color: var(--text-primary); font-size: 0.95rem; margin-top: 0.25rem; font-weight: 500;">
+                                        Natural Peanut Butter, Almond Butter, Avocados, Virgin Coconut Oil, Grass-Fed Butter, Walnuts, Cashews.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card" style="margin-top: 2rem;">
+                        <h3>Sample Bulking Meal Schedule</h3>
+                        <div class="grid-3" style="margin-top: 1rem; gap: 1.5rem;">
+                            <div>
+                                <strong style="color: var(--accent-primary);">🌅 Breakfast</strong>
+                                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.25rem;">
+                                    4 Whole Eggs scrambled in grass-fed butter + 2 slices of whole wheat sourdough bread with 2 tbsp of peanut butter + 1 whole banana.
+                                </p>
+                            </div>
+                            <div>
+                                <strong style="color: var(--accent-primary);">☀️ Lunch & Snack</strong>
+                                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.25rem;">
+                                    Lunch: 180g Ground Beef (lean) stir-fried with 2 cups of Jasmine Rice and mixed vegetables.<br>
+                                    Snack: High-calorie shake (1 cup whole milk, 1 scoop whey, 60g oats, 2 tbsp peanut butter, honey).
+                                </p>
+                            </div>
+                            <div>
+                                <strong style="color: var(--accent-primary);">🌙 Dinner</strong>
+                                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.25rem;">
+                                    200g grilled Salmon fillet served with 300g sweet potato mash, dressed in olive oil and a side of green peas.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cutting -->
+                <div id="nested-goals-cutting" class="nested-content">
+                    <div class="grid-2">
+                        <div class="glass-card">
+                            <h3>Cutting & Vascularity</h3>
+                            <p style="color: var(--text-secondary); margin-top: 1rem; line-height: 1.6;">
+                                Engineered to strip remaining stubborn fat reserves, optimize muscle hardness, and emphasize clean skeletal lines.
+                            </p>
+                            <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem;">
+                                <div>
+                                    <strong style="color: var(--accent-secondary);">Carbohydrate Cycling</strong>
+                                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Restrict carbohydrates to workout windows. High carbs on leg days, low carbs on rest days.</p>
+                                </div>
+                                <div>
+                                    <strong style="color: var(--accent-secondary);">Sodium & Fluid Management</strong>
+                                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Keep sodium intake stable but moderate. Drink 4L+ water to keep aldosterone levels low and prevent subcutaneous water retention.</p>
+                                </div>
+                                <div>
+                                    <strong style="color: var(--accent-secondary);">Physiological Pro-Tip</strong>
+                                    <p style="color: var(--text-secondary); font-size: 0.9rem; font-style: italic;">"Ensure daily protein is elevated (2.2g+ per kg) during a cut. This prevents the body from oxidizing skeletal proteins for gluconeogenesis."</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-card">
+                            <h3>Lean & Definition Foods</h3>
+                            <div style="margin-top: 1rem; display: flex; flex-direction: column; gap: 1rem;">
+                                <div>
+                                    <span class="card-title-badge" style="background: rgba(236, 72, 153, 0.15); color: #f472b6;">Proteins (Leanest)</span>
+                                    <p style="color: var(--text-primary); font-size: 0.95rem; margin-top: 0.25rem; font-weight: 500;">
+                                        Turkey Breast, Tilapia, Shrimp, Egg Whites, Liquid Amino Acids, Lean Venison, Whey Isolate.
+                                    </p>
+                                </div>
+                                <div>
+                                    <span class="card-title-badge" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa;">Carbohydrates (High-Fiber/Low-GI)</span>
+                                    <p style="color: var(--text-primary); font-size: 0.95rem; margin-top: 0.25rem; font-weight: 500;">
+                                        Cauliflower Rice, Broccoli, Zucchini Noodles, Asparagus, Cabbage, Quinoa (moderate), Cucumber, Celery.
+                                    </p>
+                                </div>
+                                <div>
+                                    <span class="card-title-badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">Fats (Strictly Regulated)</span>
+                                    <p style="color: var(--text-primary); font-size: 0.95rem; margin-top: 0.25rem; font-weight: 500;">
+                                        MCT Oil, Chia Seeds, Omega-3 Fish Oil Capsules (capsule supplementation preferred over heavy fatty meats).
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card" style="margin-top: 2rem;">
+                        <h3>Sample Cutting Meal Schedule</h3>
+                        <div class="grid-3" style="margin-top: 1rem; gap: 1.5rem;">
+                            <div>
+                                <strong style="color: var(--accent-primary);">🌅 Breakfast</strong>
+                                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.25rem;">
+                                    Omelet made with 6 Egg Whites, half cup spinach, and mushrooms + 1 cup green tea (no sugar).
+                                </p>
+                            </div>
+                            <div>
+                                <strong style="color: var(--accent-primary);">☀️ Lunch & Snack</strong>
+                                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.25rem;">
+                                    Lunch: 180g Baked Turkey Breast + 2 cups Cauliflower Rice + steamed asparagus.<br>
+                                    Snack: 1 scoop Whey Isolate in cold water + 1 Capsule Omega-3.
+                                </p>
+                            </div>
+                            <div>
+                                <strong style="color: var(--accent-primary);">🌙 Dinner</strong>
+                                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.25rem;">
+                                    180g grilled Shrimp served with large bowl of Zucchini Noodles (zoodles) tossed in garlic and 1 tsp MCT oil.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weight Gain -->
+                <div id="nested-goals-weightgain" class="nested-content">
+                    <div class="grid-2">
+                        <div class="glass-card">
+                            <h3>Healthy Weight Gain Blueprint</h3>
+                            <p style="color: var(--text-secondary); margin-top: 1rem; line-height: 1.6;">
+                                Optimized for ectomorphs ("hard gainers") struggling to build robust physical body weight. Focuses on digestible, calorie-dense foods to prevent gastrointestinal bloating.
+                            </p>
+                            <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem;">
+                                <div>
+                                    <strong style="color: var(--warning);">Caloric Frequency</strong>
+                                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Eat every 3 hours. Consistency is paramount to keep insulin in a steady anabolic state.</p>
+                                </div>
+                                <div>
+                                    <strong style="color: var(--warning);">Strength Focus</strong>
+                                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Prioritize strength routines with low rep ranges (4-8 reps) to build structural bone density and thick muscle tissue.</p>
+                                </div>
+                                <div>
+                                    <strong style="color: var(--warning);">Physiological Pro-Tip</strong>
+                                    <p style="color: var(--text-secondary); font-size: 0.9rem; font-style: italic;">"If you struggle with high solid food volume, consume calorie-dense liquid shakes. Blending bananas, dates, oats, and peanut butter is highly digestible."</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-card">
+                            <h3>Calorie-Dense Weight Gain Foods</h3>
+                            <div style="margin-top: 1rem; display: flex; flex-direction: column; gap: 1rem;">
+                                <div>
+                                    <span class="card-title-badge" style="background: rgba(236, 72, 153, 0.15); color: #f472b6;">Proteins (Tissue-Building)</span>
+                                    <p style="color: var(--text-primary); font-size: 0.95rem; margin-top: 0.25rem; font-weight: 500;">
+                                        Full-fat Greek Yogurt, Salmon, Lean Beef, Paneer, Whole Milk, Chicken Thighs, Cheddar Cheese.
+                                    </p>
+                                </div>
+                                <div>
+                                    <span class="card-title-badge" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa;">Carbohydrates (Calorie-Rich)</span>
+                                    <p style="color: var(--text-primary); font-size: 0.95rem; margin-top: 0.25rem; font-weight: 500;">
+                                        Granola, Medjool Dates, Raisins, Dried Figs, Sweet Potatoes, Whole Wheat Flatbreads, Oats, Honey.
+                                    </p>
+                                </div>
+                                <div>
+                                    <span class="card-title-badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">Fats (Healthy Lipids)</span>
+                                    <p style="color: var(--text-primary); font-size: 0.95rem; margin-top: 0.25rem; font-weight: 500;">
+                                        Cashew Butter, Almond Butter, Extra Virgin Olive Oil, Organic Coconut Oil, Pumpkin Seeds, Avocados.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card" style="margin-top: 2rem;">
+                        <h3>Sample Weight Gain Meal Schedule</h3>
+                        <div class="grid-3" style="margin-top: 1rem; gap: 1.5rem;">
+                            <div>
+                                <strong style="color: var(--accent-primary);">🌅 Breakfast</strong>
+                                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.25rem;">
+                                    Granola bowl: 80g crunchy granola, full-fat Greek yogurt, topped with 3 chopped Medjool dates, 1 tbsp pumpkin seeds, and honey drizzle.
+                                </p>
+                            </div>
+                            <div>
+                                <strong style="color: var(--accent-primary);">☀️ Lunch & Snack</strong>
+                                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.25rem;">
+                                    Lunch: 200g Salmon steak + large portion of brown rice + half a fresh avocado.<br>
+                                    Snack: 2 slices of Toast with 3 tbsp Cashew Butter + 300ml whole milk.
+                                </p>
+                            </div>
+                            <div>
+                                <strong style="color: var(--accent-primary);">🌙 Dinner</strong>
+                                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.25rem;">
+                                    Beef stew cooked with potatoes, carrots, and olive oil, served with 2 whole wheat flatbreads.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: DIET & NUTRITION & MEAL PLANNER -->
+            <div id="tab-nutrition" class="tab-content">
+                <div class="workspace-header">
+                    <h2>Dietary Nutrition & Meal Planner</h2>
+                    <p>Fuel your body with precise diets and plan your customized daily meals.</p>
+                </div>
+
+                <!-- Nested Tabs for Diets -->
+                <div class="nested-tabs">
+                    <button class="nested-btn active" onclick="switchNested(this, 'nutrition', 'plans')">Diet Profiles</button>
+                    <button class="nested-btn" onclick="switchNested(this, 'nutrition', 'planner')">Interactive Meal Planner</button>
+                </div>
+
+                <!-- Diet Profiles -->
+                <div id="nested-nutrition-plans" class="nested-content active">
+                    <div class="grid-3">
+                        <div class="glass-card">
+                            <span class="card-title-badge">High Protein</span>
+                            <h4 style="margin-top: 1rem; margin-bottom: 0.5rem;">Muscle & Repair</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5; margin-bottom: 1rem;">
+                                Perfect for tissue restoration and post-workout amino replenishment.
+                            </p>
+                            <strong style="font-size: 0.85rem; color: var(--accent-primary);">Core Foods:</strong>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Chicken breast, Eggs, Paneer, Fish, Greek Yogurt.</p>
+                        </div>
+                        <div class="glass-card">
+                            <span class="card-title-badge">Keto Diet</span>
+                            <h4 style="margin-top: 1rem; margin-bottom: 0.5rem;">Ketogenic Low-Carb</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5; margin-bottom: 1rem;">
+                                Forces fat adaptation by shifting fuel source from glucose to ketones.
+                            </p>
+                            <strong style="font-size: 0.85rem; color: var(--accent-primary);">Core Foods:</strong>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Avocados, Cheese, Butter, Nuts, Fatty Salmon.</p>
+                        </div>
+                        <div class="glass-card">
+                            <span class="card-title-badge">Vegetarian</span>
+                            <h4 style="margin-top: 1rem; margin-bottom: 0.5rem;">Plant-Based Balance</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5; margin-bottom: 1rem;">
+                                Organic, fiber-dense, and highly nutritious vegan/veg macros.
+                            </p>
+                            <strong style="font-size: 0.85rem; color: var(--accent-primary);">Core Foods:</strong>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Tofu, Paneer, Lentils, Quinoa, Chickpeas.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Meal Planner -->
+                <div id="nested-nutrition-planner" class="nested-content">
+                    <div class="grid-2">
+                        <div class="glass-card">
+                            <h3>Assemble Daily Plate</h3>
+                            <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">Select food items to construct your breakfast, lunch, or dinner, and see dynamic macronutrient accumulations.</p>
+                            
+                            <div class="form-group">
+                                <label for="food-select">Select Nutrition Block</label>
+                                <select id="food-select" class="form-control">
+                                    <option value="eggs" data-cal="140" data-prot="12">Whole Eggs (2 large) - 140 kcal</option>
+                                    <option value="chicken" data-cal="240" data-prot="46">Grilled Chicken Breast (150g) - 240 kcal</option>
+                                    <option value="salmon" data-cal="300" data-prot="35">Atlantic Salmon Fillet (150g) - 300 kcal</option>
+                                    <option value="paneer" data-cal="260" data-prot="18">Fresh Paneer (100g) - 260 kcal</option>
+                                    <option value="oats" data-cal="150" data-prot="5">Rolled Oats (40g raw) - 150 kcal</option>
+                                    <option value="whey" data-cal="120" data-prot="24">Whey Protein Shake (1 scoop) - 120 kcal</option>
+                                    <option value="almonds" data-cal="160" data-prot="6">Raw Almonds (30g) - 160 kcal</option>
+                                </select>
+                            </div>
+                            <button class="btn-primary" onclick="addFoodToMeal()">Add to Daily Intake</button>
+                        </div>
+
+                        <!-- Active Plate Summary -->
+                        <div class="glass-card">
+                            <h3>Logged Daily Meals</h3>
+                            <div id="logged-meals-list" style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.85rem; max-height: 200px; overflow-y: auto;">
+                                <div style="color: var(--text-secondary); font-size: 0.9rem; font-style: italic;">No foods added yet.</div>
+                            </div>
+                            <div style="border-top: 1px solid var(--glass-border); margin-top: 1.5rem; padding-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="font-size: 1.15rem; font-weight: 700;">Total: <span id="logged-meals-kcal" style="color: var(--accent-tertiary);">0</span> kcal</div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary); font-weight: 600;">Protein: <span id="logged-meals-prot">0</span>g</div>
+                                </div>
+                                <button class="btn-secondary" onclick="clearMealPlan()">Reset Planner</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 6: FITNESS CALCULATORS -->
+            <div id="tab-calculators" class="tab-content">
+                <div class="workspace-header">
+                    <h2>Fitness Calculators</h2>
+                    <p>Instant body metrics computed instantly in your browser window.</p>
+                </div>
+
+                <!-- Calculator Selection Tabs -->
+                <div class="nested-tabs">
+                    <button class="nested-btn active" onclick="switchNested(this, 'calc', 'bmi')">BMI</button>
+                    <button class="nested-btn" onclick="switchNested(this, 'calc', 'tdee')">Daily Calories (TDEE)</button>
+                    <button class="nested-btn" onclick="switchNested(this, 'calc', 'water')">Water Calculator</button>
+                    <button class="nested-btn" onclick="switchNested(this, 'calc', 'fat')">Body Fat</button>
+                    <button class="nested-btn" onclick="switchNested(this, 'calc', 'protein')">Protein Intake</button>
+                </div>
+
+                <!-- BMI Calculator -->
+                <div id="nested-calc-bmi" class="nested-content active">
+                    <div class="grid-2">
+                        <div class="glass-card">
+                            <h3>Body Mass Index (BMI)</h3>
+                            <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">BMI provides an assessment of total weight relative to stature.</p>
+                            
+                            <div class="form-group">
+                                <label>Height (cm)</label>
+                                <input type="number" id="calc-bmi-h" class="form-control" placeholder="e.g. 175" value="175">
+                            </div>
+                            <div class="form-group">
+                                <label>Weight (kg)</label>
+                                <input type="number" id="calc-bmi-w" class="form-control" placeholder="e.g. 70" value="70">
+                            </div>
+                            <button class="btn-primary" onclick="solveBMI()">Calculate BMI</button>
+                        </div>
+                        <div class="glass-card" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                            <div class="calculator-output-card" style="width: 100%;">
+                                <h4>BMI Output</h4>
+                                <div style="font-size: 3rem; font-weight: 800; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;" id="bmi-val">—</div>
+                                <p style="font-weight: 600; margin-top: 0.5rem; text-transform: uppercase;" id="bmi-status">Enter metrics</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TDEE Calculator -->
+                <div id="nested-calc-tdee" class="nested-content">
+                    <div class="grid-2">
+                        <div class="glass-card">
+                            <h3>Total Daily Energy Expenditure</h3>
+                            <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">Computes maintenance limits relative to active workloads.</p>
+                            
+                            <div class="form-group">
+                                <label>Height (cm)</label>
+                                <input type="number" id="calc-tdee-h" class="form-control" value="175">
+                            </div>
+                            <div class="form-group">
+                                <label>Weight (kg)</label>
+                                <input type="number" id="calc-tdee-w" class="form-control" value="70">
+                            </div>
+                            <div class="form-group">
+                                <label>Age</label>
+                                <input type="number" id="calc-tdee-age" class="form-control" value="25">
+                            </div>
+                            <div class="form-group">
+                                <label>Activity Coefficient</label>
+                                <select id="calc-tdee-act" class="form-control">
+                                    <option value="1.2">Sedentary (No workouts)</option>
+                                    <option value="1.375">Lightly Active (Workouts 1-3 days/wk)</option>
+                                    <option value="1.55" selected>Moderately Active (Workouts 3-5 days/wk)</option>
+                                    <option value="1.725">Very Active (Workouts 6-7 days/wk)</option>
+                                </select>
+                            </div>
+                            <button class="btn-primary" onclick="solveTDEE()">Calculate Calories</button>
+                        </div>
+                        <div class="glass-card" style="display: flex; flex-direction: column; justify-content: center;">
+                            <div class="calculator-output-card">
+                                <h4 id="tdee-maint">Maintenance: —</h4>
+                                <p style="font-weight: 500; color: #10b981; margin-top: 0.75rem;" id="tdee-bulk">Bulking (+500 kcal): —</p>
+                                <p style="font-weight: 500; color: #ec4899; margin-top: 0.25rem;" id="tdee-cut">Cutting (-500 kcal): —</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Water Calculator -->
+                <div id="nested-calc-water" class="nested-content">
+                    <div class="grid-2">
+                        <div class="glass-card">
+                            <h3>Hydration Capacity Estimator</h3>
+                            <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">Estimates optimal water volumes depending on weight parameters.</p>
+                            
+                            <div class="form-group">
+                                <label>Weight (kg)</label>
+                                <input type="number" id="calc-water-w" class="form-control" value="70">
+                            </div>
+                            <button class="btn-primary" onclick="solveWater()">Calculate Water Goal</button>
+                        </div>
+                        <div class="glass-card" style="display: flex; flex-direction: column; justify-content: center;">
+                            <div class="calculator-output-card">
+                                <h4>Suggested Hydration Volume</h4>
+                                <div style="font-size: 2.5rem; font-weight: 800; color: #60a5fa;" id="water-val">— Liters/day</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Body Fat Calculator -->
+                <div id="nested-calc-fat" class="nested-content">
+                    <div class="grid-2">
+                        <div class="glass-card">
+                            <h3>Navy Body Fat Calculator</h3>
+                            <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">Provides body fat estimation according to localized dimensions.</p>
+                            
+                            <div class="form-group">
+                                <label>Waist Size (cm)</label>
+                                <input type="number" id="calc-fat-waist" class="form-control" value="82" placeholder="Measure at belly button">
+                            </div>
+                            <div class="form-group">
+                                <label>Neck Size (cm)</label>
+                                <input type="number" id="calc-fat-neck" class="form-control" value="38" placeholder="Measure below Adam's apple">
+                            </div>
+                            <div class="form-group">
+                                <label>Height (cm)</label>
+                                <input type="number" id="calc-fat-h" class="form-control" value="175">
+                            </div>
+                            <button class="btn-primary" onclick="solveFat()">Calculate Body Fat</button>
+                        </div>
+                        <div class="glass-card" style="display: flex; flex-direction: column; justify-content: center;">
+                            <div class="calculator-output-card">
+                                <h4>Estimated Body Fat Percentage</h4>
+                                <div style="font-size: 3rem; font-weight: 800; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;" id="fat-val">— %</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Protein Calculator -->
+                <div id="nested-calc-protein" class="nested-content">
+                    <div class="grid-2">
+                        <div class="glass-card">
+                            <h3>Protein Intake Calculator</h3>
+                            <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">Determines amino targets depending on training workload intensities.</p>
+                            
+                            <div class="form-group">
+                                <label>Weight (kg)</label>
+                                <input type="number" id="calc-prot-w" class="form-control" value="70">
+                            </div>
+                            <div class="form-group">
+                                <label>Target Ambition</label>
+                                <select id="calc-prot-goal" class="form-control">
+                                    <option value="1.2">Maintenance / Healthy Living</option>
+                                    <option value="1.8" selected>Muscle Building / Hypertrophy</option>
+                                    <option value="2.2">Aggressive Fat Loss Preservation</option>
+                                </select>
+                            </div>
+                            <button class="btn-primary" onclick="solveProtein()">Calculate Protein</button>
+                        </div>
+                        <div class="glass-card" style="display: flex; flex-direction: column; justify-content: center;">
+                            <div class="calculator-output-card">
+                                <h4>Suggested Protein Intake</h4>
+                                <div style="font-size: 3rem; font-weight: 800; color: #a855f7;" id="prot-val">— grams/day</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 7: AI SMART RECOMMENDATION & CHATBOT -->
+            <div id="tab-aicoach" class="tab-content">
+                <div class="workspace-header">
+                    <h2>AI Smart Coach & Assistant</h2>
+                    <p>Experience responsive machine recommendations and direct natural chat feedback.</p>
+                </div>
+
+                <div class="nested-tabs">
+                    <button class="nested-btn active" onclick="switchNested(this, 'ai', 'recommend')">AI Smart Recommendation</button>
+                    <button class="nested-btn" onclick="switchNested(this, 'ai', 'chatbot')">AI Chat Assistant</button>
+                </div>
+
+                <!-- AI Recommendation -->
+                <div id="nested-ai-recommend" class="nested-content active">
+                    <div class="grid-2">
+                        <div class="glass-card">
+                            <h3>AI Macro Planner</h3>
+                            <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">Input raw vitals and let our dynamic rule engines evaluate optimal blueprints.</p>
+                            
+                            <div class="form-group">
+                                <label>Age</label>
+                                <input type="number" id="ai-age" class="form-control" value="25">
+                            </div>
+                            <div class="form-group">
+                                <label>Height (cm)</label>
+                                <input type="number" id="ai-height" class="form-control" value="175">
+                            </div>
+                            <div class="form-group">
+                                <label>Weight (kg)</label>
+                                <input type="number" id="ai-weight" class="form-control" value="70">
+                            </div>
+                            <div class="form-group">
+                                <label>Target Goal</label>
+                                <select id="ai-goal" class="form-control">
+                                    <option value="lose">Fat Loss Program</option>
+                                    <option value="bulk" selected>Bulking & Muscle Mass</option>
+                                    <option value="cut">Cutting & Definition</option>
+                                    <option value="gain">Weight Gain Program</option>
+                                </select>
+                            </div>
+                            <button class="btn-primary" onclick="solveAIRecommend()">Run AI Advisor</button>
+                        </div>
+
+                        <!-- Recommendations Output -->
+                        <div class="glass-card" style="display: flex; flex-direction: column; justify-content: center;">
+                            <div id="ai-recommend-output" class="calculator-output-card" style="display: none; text-align: left; padding: 2rem;">
+                                <h3 style="margin-bottom: 1rem; color: #a855f7;">AI Suggested Plan</h3>
+                                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                    <p><strong>Caloric Target:</strong> <span id="ai-out-cal" style="color: var(--success);">—</span> kcal</p>
+                                    <p><strong>Protein Target:</strong> <span id="ai-out-prot" style="color: #60a5fa;">—</span>g/day</p>
+                                    <p><strong>Water Intake:</strong> <span id="ai-out-water" style="color: #60a5fa;">—</span> Liters/day</p>
+                                    <p><strong>Dietary Protocol:</strong> <span id="ai-out-diet" style="color: var(--warning);">—</span></p>
+                                    <p><strong>Workout Directive:</strong> <span id="ai-out-workout" style="color: var(--accent-tertiary);">—</span></p>
+                                </div>
+                            </div>
+                            <div id="ai-recommend-placeholder" style="text-align: center; color: var(--text-secondary); padding: 3rem;">
+                                Enter your bio details and click "Run AI Advisor" to formulate targets.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Chatbot -->
+                <div id="nested-ai-chatbot" class="nested-content">
+                    <div class="chatbot-container">
+                        <div class="chat-messages" id="chatbot-msg-list">
+                            <div class="chat-bubble bot">
+                                Hello! I'm your **FitFusion AI Coach**. Ask me anything about nutrition, exercise, chest routines, or keto dieting!
+                            </div>
+                        </div>
+                        <div class="chat-input-area">
+                            <input type="text" id="chat-input" class="form-control" style="flex: 1;" placeholder="Ask: 'What should I eat?' or 'Best chest workouts?'" onkeypress="handleChatKey(event)">
+                            <button class="btn-primary" onclick="submitChat()">Ask Coach</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 8: PROGRESS & CHALLENGES -->
+            <div id="tab-progress" class="tab-content">
+                <div class="workspace-header">
+                    <h2>Progress Logs & Active Challenges</h2>
+                    <p>Track historical bio logs and complete challenges to unlock premium rewards.</p>
+                </div>
+
+                <!-- Mini Progress Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card total" style="padding: 1.25rem;">
+                        <span class="stat-label">Workout Streak</span>
+                        <span class="stat-value" id="prog-streak">5 Days</span>
+                    </div>
+                    <div class="stat-card male" style="padding: 1.25rem;">
+                        <span class="stat-label">Hydration streak</span>
+                        <span class="stat-value">3 Days</span>
+                    </div>
+                    <div class="stat-card female" style="padding: 1.25rem;">
+                        <span class="stat-label">Challenges Joined</span>
+                        <span class="stat-value" id="prog-challenges-count">0</span>
+                    </div>
+                    <div class="stat-card age" style="padding: 1.25rem;">
+                        <span class="stat-label">XP Level</span>
+                        <span class="stat-value" id="prog-xp">0 XP</span>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <!-- Progress Chart -->
+                    <div class="glass-card">
+                        <h3>Weekly Weight Progression</h3>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">Visualizing weight logs over the previous 7 days.</p>
+                        
+                        <!-- High-End Dynamic SVG Graph -->
+                        <svg class="graph-svg" viewBox="0 0 500 200">
+                            <defs>
+                                <linearGradient id="gradient-line" x1="0" y1="0" x2="1" y2="0">
+                                    <stop offset="0%" stop-color="#6366f1" />
+                                    <stop offset="50%" stop-color="#a855f7" />
+                                    <stop offset="100%" stop-color="#ec4899" />
+                                </linearGradient>
+                                <linearGradient id="gradient-area" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#6366f1" stop-opacity="0.4" />
+                                    <stop offset="100%" stop-color="#6366f1" stop-opacity="0.0" />
+                                </linearGradient>
+                            </defs>
+                            <!-- Grid lines -->
+                            <line x1="50" y1="30" x2="450" y2="30" class="graph-grid" />
+                            <line x1="50" y1="80" x2="450" y2="80" class="graph-grid" />
+                            <line x1="50" y1="130" x2="450" y2="130" class="graph-grid" />
+                            <line x1="50" y1="170" x2="450" y2="170" class="graph-grid" />
+                            <!-- Area under line -->
+                            <path d="M 50 170 L 50 130 Q 116 110 183 140 T 316 100 Q 383 80 450 70 L 450 170 Z" class="graph-area" />
+                            <!-- Main line plot -->
+                            <path d="M 50 130 Q 116 110 183 140 T 316 100 Q 383 80 450 70" class="graph-line" />
+                            <!-- Labels -->
+                            <text x="45" y="185" fill="#94a3b8" font-size="10" font-weight="600">Mon</text>
+                            <text x="110" y="185" fill="#94a3b8" font-size="10" font-weight="600">Tue</text>
+                            <text x="178" y="185" fill="#94a3b8" font-size="10" font-weight="600">Wed</text>
+                            <text x="245" y="185" fill="#94a3b8" font-size="10" font-weight="600">Thu</text>
+                            <text x="310" y="185" fill="#94a3b8" font-size="10" font-weight="600">Fri</text>
+                            <text x="378" y="185" fill="#94a3b8" font-size="10" font-weight="600">Sat</text>
+                            <text x="442" y="185" fill="#94a3b8" font-size="10" font-weight="600">Sun</text>
+                        </svg>
+                    </div>
+
+                    <!-- Challenges Checklist -->
+                    <div class="glass-card">
+                        <h3>Active Challenges</h3>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;">Join fitness pushes to level up and earn custom digital trophies.</p>
+                        
+                        <div class="challenge-card">
+                            <div>
+                                <strong style="font-size: 1.05rem;">30 Day Fat Loss</strong>
+                                <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.25rem;">Log a calorie deficit every day.</p>
+                            </div>
+                            <button class="btn-primary" onclick="joinChallenge(this, 'badge-loss')">Join</button>
+                        </div>
+
+                        <div class="challenge-card">
+                            <div>
+                                <strong style="font-size: 1.05rem;">100 Push-up Streak</strong>
+                                <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.25rem;">Complete 100 pushups daily for 7 days.</p>
+                            </div>
+                            <button class="btn-primary" onclick="joinChallenge(this, 'badge-streak')">Join</button>
+                        </div>
+
+                        <div class="challenge-card">
+                            <div>
+                                <strong style="font-size: 1.05rem;">Hydro Hero Push</strong>
+                                <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.25rem;">Reach 3L hydration targets 5 days in a row.</p>
+                            </div>
+                            <button class="btn-primary" onclick="joinChallenge(this, 'badge-hydro')">Join</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Unlocked Badges Showcase -->
+                <div class="glass-card" style="margin-top: 2rem;">
+                    <h3>Earned Badges & Achievements</h3>
+                    <div class="badge-grid">
+                        <div class="badge-item" id="badge-loss">
+                            <div class="badge-circle">🔥</div>
+                            <span class="badge-name">Fat Burner</span>
+                        </div>
+                        <div class="badge-item" id="badge-streak">
+                            <div class="badge-circle">🏋️</div>
+                            <span class="badge-name">Warrior</span>
+                        </div>
+                        <div class="badge-item" id="badge-hydro">
+                            <div class="badge-circle">👑</div>
+                            <span class="badge-name">Hydro Hero</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- CLIENT SIDE VANILLA JS INTERACTION SCRIPT -->
+    <script>
+        // Tab switching controller
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Add active button and active section
+            event.currentTarget.classList.add('active');
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+        }
+
+        // Nested/Inner tab controller
+        function switchNested(btn, contextPrefix, viewName) {
+            const container = btn.closest('.tab-content') || document.body;
+            container.querySelectorAll(`.nested-btn`).forEach(b => {
+                if (b.getAttribute('onclick').includes(contextPrefix)) {
+                    b.classList.remove('active');
+                }
+            });
+            btn.classList.add('active');
+
+            container.querySelectorAll(`[id^="nested-${contextPrefix}-"]`).forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`nested-${contextPrefix}-${viewName}`).classList.add('active');
+        }
+
+        // Checklist logging state
+        let checkedXP = 0;
+        function toggleHabit(elem, xpValue) {
+            elem.classList.toggle('checked');
+            const isChecked = elem.classList.contains('checked');
+            checkedXP += isChecked ? xpValue : -xpValue;
+            
+            // Update checklists bar
+            const checkedCount = document.querySelectorAll('#habits-list .checkbox-custom.checked').length;
+            const totalCount = document.querySelectorAll('#habits-list .checkbox-custom').length;
+            const pct = Math.round((checkedCount / totalCount) * 100);
+            
+            document.getElementById('checklist-bar').style.width = `${pct}%`;
+            document.getElementById('prog-xp').innerText = `${checkedXP} XP`;
+        }
+
+        // Water intake tracker logging state
+        let loggedWater = 0;
+        function addWater(amount) {
+            loggedWater += amount;
+            if (loggedWater > 5) loggedWater = 5; // limit view
+            updateWaterUI();
+        }
+        function resetWater() {
+            loggedWater = 0;
+            updateWaterUI();
+        }
+        function updateWaterUI() {
+            document.getElementById('water-logged-text').innerText = loggedWater.toFixed(2);
+            document.getElementById('dash-water-logged').innerText = loggedWater.toFixed(2);
+            const waterPct = Math.round((loggedWater / 3.0) * 100);
+            document.getElementById('dash-water-bar').style.width = `${Math.min(waterPct, 100)}%`;
+        }
+
+        // Meal logging state
+        let totalCals = 0;
+        let totalProt = 0;
+        function addFoodToMeal() {
+            const select = document.getElementById('food-select');
+            const opt = select.options[select.selectedIndex];
+            const name = opt.text;
+            const kcal = parseInt(opt.getAttribute('data-cal'));
+            const prot = parseInt(opt.getAttribute('data-prot'));
+
+            totalCals += kcal;
+            totalProt += prot;
+
+            // Update list
+            const list = document.getElementById('logged-meals-list');
+            if (list.querySelector('em') || list.innerText.includes('No foods')) {
+                list.innerHTML = '';
+            }
+
+            const item = document.createElement('div');
+            item.style.display = 'flex';
+            item.style.justify = 'space-between';
+            item.style.background = 'rgba(255, 255, 255, 0.03)';
+            item.style.border = '1px solid var(--glass-border)';
+            item.style.padding = '0.75rem 1rem';
+            item.style.borderRadius = '12px';
+            item.innerHTML = `
+                <span>${name}</span>
+                <span style="font-weight:600; color:var(--accent-secondary);">${kcal} kcal</span>
+            `;
+            list.appendChild(item);
+
+            // Update DOM calories
+            document.getElementById('logged-meals-kcal').innerText = totalCals;
+            document.getElementById('logged-meals-prot').innerText = totalProt;
+            document.getElementById('dash-cal-logged').innerText = totalCals;
+            const calPct = Math.round((totalCals / 2200) * 100);
+            document.getElementById('dash-cal-bar').style.width = `${Math.min(calPct, 100)}%`;
+        }
+        function clearMealPlan() {
+            totalCals = 0;
+            totalProt = 0;
+            document.getElementById('logged-meals-list').innerHTML = `
+                <div style="color: var(--text-secondary); font-size: 0.9rem; font-style: italic;">No foods added yet.</div>
+            `;
+            document.getElementById('logged-meals-kcal').innerText = 0;
+            document.getElementById('logged-meals-prot').innerText = 0;
+            document.getElementById('dash-cal-logged').innerText = 0;
+            document.getElementById('dash-cal-bar').style.width = '0%';
+        }
+
+        // Dynamic tip array
+        const healthyTips = [
+            "Drink 3L water today to optimize metabolic function and fat burning.",
+            "Aim for 8 hours of sleep. Sarcoplasmic synthesis reaches its peak during deep sleep cycles.",
+            "Take 5 deep box breaths immediately upon waking to balance morning cortisol production.",
+            "Consuming protein within 2 hours post-workout maximizes muscle recovery and amino replenishment.",
+            "Limit screen exposure 1 hour before bed to increase pineal melatonin release.",
+            "Perform dynamic mobility stretches prior to heavy squats to lubricate joint capsules."
+        ];
+        let tipIdx = 0;
+        function rotateTip() {
+            tipIdx = (tipIdx + 1) % healthyTips.length;
+            document.getElementById('daily-tip-text').innerText = `"${healthyTips[tipIdx]}"`;
+        }
+
+        // Dynamic Calculations
+        function solveBMI() {
+            const h = parseFloat(document.getElementById('calc-bmi-h').value) / 100;
+            const w = parseFloat(document.getElementById('calc-bmi-w').value);
+            if (!h || !w) return;
+            const bmi = w / (h * h);
+            
+            document.getElementById('bmi-val').innerText = bmi.toFixed(1);
+            let status = 'Normal Weight';
+            if (bmi < 18.5) status = 'Underweight';
+            else if (bmi >= 25 && bmi < 30) status = 'Overweight';
+            else if (bmi >= 30) status = 'Obese';
+            document.getElementById('bmi-status').innerText = status;
+
+            // Sync dashboard card
+            document.getElementById('dash-bmi').innerText = `${bmi.toFixed(1)} (${status})`;
+            const bmiPct = Math.round((bmi / 40) * 100);
+            document.getElementById('dash-bmi-bar').style.width = `${Math.min(bmiPct, 100)}%`;
+        }
+
+        function solveTDEE() {
+            const h = parseFloat(document.getElementById('calc-tdee-h').value);
+            const w = parseFloat(document.getElementById('calc-tdee-w').value);
+            const age = parseInt(document.getElementById('calc-tdee-age').value);
+            const act = parseFloat(document.getElementById('calc-tdee-act').value);
+            
+            // Harris-Benedict formulation
+            const bmr = 10 * w + 6.25 * h - 5 * age + 5; 
+            const tdee = Math.round(bmr * act);
+            
+            document.getElementById('tdee-maint').innerText = `Maintenance: ${tdee} kcal/day`;
+            document.getElementById('tdee-bulk').innerText = `Bulking (+500 kcal): ${tdee + 500} kcal/day`;
+            document.getElementById('tdee-cut').innerText = `Cutting (-500 kcal): ${tdee - 500} kcal/day`;
+        }
+
+        function solveWater() {
+            const w = parseFloat(document.getElementById('calc-water-w').value);
+            const waterVal = w * 0.04; 
+            document.getElementById('water-val').innerText = `${waterVal.toFixed(1)} Liters/day`;
+        }
+
+        function solveFat() {
+            const waist = parseFloat(document.getElementById('calc-fat-waist').value);
+            const neck = parseFloat(document.getElementById('calc-fat-neck').value);
+            const h = parseFloat(document.getElementById('calc-fat-h').value);
+            
+            // Navy simplified formula
+            const fat = 495 / (1.0324 - 0.19077 * Math.log10(waist - neck) + 0.15456 * Math.log10(h)) - 450;
+            document.getElementById('fat-val').innerText = `${Math.max(fat, 3).toFixed(1)} %`;
+        }
+
+        function solveProtein() {
+            const w = parseFloat(document.getElementById('calc-prot-w').value);
+            const multiplier = parseFloat(document.getElementById('calc-prot-goal').value);
+            const prot = Math.round(w * multiplier);
+            document.getElementById('prot-val').innerText = `${prot} grams/day`;
+        }
+
+        // AI Smart Recommendation Engine
+        function solveAIRecommend() {
+            const w = parseFloat(document.getElementById('ai-weight').value);
+            const h = parseFloat(document.getElementById('ai-height').value);
+            const age = parseInt(document.getElementById('ai-age').value);
+            const goal = document.getElementById('ai-goal').value;
+
+            // Calculations
+            const bmr = 10 * w + 6.25 * h - 5 * age + 5;
+            const maint = Math.round(bmr * 1.4);
+            let calTarget = maint;
+            let protTarget = Math.round(w * 2.0);
+            let diet = 'High Protein / Balanced';
+            let workout = 'Push-Pull-Legs Hypertrophy';
+
+            if (goal === 'lose') {
+                calTarget = maint - 500;
+                diet = 'Low Calorie / Fiber-rich / High Protein';
+                workout = 'HIIT conditioning + Compound resistance';
+            } else if (goal === 'bulk') {
+                calTarget = maint + 400;
+                diet = 'High Calorie / Heavy Carbs / Mass Build';
+                workout = '5x5 Strength progression compound routine';
+            } else if (goal === 'cut') {
+                calTarget = maint - 300;
+                diet = 'Lean Protein Cut / Ketogenic low-carb option';
+                workout = 'High volume dropsets + Fasted LISS cardio';
+            } else if (goal === 'gain') {
+                calTarget = maint + 600;
+                diet = 'Dense Healthy Fats / Consistent Calorie surplus';
+                workout = 'Powerlifting splits + Rest interval optimization';
+            }
+
+            document.getElementById('ai-out-cal').innerText = calTarget;
+            document.getElementById('ai-out-prot').innerText = protTarget;
+            document.getElementById('ai-out-water').innerText = (w * 0.04).toFixed(1);
+            document.getElementById('ai-out-diet').innerText = diet;
+            document.getElementById('ai-out-workout').innerText = workout;
+
+            document.getElementById('ai-recommend-placeholder').style.display = 'none';
+            document.getElementById('ai-recommend-output').style.display = 'block';
+        }
+
+        // Fitness challenges & streak triggers
+        let joinedCount = 0;
+        function joinChallenge(btn, badgeId) {
+            btn.innerText = 'Joined';
+            btn.disabled = true;
+            btn.style.background = 'rgba(16, 185, 129, 0.2)';
+            btn.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+            btn.style.color = '#10b981';
+
+            // Unlock badge dynamically
+            document.getElementById(badgeId).classList.add('unlocked');
+            joinedCount++;
+            document.getElementById('prog-challenges-count').innerText = joinedCount;
+        }
+
+        // AI Chatbot Responders (Mock NLP Parser)
+        function handleChatKey(e) {
+            if (e.key === 'Enter') submitChat();
+        }
+        function submitChat() {
+            const input = document.getElementById('chat-input');
+            const q = input.value.trim().toLowerCase();
+            if (!q) return;
+
+            // Add user message
+            appendChatMsg(input.value, 'user');
+            input.value = '';
+
+            // Solve coach response
+            let response = "I'm evaluating your question! For optimal chest development, focus on progressive overload and high-protein nutrition. Ask me about chest training, diet recommendations, or bulk programs.";
+            
+            if (q.includes('eat') || q.includes('food') || q.includes('diet') || q.includes('nutrition')) {
+                response = "To optimize your training, base your diet on **lean clean proteins** (chicken breast, salmon, eggs, paneer), **complex slow-release carbs** (oats, brown rice, sweet potato), and **healthy hormone-building fats** (avocados, nuts, extra virgin olive oil). Match your daily caloric limits to your bulk or cut goals!";
+            } else if (q.includes('chest') || q.includes('workout') || q.includes('exercise')) {
+                response = "The absolute best routine to build a thick, proportional chest: \n\n1. **Incline Dumbbell Bench Press** (4 sets of 8-10 reps) for upper clavicular muscle fiber activation. \n2. **Flat Barbell Bench Press** (4 sets of 6 reps) for core mass. \n3. **Cable Flyes** (3 sets of 15 reps) to target inner definition with peak muscle tension.";
+            } else if (q.includes('bulk') || q.includes('muscle')) {
+                response = "To bulk and gain dense muscle: maintain a **300-500 kcal surplus** above your maintenance level, consume **2g of protein per kg bodyweight** daily, and prioritize heavy, multijoint compound lifts. Rest 48-72 hours between repeating identical muscle blocks.";
+            } else if (q.includes('lose') || q.includes('fat') || q.includes('weight') || q.includes('shred') || q.includes('cut')) {
+                response = "To incinerate body fat: maintain a secure **500 kcal deficit**, keep protein intake very high to prevent muscle breakdown, prioritize high-fiber vegetables (spinach, broccoli) to keep full, and integrate morning fasted cardio alongside your resistance splits.";
+            } else if (q.includes('keto')) {
+                response = "The **Ketogenic Diet** reduces carbs to under 5% of daily calories (approx 20-30g net carbs) and raises healthy fat intake to 70-75%. Focus on clean fats like avocados, organic butter, macadamia nuts, organic eggs, and fatty fish.";
+            }
+
+            setTimeout(() => {
+                appendChatMsg(response, 'bot');
+            }, 600);
+        }
+        function appendChatMsg(text, sender) {
+            const list = document.getElementById('chatbot-msg-list');
+            const bubble = document.createElement('div');
+            bubble.className = `chat-bubble ${sender}`;
+            bubble.innerHTML = text.replace(/\n/g, '<br>');
+            list.appendChild(bubble);
+            list.scrollTop = list.scrollHeight;
+        }
+
+        // Workout Splits Controller
+        const splitsData = {
+            classic5: {
+                name: "5-Day Classic Split",
+                schedule: [
+                    { day: "Monday", target: "Chest & Triceps", desc: "Bench Press, Incline Dumbbell Press, Cable Triceps Pushdowns", icon: "🔥" },
+                    { day: "Tuesday", target: "Back (Wings) & Biceps", desc: "Lat Pulldowns, Bent-over Rows, Incline Hammer Curls", icon: "🦅" },
+                    { day: "Wednesday", target: "Shoulders & Forearms", desc: "Dumbbell Shoulder Press, Lateral Raises, Reverse Barbell Curls", icon: "🛡️" },
+                    { day: "Thursday", target: "Active Recovery", desc: "30 mins LISS Cycling, core stability work, mobility stretching", icon: "⚡" },
+                    { day: "Friday", target: "Legs & Abs", desc: "Barbell Squats, Romanian Deadlifts, Hanging Knee Raises", icon: "🦵" },
+                    { day: "Saturday", target: "Rest Day", desc: "Complete physiological tissue restoration and hyper-hydration.", icon: "💤" },
+                    { day: "Sunday", target: "Rest Day", desc: "Complete physical decompression, sleep focus, and meal prep.", icon: "💤" }
+                ]
+            },
+            intensive6: {
+                name: "6-Day Intensive Split",
+                schedule: [
+                    { day: "Monday", target: "Chest & Triceps", desc: "Incline Barbell Press, Cable Crossovers, Parallel Dips", icon: "🔥" },
+                    { day: "Tuesday", target: "Back & Biceps", desc: "Weighted Pull-ups, Dumbbell Rows, Preacher Curls", icon: "🦅" },
+                    { day: "Wednesday", target: "Shoulders & Abs", desc: "Barbell Overhead Press, Facepulls, Cable Crunches", icon: "🛡️" },
+                    { day: "Thursday", target: "Legs (Quad Focus)", desc: "Hack Squats, Leg Press, Leg Extensions, Calf Raises", icon: "🦵" },
+                    { day: "Friday", target: "Arms & Forearms", desc: "Barbell Curls, Skullcrushers, Wrist Rollers", icon: "💪" },
+                    { day: "Saturday", target: "Legs (Hamstring/Glute Focus)", desc: "Romanian Deadlifts, Lying Leg Curls, Bulgarian Split Squats", icon: "🍑" },
+                    { day: "Sunday", target: "Rest Day", desc: "Mandatory central nervous system downtime and deep tissue rest.", icon: "💤" }
+                ]
+            },
+            ppl3: {
+                name: "3-Day Push-Pull-Legs Split",
+                schedule: [
+                    { day: "Monday", target: "Push (Chest/Shoulders/Tris)", desc: "Flat Bench Press, Overhead Press, Incline Flyes, Tricep Rope Extensions", icon: "🔥" },
+                    { day: "Tuesday", target: "Rest Day", desc: "Muscle tissue replenishment and cardiovascular recovery.", icon: "💤" },
+                    { day: "Wednesday", target: "Pull (Back/Biceps/Rear Delts)", desc: "Deadlifts, Lat Pulldowns, Facepulls, Incline Bicep Curls", icon: "🦅" },
+                    { day: "Thursday", target: "Rest Day", desc: "CNS decompression and passive recovery.", icon: "💤" },
+                    { day: "Friday", target: "Legs & Abs", desc: "Leg Press, Bulgarian Split Squats, Calf Raises, Hanging Leg Raises", icon: "🦵" },
+                    { day: "Saturday", target: "Rest Day", desc: "Active rest, light core stretching and low impact walking.", icon: "💤" },
+                    { day: "Sunday", target: "Rest Day", desc: "Mandatory central nervous system downtime.", icon: "💤" }
+                ]
+            }
+        };
+
+        function initWorkoutSplit() {
+            const saved = localStorage.getItem('activeWorkoutSplit') || 'classic5';
+            document.getElementById('split-select').value = saved;
+            renderWorkoutSplit(saved);
+        }
+
+        function changeWorkoutSplit() {
+            const val = document.getElementById('split-select').value;
+            localStorage.setItem('activeWorkoutSplit', val);
+            renderWorkoutSplit(val);
+        }
+
+        function renderWorkoutSplit(splitKey) {
+            const split = splitsData[splitKey];
+            if (!split) return;
+
+            // Update badge
+            document.getElementById('active-split-badge').innerText = `${split.name} Active`;
+
+            // Identify current day of the week
+            const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const todayName = dayNames[new Date().getDay()];
+
+            let todayTarget = "Rest Day";
+            let todayDesc = "Decompress and recover.";
+
+            // Render calendar grid
+            const container = document.getElementById('split-preview-container');
+            container.innerHTML = '';
+
+            split.schedule.forEach(item => {
+                const isToday = item.day === todayName;
+                if (isToday) {
+                    todayTarget = item.target;
+                    todayDesc = item.desc;
+                }
+
+                const itemDiv = document.createElement('div');
+                itemDiv.style.display = 'flex';
+                itemDiv.style.alignItems = 'center';
+                itemDiv.style.justify = 'space-between';
+                itemDiv.style.padding = '0.75rem 1rem';
+                itemDiv.style.borderRadius = '12px';
+                itemDiv.style.border = isToday ? '1px solid var(--accent-primary)' : '1px solid var(--glass-border)';
+                itemDiv.style.background = isToday ? 'rgba(99, 102, 241, 0.15)' : 'rgba(255, 255, 255, 0.03)';
+                itemDiv.style.transition = 'all 0.3s ease';
+
+                itemDiv.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <span style="font-size: 1.25rem;">${item.icon}</span>
+                        <div>
+                            <div style="font-size: 0.9rem; font-weight: 700; color: ${isToday ? '#ffffff' : 'var(--text-secondary)'};">
+                                ${item.day} ${isToday ? '<span style="font-size:0.75rem; background:var(--accent-primary); color:white; padding:0.15rem 0.4rem; border-radius:4px; margin-left:0.5rem;">TODAY</span>' : ''}
+                            </div>
+                            <div style="font-size: 0.95rem; font-weight: 600; margin-top: 0.1rem; color: #ffffff;">${item.target}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.05rem;">${item.desc}</div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(itemDiv);
+            });
+
+            // Update callout box
+            document.getElementById('dash-active-workout-target').innerText = todayTarget;
+            document.getElementById('dash-active-workout-desc').innerText = todayDesc;
+        }
+
+        // Workout Plans Selector (Separate Category)
+const workoutPlans = {
+    1: {
+        name: "Plan 1",
+        schedule: [
+            { day: "Monday", target: "Chest + Triceps", desc: "Bench Press, Incline Dumbbell Press, Cable Triceps Pushdowns", icon: "💥" },
+            { day: "Tuesday", target: "Back + Biceps", desc: "Lat Pulldowns, Bent-over Rows, Incline Hammer Curls", icon: "🦅" },
+            { day: "Wednesday", target: "Legs", desc: "Barbell Squats, Romanian Deadlifts, Leg Press", icon: "🦵" },
+            { day: "Thursday", target: "Shoulders + Abs", desc: "Shoulder Press, Lateral Raises, Cable Crunches", icon: "🛡️" },
+            { day: "Friday", target: "Chest + Back", desc: "Incline Bench Press, Pull-ups", icon: "🔥" },
+            { day: "Saturday", target: "Arms + Cardio", desc: "Bicep Curls, Tricep Extensions, 30min HIIT Cardio", icon: "⚡" },
+            { day: "Sunday", target: "Rest Day 😴", desc: "Recovery and sleep", icon: "💤" }
+        ]
+    },
+    2: {
+        name: "Plan 2",
+        schedule: [
+            { day: "Monday", target: "Chest + Biceps", desc: "Flat Bench Press, Incline Curls", icon: "💥" },
+            { day: "Tuesday", target: "Back + Triceps", desc: "Deadlifts, Tricep Rope Pushdowns", icon: "🦅" },
+            { day: "Wednesday", target: "Legs + Abs", desc: "Leg Press, Hanging Leg Raises", icon: "🦵" },
+            { day: "Thursday", target: "Shoulders", desc: "Overhead Press, Lateral Raises", icon: "🛡️" },
+            { day: "Friday", target: "Arms", desc: "Barbell Curls, Skullcrushers", icon: "💪" },
+            { day: "Saturday", target: "Full Body + Cardio", desc: "Circuit: Squat, Press, Row + 20min Cardio", icon: "⚡" },
+            { day: "Sunday", target: "Rest Day 😴", desc: "Recovery", icon: "💤" }
+        ]
+    },
+    3: {
+        name: "Plan 3",
+        schedule: [
+            { day: "Monday", target: "Push (Chest + Shoulders + Triceps)", desc: "Bench Press, Overhead Press, Tricep Dips", icon: "💥" },
+            { day: "Tuesday", target: "Pull (Back + Biceps)", desc: "Pull-ups, Barbell Rows, Bicep Curls", icon: "🦅" },
+            { day: "Wednesday", target: "Legs", desc: "Squats, Lunges, Calf Raises", icon: "🦵" },
+            { day: "Thursday", target: "Chest + Back", desc: "Incline Press, Bent-over Rows", icon: "🔥" },
+            { day: "Friday", target: "Shoulders + Arms", desc: "Lateral Raises, Hammer Curls, Tricep Extensions", icon: "🛡️" },
+            { day: "Saturday", target: "Abs + Cardio", desc: "Plank, Russian Twists, 30min HIIT", icon: "⚡" },
+            { day: "Sunday", target: "Rest Day 😴", desc: "Rest", icon: "💤" }
+        ]
+    },
+    4: {
+        name: "Plan 4",
+        schedule: [
+            { day: "Monday", target: "Chest", desc: "Bench Press, Dumbbell Flyes", icon: "💥" },
+            { day: "Tuesday", target: "Back", desc: "Pull-ups, Seated Rows", icon: "🦅" },
+            { day: "Wednesday", target: "Legs", desc: "Squats, Leg Curls", icon: "🦵" },
+            { day: "Thursday", target: "Shoulders", desc: "Shoulder Press, Lateral Raises", icon: "🛡️" },
+            { day: "Friday", target: "Biceps + Triceps", desc: "Barbell Curls, Tricep Pushdowns", icon: "💪" },
+            { day: "Saturday", target: "Cardio + Abs", desc: "30min HIIT + Core Circuit", icon: "⚡" },
+            { day: "Sunday", target: "Rest Day 😴", desc: "Recovery", icon: "💤" }
+        ]
+    },
+    5: {
+        name: "Plan 5",
+        schedule: [
+            { day: "Monday", target: "Chest + Triceps", desc: "Incline Bench, Dips", icon: "💥" },
+            { day: "Tuesday", target: "Back", desc: "Deadlifts, Pull-ups", icon: "🦅" },
+            { day: "Wednesday", target: "Legs + Abs", desc: "Leg Press, Hanging Leg Raises", icon: "🦵" },
+            { day: "Thursday", target: "Shoulders + Biceps", desc: "Overhead Press, Hammer Curls", icon: "🛡️" },
+            { day: "Friday", target: "Arms", desc: "Barbell Curls, Skullcrushers", icon: "💪" },
+            { day: "Saturday", target: "Full Body Workout", desc: "Circuit: Squat, Press, Row, Curl, Extension", icon: "⚡" },
+            { day: "Sunday", target: "Rest Day 😴", desc: "Rest", icon: "💤" }
+        ]
+    }
+};
+function selectWorkoutPlan(planId) {
+    const plan = workoutPlans[planId];
+    if (!plan) return;
+    // Update header
+    document.getElementById('plan-detail-title').innerText = `${plan.name} – Weekly Schedule`;
+    document.getElementById('plan-detail-badge').innerText = plan.name;
+    // Render schedule
+    const container = document.getElementById('plan-detail-schedule');
+    container.innerHTML = '';
+    const dayNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    const todayName = dayNames[new Date().getDay()];
+    plan.schedule.forEach(item => {
+        const isToday = item.day === todayName;
+        const itemDiv = document.createElement('div');
+        itemDiv.style.display = 'flex';
+        itemDiv.style.alignItems = 'center';
+        itemDiv.style.justifyContent = 'space-between';
+        itemDiv.style.padding = '0.75rem 1rem';
+        itemDiv.style.borderRadius = '12px';
+        itemDiv.style.border = isToday ? '1px solid var(--accent-primary)' : '1px solid var(--glass-border)';
+        itemDiv.style.background = isToday ? 'rgba(99, 102, 241, 0.15)' : 'rgba(255, 255, 255, 0.03)';
+        itemDiv.style.transition = 'all 0.3s ease';
+        itemDiv.innerHTML = `
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+                <span style="font-size:1.25rem;">${item.icon}</span>
+                <div>
+                    <div style="font-size:0.9rem; font-weight:700; color:${isToday ? '#ffffff' : 'var(--text-secondary)'};">
+                        ${item.day} ${isToday ? '<span style="font-size:0.75rem; background:var(--accent-primary); color:white; padding:0.15rem 0.4rem; border-radius:4px; margin-left:0.5rem;">TODAY</span>' : ''}
+                    </div>
+                    <div style="font-size:0.95rem; font-weight:600; margin-top:0.1rem; color:#ffffff;">${item.target}</div>
+                    <div style="font-size:0.8rem; color:var(--text-secondary); margin-top:0.05rem;">${item.desc}</div>
+                </div>
+            </div>
+        `;
+        container.appendChild(itemDiv);
+    });
+}
+// Onload initialize
+
+        window.onload = function() {
+            solveBMI();
+            solveTDEE();
+            solveWater();
+            solveFat();
+            solveProtein();
+            rotateTip();
+            initWorkoutSplit();
+        }
+    </script>
+</body>
+</html>
