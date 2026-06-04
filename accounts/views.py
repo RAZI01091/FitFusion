@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 # pyrefly: ignore [missing-import]
-from .forms import SignupForm, LoginForm
+from . import SignupForm, LoginForm
 
 def signup_view(request):
     if request.user.is_authenticated:
