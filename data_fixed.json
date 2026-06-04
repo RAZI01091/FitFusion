@@ -1,0 +1,93 @@
+[
+{
+  "model": "sessions.session",
+  "pk": "50soqy3rjx0i1ysgc4rfujjdaeknyk57",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pDpFAZ06b5naAYYpGpoUtqV8e7apAvd_vfef6mRt7WMW5NlnJK6KFSn3y1wfEjdQbpzvc06znVdpqB3RR-06WFO8rwe7t9B4Va-dfYOOtuz7XzvkSiYHtk658UAeAvQmWjYUkZCCJJFzoQBIkawkQjU-wOf2zZv:1wUIho:Z01Hy1dJ5HvOhidPC287OfQhZrGV-dD4AnPKIYbfnWM",
+    "expire_date": "2026-06-16T06:34:28.892Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "6qqq8ok5go5rtc2cvpoi0iwcuwr2g971",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pDpFAZ06b5naAYYpGpoUtqV8e7apAvd_vfef6mRt7WMW5NlnJK6KFSn3y1wfEjdQbpzvc06znVdpqB3RR-06WFO8rwe7t9B4Va-dfYOOtuz7XzvkSiYHtk658UAeAvQmWjYUkZCCJJFzoQBIkawkQjU-wOf2zZv:1wUHiD:5wK623B_qvqZ2hSyMRGf7AKwq0yK70XlgVqF-usSt6U",
+    "expire_date": "2026-06-16T05:30:49.528Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "6qvxecm9f9ayycrtau1fm8xkjgj2sia9",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pDpFAZ06b5naAYYpGpoUtqV8e7apAvd_vfef6mRt7WMW5NlnJK6KFSn3y1wfEjdQbpzvc06znVdpqB3RR-06WFO8rwe7t9B4Va-dfYOOtuz7XzvkSiYHtk658UAeAvQmWjYUkZCCJJFzoQBIkawkQjU-wOf2zZv:1wPwDL:mILaTa_aVHnJTaB8VNlOvyeGpKEiwOe4LCESOAMifC0",
+    "expire_date": "2026-06-04T05:44:59.404Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "gn8a4sfohi9pbtriykjt7dswlq4oqhaq",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pDpFAZ06b5naAYYpGpoUtqV8e7apAvd_vfef6mRt7WMW5NlnJK6KFSn3y1wfEjdQbpzvc06znVdpqB3RR-06WFO8rwe7t9B4Va-dfYOOtuz7XzvkSiYHtk658UAeAvQmWjYUkZCCJJFzoQBIkawkQjU-wOf2zZv:1wOsB6:oIwe02MgFZA7rKdoKQMQx6eRfITuJcVMoUE7kTrTvZE",
+    "expire_date": "2026-06-01T07:14:16.905Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "purym6jyclpe14ylfp11yorin5drbt5g",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2hDoFAou3XsGMsyAVA0kpV0Z765NutDtf-_9lwi4rSVsPS1hZnEWWpx-t4j0SHUHfMd6a5JaXZc5yl2RB-3y2jg9L4f7d1Cwl2_tLEHybJ1zFqcYCbwfUUHEYZwyGaORDDvPKhnUWbEHwoEtQFYRNIj3B-k1OAA:1wOsNm:2iEtQiUiIgTVnyGqNrB5_wSF3aMBTJAJzbvak4elT1Y",
+    "expire_date": "2026-06-01T07:27:22.243Z"
+  }
+},
+{
+  "model": "fit.customuser",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$qAw80FdiuPyp8rfyV0Ti1u$Z//gqkZXW5nFkepgvGJfwGyJ+aQZI3nCt2kXAyCsdRc=",
+    "last_login": "2026-05-18T07:27:22.223Z",
+    "is_superuser": false,
+    "email": "jane@example.com",
+    "name": "Jane Doe",
+    "age": 25,
+    "gender": "F",
+    "is_active": true,
+    "is_staff": false,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "fit.customuser",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$xRO4PtnOOdZGX5Rnl0MwKp$CKABaB8ps87WlJifVzRuLUgLM7QqmUXtcBTC2BY51yM=",
+    "last_login": "2026-06-02T06:34:28.878Z",
+    "is_superuser": false,
+    "email": "razi@gmail.com",
+    "name": "razi",
+    "age": 18,
+    "gender": "M",
+    "is_active": true,
+    "is_staff": false,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "fit.customuser",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$M5z3d6vDpFNthNsqsg6HZz$x5NgKy493cLJ/+bvPCHnrHL7SKiyISR7+XW6E+6TaOk=",
+    "last_login": "2026-05-18T07:13:21.754Z",
+    "is_superuser": true,
+    "email": "muhammedrazi01091@gmail.com",
+    "name": "Muhammed Razi",
+    "age": 25,
+    "gender": "M",
+    "is_active": true,
+    "is_staff": true,
+    "groups": [],
+    "user_permissions": []
+  }
+}
+]
