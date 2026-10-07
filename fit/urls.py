@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import  unlock, first_time
 
 urlpatterns = [
     path('', views.home_view, name='home'),
@@ -8,4 +9,10 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('admin-panel/', views.admin_panel_view, name='admin_panel'),
     path('admin-panel/toggle-status/<int:user_id>/', views.toggle_user_status_view, name='toggle_user_status'),
+    path("unlock/", unlock, name="unlock"),
+    path('first-time/', first_time, name='first_time'),
+    path('start-payment/', views.start_payment,name='start_payment'),
+    path('confirm-payment/',views.confirm_payment,name='confirm_payment'),
+
+
 ]
