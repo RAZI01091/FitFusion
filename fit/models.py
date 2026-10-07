@@ -1,4 +1,8 @@
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    PermissionsMixin,
+    BaseUserManager
+)
 from django.db import models
 
 
@@ -47,12 +51,8 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
 
-    # -------------------------
     # USER INFORMATION
-    # -------------------------
-
     email = models.EmailField(unique=True)
-
     name = models.CharField(max_length=255)
 
     age = models.PositiveIntegerField(
@@ -73,18 +73,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         blank=True
     )
 
-    # -------------------------
     # ACCOUNT STATUS
-    # -------------------------
-
     is_active = models.BooleanField(default=True)
-
     is_staff = models.BooleanField(default=False)
 
-    # -------------------------
     # PREMIUM / SUBSCRIPTION
-    # -------------------------
-
     is_paid = models.BooleanField(default=False)
 
     subscription_start = models.DateTimeField(
@@ -97,14 +90,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         blank=True
     )
 
-    # -------------------------
     # MANAGER
-    # -------------------------
-
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
-
     REQUIRED_FIELDS = ['name']
 
     def __str__(self):

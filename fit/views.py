@@ -202,12 +202,22 @@ def logout_view(request):
 # =========================================================
 # HOME
 # =========================================================
-
 @login_required(login_url='login')
 def home_view(request):
 
     # -----------------------------------------------------
-    # User has not paid
+    # ADMIN CAN ACCESS HOME WITHOUT PAYMENT
+    # -----------------------------------------------------
+
+    if request.user.is_staff or request.user.is_superuser:
+        return render(
+            request,
+            'fit/home.html'
+        )
+
+
+    # -----------------------------------------------------
+    # NORMAL USER - NOT PAID
     # -----------------------------------------------------
 
     if not request.user.is_paid:
@@ -216,7 +226,7 @@ def home_view(request):
 
 
     # -----------------------------------------------------
-    # Paid user must have subscription end date
+    # PAID USER MUST HAVE SUBSCRIPTION END DATE
     # -----------------------------------------------------
 
     if request.user.subscription_end is None:
@@ -231,15 +241,19 @@ def home_view(request):
 
 
     # -----------------------------------------------------
-    # Subscription expired
+    # SUBSCRIPTION EXPIRED
     # -----------------------------------------------------
 
     if request.user.subscription_end <= timezone.now():
 
         request.user.is_paid = False
+        request.user.subscription_end = None
 
         request.user.save(
-            update_fields=['is_paid']
+            update_fields=[
+                'is_paid',
+                'subscription_end'
+            ]
         )
 
         messages.warning(
@@ -252,7 +266,7 @@ def home_view(request):
 
 
     # -----------------------------------------------------
-    # User is paid and subscription is active
+    # NORMAL USER - PAID AND ACTIVE
     # -----------------------------------------------------
 
     return render(
@@ -260,11 +274,9 @@ def home_view(request):
         'fit/home.html'
     )
 
-
 # =========================================================
 # FIRST-TIME / PREMIUM PAGE
 # =========================================================
-
 @login_required(login_url='login')
 def first_time(request):
 
@@ -305,7 +317,6 @@ def first_time(request):
             'payment_started': payment_started
         }
     )
-
 
 @login_required(login_url='login')
 def start_payment(request):
