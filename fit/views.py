@@ -12,6 +12,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.utils import timezone
+from django.contrib import messages
+from django.conf import settings
+
+from django.contrib.auth import get_user_model
+from django.core.mail import send_mail
+from .forms import (ForgotPasswordForm,VerifyOTPForm,ResetPasswordForm)
+from django.views.decorators.cache import never_cache
+import random
+
 
 
 # =========================================================
@@ -444,3 +453,212 @@ def toggle_user_status_view(request, user_id):
             status = "blocked" if not user_to_toggle.is_active else "unblocked"
             messages.success(request, f"User {user_to_toggle.name} has been {status} successfully.")
     return redirect('admin_panel')
+
+
+
+
+@never_cache
+def forgot_password(request):
+
+    if request.method == "POST":
+
+        form = ForgotPasswordForm(request.POST)
+
+        if form.is_valid():
+
+            email = form.cleaned_data['email'].lower()
+
+            try:
+                user = User.objects.get(email__iexact=email)
+
+                # Generate 6 digit OTP
+                otp = str(random.randint(100000, 999999))
+
+                # Store temporary information in session
+                request.session['reset_email'] = email
+                request.session['reset_otp'] = otp
+
+                # OTP expiry: 5 minutes
+                request.session['reset_otp_time'] = __import__('time').time()
+
+                # Send email
+                send_mail(
+                    subject="FitFusion Password Reset OTP",
+                    message=(
+                        f"Hello,\n\n"
+                        f"Your FitFusion password reset OTP is: {otp}\n\n"
+                        f"This OTP is valid for 5 minutes.\n\n"
+                        f"If you did not request a password reset, "
+                        f"please ignore this email.\n\n"
+                        f"Regards,\n"
+                        f"FitFusion Team"
+                    ),
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],
+                    fail_silently=False,
+                )
+
+                messages.success(
+                    request,
+                    "OTP has been sent to your email."
+                )
+
+                return redirect('verify_otp')
+
+            except User.DoesNotExist:
+
+                # Don't reveal whether email exists
+                messages.success(
+                    request,
+                    "If this email is registered, an OTP has been sent."
+                )
+
+                return redirect('forgot_password')
+
+    else:
+        form = ForgotPasswordForm()
+
+    return render(
+        request,
+        'fit/forgot_password.html',
+        {'form': form}
+    )
+
+
+
+@never_cache
+def verify_otp(request):
+
+    reset_email = request.session.get('reset_email')
+    stored_otp = request.session.get('reset_otp')
+    otp_time = request.session.get('reset_otp_time')
+
+    if not reset_email or not stored_otp:
+        messages.error(
+            request,
+            "Please request a new OTP."
+        )
+        return redirect('forgot_password')
+
+    # Check OTP expiry
+    import time
+
+    if otp_time:
+
+        elapsed_time = time.time() - otp_time
+
+        if elapsed_time > 300:  # 5 minutes
+
+            request.session.pop('reset_otp', None)
+            request.session.pop('reset_otp_time', None)
+
+            messages.error(
+                request,
+                "OTP has expired. Please request a new OTP."
+            )
+
+            return redirect('forgot_password')
+
+    if request.method == "POST":
+
+        form = VerifyOTPForm(request.POST)
+
+        if form.is_valid():
+
+            entered_otp = form.cleaned_data['otp']
+
+            if entered_otp == stored_otp:
+
+                request.session['otp_verified'] = True
+
+                # OTP cannot be reused
+                request.session.pop('reset_otp', None)
+                request.session.pop('reset_otp_time', None)
+
+                messages.success(
+                    request,
+                    "OTP verified successfully."
+                )
+
+                return redirect('reset_password')
+
+            else:
+
+                messages.error(
+                    request,
+                    "Invalid OTP."
+                )
+
+    else:
+        form = VerifyOTPForm()
+
+    return render(
+        request,
+        'fit/verify_otp.html',
+        {'form': form}
+    )
+
+
+@never_cache
+def reset_password(request):
+
+    reset_email = request.session.get('reset_email')
+    otp_verified = request.session.get('otp_verified')
+
+    if not reset_email or not otp_verified:
+
+        messages.error(
+            request,
+            "Please verify your OTP first."
+        )
+
+        return redirect('forgot_password')
+
+    try:
+        user = User.objects.get(
+            email__iexact=reset_email
+        )
+
+    except User.DoesNotExist:
+
+        messages.error(
+            request,
+            "User account not found."
+        )
+
+        return redirect('forgot_password')
+
+    if request.method == "POST":
+
+        form = ResetPasswordForm(request.POST)
+
+        if form.is_valid():
+
+            new_password = form.cleaned_data['password']
+
+            # IMPORTANT
+            # Always use set_password()
+            user.set_password(new_password)
+            user.save()
+
+            # Clear password reset session
+            request.session.pop('reset_email', None)
+            request.session.pop('otp_verified', None)
+            request.session.pop('reset_otp', None)
+            request.session.pop('reset_otp_time', None)
+
+            messages.success(
+                request,
+                "Password reset successfully. Please login."
+            )
+
+            return redirect('login')
+
+    else:
+        form = ResetPasswordForm()
+
+    return render(
+        request,
+        'fit/reset_password.html',
+        {'form': form}
+    )

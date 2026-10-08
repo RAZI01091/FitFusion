@@ -13,6 +13,9 @@ urlpatterns = [
     path('first-time/', first_time, name='first_time'),
     path('start-payment/', views.start_payment,name='start_payment'),
     path('confirm-payment/',views.confirm_payment,name='confirm_payment'),
+    path('forgot-password/',views.forgot_password,name='forgot_password'),
+    path('verify-otp/',views.verify_otp,name='verify_otp'),
+    path('reset-password/',views.reset_password,name='reset_password'),
 
 
 ]

@@ -1,0 +1,88 @@
+{% extends 'fit/base_auth.html' %}
+
+{% block title %}Verify OTP - FitFusion{% endblock %}
+
+{% block subtitle %}
+Verify your email address
+{% endblock %}
+
+{% block content %}
+
+<div class="auth-page">
+
+    <div class="auth-icon">
+        ✉️
+    </div>
+
+    <h2 class="auth-heading">
+        Verify OTP
+    </h2>
+
+    <p class="auth-description">
+        We've sent a 6-digit verification code to your registered
+        email address.
+    </p>
+
+
+    {% if form.non_field_errors %}
+        <div class="form-error">
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+
+    <form
+        method="POST"
+        action="{% url 'verify_otp' %}"
+        autocomplete="off"
+    >
+
+        {% csrf_token %}
+
+        <div class="form-group">
+
+            <label for="{{ form.otp.id_for_label }}">
+                Verification Code
+            </label>
+
+            {{ form.otp }}
+
+            {% if form.otp.errors %}
+                {% for error in form.otp.errors %}
+                    <div class="form-error">
+                        {{ error }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+        </div>
+
+
+        <button type="submit" class="btn-submit">
+            Verify OTP
+        </button>
+
+    </form>
+
+
+    <div class="auth-footer">
+
+        <span>Didn't receive the code?</span>
+
+        <a href="{% url 'forgot_password' %}">
+            Resend OTP
+        </a>
+
+        <br>
+
+        <a href="{% url 'login' %}">
+            ← Back to Login
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}
