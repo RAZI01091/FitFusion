@@ -10,9 +10,7 @@
 
     <title>Unlock Premium | FitFusion</title>
 
-
     <!-- Google Font -->
-
     <link rel="preconnect"
           href="https://fonts.googleapis.com">
 
@@ -26,20 +24,13 @@
 
     <style>
 
-        /* =========================================
-           ROOT
-        ========================================= */
-
         :root {
 
             --bg-primary: #070a13;
-
             --bg-secondary: #0f1424;
 
             --primary: #6366f1;
-
             --secondary: #a855f7;
-
             --pink: #ec4899;
 
             --gradient:
@@ -51,37 +42,25 @@
                 );
 
             --text-primary: #f8fafc;
-
             --text-secondary: #94a3b8;
 
             --border:
                 rgba(255, 255, 255, 0.08);
 
             --success: #10b981;
-
         }
 
-
-        /* =========================================
-           RESET
-        ========================================= */
 
         * {
 
             margin: 0;
-
             padding: 0;
 
             box-sizing: border-box;
 
             font-family: "Outfit", sans-serif;
-
         }
 
-
-        /* =========================================
-           BODY
-        ========================================= */
 
         body {
 
@@ -94,20 +73,16 @@
                 var(--text-primary);
 
             overflow-x: hidden;
-
         }
 
 
-        /* =========================================
-           BACKGROUND BLOBS
-        ========================================= */
+        /* BACKGROUND BLOBS */
 
         .blob {
 
             position: fixed;
 
             width: 450px;
-
             height: 450px;
 
             border-radius: 50%;
@@ -119,14 +94,12 @@
             pointer-events: none;
 
             z-index: 0;
-
         }
 
 
         .blob-one {
 
             top: -180px;
-
             left: -150px;
 
             background:
@@ -134,14 +107,12 @@
 
             animation:
                 moveBlobOne 8s ease-in-out infinite alternate;
-
         }
 
 
         .blob-two {
 
             right: -180px;
-
             bottom: -180px;
 
             background:
@@ -149,13 +120,10 @@
 
             animation:
                 moveBlobTwo 10s ease-in-out infinite alternate;
-
         }
 
 
-        /* =========================================
-           NAVBAR
-        ========================================= */
+        /* NAVBAR */
 
         .navbar {
 
@@ -181,7 +149,6 @@
 
             border-bottom:
                 1px solid var(--border);
-
         }
 
 
@@ -197,7 +164,6 @@
             -webkit-background-clip: text;
 
             -webkit-text-fill-color: transparent;
-
         }
 
 
@@ -208,7 +174,6 @@
             align-items: center;
 
             gap: 15px;
-
         }
 
 
@@ -228,7 +193,6 @@
 
             border:
                 1px solid var(--border);
-
         }
 
 
@@ -248,7 +212,6 @@
 
             transition:
                 0.3s;
-
         }
 
 
@@ -258,13 +221,10 @@
 
             background:
                 rgba(255, 255, 255, 0.07);
-
         }
 
 
-        /* =========================================
-           MAIN CONTAINER
-        ========================================= */
+        /* MAIN CONTAINER */
 
         .container {
 
@@ -279,13 +239,10 @@
             position: relative;
 
             z-index: 2;
-
         }
 
 
-        /* =========================================
-           HERO
-        ========================================= */
+        /* HERO */
 
         .hero {
 
@@ -297,7 +254,6 @@
 
             animation:
                 fadeUp 0.8s ease forwards;
-
         }
 
 
@@ -323,7 +279,6 @@
             font-weight: 600;
 
             margin-bottom: 20px;
-
         }
 
 
@@ -346,7 +301,6 @@
 
             -webkit-text-fill-color:
                 transparent;
-
         }
 
 
@@ -358,18 +312,14 @@
             font-size: 1.05rem;
 
             line-height: 1.8;
-
         }
 
 
-        /* =========================================
-           BENEFITS
-        ========================================= */
+        /* BENEFITS */
 
         .benefits-section {
 
             margin-bottom: 80px;
-
         }
 
 
@@ -378,7 +328,6 @@
             text-align: center;
 
             margin-bottom: 40px;
-
         }
 
 
@@ -393,7 +342,6 @@
             letter-spacing: 1.5px;
 
             text-transform: uppercase;
-
         }
 
 
@@ -403,7 +351,6 @@
                 clamp(2rem, 4vw, 3rem);
 
             margin: 10px 0 12px;
-
         }
 
 
@@ -411,13 +358,10 @@
 
             color:
                 var(--text-secondary);
-
         }
 
 
-        /* =========================================
-           BENEFITS GRID
-        ========================================= */
+        /* BENEFITS GRID */
 
         .benefits-grid {
 
@@ -427,7 +371,6 @@
                 repeat(3, 1fr);
 
             gap: 20px;
-
         }
 
 
@@ -447,7 +390,6 @@
                 blur(14px);
 
             transition: 0.3s;
-
         }
 
 
@@ -462,14 +404,12 @@
             box-shadow:
                 0 20px 50px
                 rgba(0, 0, 0, 0.3);
-
         }
 
 
         .benefit-icon {
 
             width: 58px;
-
             height: 58px;
 
             display: flex;
@@ -489,7 +429,6 @@
 
             border:
                 1px solid rgba(99, 102, 241, 0.2);
-
         }
 
 
@@ -498,7 +437,6 @@
             font-size: 1.15rem;
 
             margin-bottom: 10px;
-
         }
 
 
@@ -510,20 +448,16 @@
             font-size: 14px;
 
             line-height: 1.7;
-
         }
 
 
-        /* =========================================
-           PAYMENT SECTION
-        ========================================= */
+        /* PAYMENT SECTION */
 
         .payment-section {
 
             max-width: 680px;
 
             margin: 0 auto;
-
         }
 
 
@@ -532,7 +466,6 @@
             text-align: center;
 
             margin-bottom: 30px;
-
         }
 
 
@@ -547,7 +480,6 @@
             letter-spacing: 1.5px;
 
             text-transform: uppercase;
-
         }
 
 
@@ -556,7 +488,6 @@
             font-size: 2.3rem;
 
             margin: 10px 0;
-
         }
 
 
@@ -564,13 +495,10 @@
 
             color:
                 var(--text-secondary);
-
         }
 
 
-        /* =========================================
-           PREMIUM CARD
-        ========================================= */
+        /* PREMIUM CARD */
 
         .premium-card {
 
@@ -600,18 +528,14 @@
 
             animation:
                 fadeUp 0.9s ease forwards;
-
         }
 
 
-        /* =========================================
-           CROWN
-        ========================================= */
+        /* CROWN */
 
         .crown {
 
             width: 72px;
-
             height: 72px;
 
             margin: 0 auto 20px;
@@ -634,7 +558,6 @@
 
             animation:
                 float 3s ease-in-out infinite;
-
         }
 
 
@@ -643,7 +566,6 @@
             font-size: 1.9rem;
 
             margin-bottom: 8px;
-
         }
 
 
@@ -653,20 +575,16 @@
                 var(--text-secondary);
 
             margin-bottom: 25px;
-
         }
 
 
-        /* =========================================
-           PRICE
-        ========================================= */
+        /* PRICE */
 
         .price-box {
 
             text-align: center;
 
             margin: 25px 0 30px;
-
         }
 
 
@@ -678,7 +596,6 @@
             font-size: 14px;
 
             margin-bottom: 7px;
-
         }
 
 
@@ -691,7 +608,6 @@
 
             color:
                 #64748b;
-
         }
 
 
@@ -711,7 +627,6 @@
 
             -webkit-text-fill-color:
                 transparent;
-
         }
 
 
@@ -724,13 +639,10 @@
 
             -webkit-text-fill-color:
                 var(--text-secondary);
-
         }
 
 
-        /* =========================================
-           OFFER BADGE
-        ========================================= */
+        /* OFFER BADGE */
 
         .offer-badge {
 
@@ -754,13 +666,10 @@
             font-size: 12px;
 
             font-weight: 700;
-
         }
 
 
-        /* =========================================
-           PREMIUM FEATURES
-        ========================================= */
+        /* PREMIUM FEATURES */
 
         .included-title {
 
@@ -774,7 +683,6 @@
 
             color:
                 #e2e8f0;
-
         }
 
 
@@ -790,7 +698,6 @@
             margin-bottom: 30px;
 
             text-align: left;
-
         }
 
 
@@ -810,7 +717,6 @@
 
             border:
                 1px solid rgba(255, 255, 255, 0.04);
-
         }
 
 
@@ -822,13 +728,10 @@
             font-weight: 800;
 
             margin-right: 7px;
-
         }
 
 
-        /* =========================================
-           PAYMENT BUTTON
-        ========================================= */
+        /* PAYMENT BUTTON */
 
         .unlock-button {
 
@@ -866,7 +769,6 @@
             text-decoration: none;
 
             text-align: center;
-
         }
 
 
@@ -878,7 +780,6 @@
             box-shadow:
                 0 20px 45px
                 rgba(168, 85, 247, 0.4);
-
         }
 
 
@@ -909,13 +810,28 @@
 
             animation:
                 shine 3s infinite;
-
         }
 
 
-        /* =========================================
-           SECURE TEXT
-        ========================================= */
+        /* UPI MESSAGE */
+
+        .upi-message {
+
+            display: none;
+
+            margin-top: 15px;
+
+            color: #f87171;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            text-align: center;
+        }
+
+
+        /* SECURE TEXT */
 
         .secure {
 
@@ -925,13 +841,10 @@
                 #64748b;
 
             font-size: 11px;
-
         }
 
 
-        /* =========================================
-           FOOTER
-        ========================================= */
+        /* FOOTER */
 
         .bottom-message {
 
@@ -943,13 +856,10 @@
                 #64748b;
 
             font-size: 13px;
-
         }
 
 
-        /* =========================================
-           ANIMATIONS
-        ========================================= */
+        /* ANIMATIONS */
 
         @keyframes fadeUp {
 
@@ -959,7 +869,6 @@
 
                 transform:
                     translateY(30px);
-
             }
 
             to {
@@ -968,9 +877,7 @@
 
                 transform:
                     translateY(0);
-
             }
-
         }
 
 
@@ -981,16 +888,13 @@
 
                 transform:
                     translateY(0);
-
             }
 
             50% {
 
                 transform:
                     translateY(-8px);
-
             }
-
         }
 
 
@@ -999,21 +903,17 @@
             0% {
 
                 left: -100%;
-
             }
 
             45% {
 
                 left: 130%;
-
             }
 
             100% {
 
                 left: 130%;
-
             }
-
         }
 
 
@@ -1023,16 +923,13 @@
 
                 transform:
                     translate(0, 0);
-
             }
 
             to {
 
                 transform:
                     translate(100px, 80px);
-
             }
-
         }
 
 
@@ -1042,22 +939,17 @@
 
                 transform:
                     translate(0, 0);
-
             }
 
             to {
 
                 transform:
                     translate(-100px, -70px);
-
             }
-
         }
 
 
-        /* =========================================
-           TABLET
-        ========================================= */
+        /* TABLET */
 
         @media (max-width: 900px) {
 
@@ -1065,15 +957,11 @@
 
                 grid-template-columns:
                     repeat(2, 1fr);
-
             }
-
         }
 
 
-        /* =========================================
-           MOBILE
-        ========================================= */
+        /* MOBILE */
 
         @media (max-width: 600px) {
 
@@ -1081,14 +969,12 @@
 
                 padding:
                     0 20px;
-
             }
 
 
             .logo {
 
                 font-size: 1.5rem;
-
             }
 
 
@@ -1096,7 +982,6 @@
 
                 display:
                     none;
-
             }
 
 
@@ -1104,7 +989,6 @@
 
                 padding:
                     40px 18px 60px;
-
             }
 
 
@@ -1112,7 +996,6 @@
 
                 font-size:
                     2.5rem;
-
             }
 
 
@@ -1120,7 +1003,6 @@
 
                 grid-template-columns:
                     1fr;
-
             }
 
 
@@ -1128,7 +1010,6 @@
 
                 padding:
                     28px 20px;
-
             }
 
 
@@ -1136,7 +1017,6 @@
 
                 grid-template-columns:
                     1fr;
-
             }
 
 
@@ -1144,7 +1024,6 @@
 
                 font-size:
                     3.4rem;
-
             }
 
 
@@ -1152,9 +1031,7 @@
 
                 font-size:
                     2rem;
-
             }
-
         }
 
     </style>
@@ -1378,6 +1255,7 @@
 
                 </div>
 
+
             </div>
 
         </section>
@@ -1568,55 +1446,33 @@
                      PAYMENT BUTTON
                 ====================================== -->
 
-                {% if payment_started %}
+                <a
+                    href="upi://pay?pa=muhammedrazi01091@oksbi&pn=FitFusion&am=19&cu=INR"
+                    class="unlock-button"
+                    id="upiButton">
 
-                    <!-- AFTER PAYMENT -->
+                    🔓 Unlock Premium — ₹19
 
-                    <form
-                        method="POST"
-                        action="{% url 'confirm_payment' %}">
-
-                        {% csrf_token %}
-
-                        <button
-                            type="submit"
-                            class="unlock-button">
-
-                            ✅ I Have Paid
-
-                        </button>
-
-                    </form>
+                </a>
 
 
-                    <p class="secure">
+                <!-- ONLY MESSAGE -->
 
-                        ✅ If you completed the payment,
-                        click "I Have Paid".
+                <p
+                    class="upi-message"
+                    id="upiMessage">
 
-                    </p>
+                    ⚠️ You have no UPI app installed.
+                    Please install a UPI app and try again.
 
-
-                {% else %}
-
-                    <!-- BEFORE PAYMENT -->
-
-                    <a
-                        href="{% url 'start_payment' %}"
-                        class="unlock-button">
-
-                        🔓 Unlock Premium — ₹19
-
-                    </a>
+                </p>
 
 
-                    <p class="secure">
+                <p class="secure">
 
-                        🔒 UPI payment • 1 month premium access
+                    🔒 UPI payment • 1 month premium access
 
-                    </p>
-
-                {% endif %}
+                </p>
 
 
             </div>
@@ -1635,6 +1491,33 @@
 
 
     </main>
+
+
+    <!-- UPI APP CHECK -->
+
+    <script>
+
+        const upiButton =
+            document.getElementById("upiButton");
+
+        const upiMessage =
+            document.getElementById("upiMessage");
+
+
+        upiButton.addEventListener("click", function () {
+
+            upiMessage.style.display = "none";
+
+
+            setTimeout(function () {
+
+                upiMessage.style.display = "block";
+
+            }, 2500);
+
+        });
+
+    </script>
 
 
 </body>
