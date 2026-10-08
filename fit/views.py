@@ -338,7 +338,7 @@ def start_payment(request):
         'upi://pay?'
         'pa=muhammedrazi01091@oksbi'
         '&pn=FitFusion'
-        '&am=19'
+        '&am=9'
         '&cu=INR'
     )
 
