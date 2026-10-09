@@ -2,52 +2,19 @@ from django.urls import path
 from . import views
 from .views import unlock, first_time
 
-
 urlpatterns = [
-
-    # =====================================================
-    # HOME
-    # =====================================================
-
+    # Root entry point
     path(
         '',
-        views.home_view,
+        views.entry_view,
         name='home'
     ),
 
+    path('signup/', views.signup_view, name='signup'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
 
-    # =====================================================
-    # AUTHENTICATION
-    # =====================================================
-
-    path(
-        'signup/',
-        views.signup_view,
-        name='signup'
-    ),
-
-    path(
-        'login/',
-        views.login_view,
-        name='login'
-    ),
-
-    path(
-        'logout/',
-        views.logout_view,
-        name='logout'
-    ),
-
-
-    # =====================================================
-    # ADMIN
-    # =====================================================
-
-    path(
-        'admin-panel/',
-        views.admin_panel_view,
-        name='admin_panel'
-    ),
+    path('admin-panel/', views.admin_panel_view, name='admin_panel'),
 
     path(
         'admin-panel/toggle-status/<int:user_id>/',
@@ -55,62 +22,13 @@ urlpatterns = [
         name='toggle_user_status'
     ),
 
+    path('unlock/', unlock, name='unlock'),
+    path('first-time/', first_time, name='first_time'),
 
-    # =====================================================
-    # PREMIUM / UNLOCK
-    # =====================================================
+    path('start-payment/', views.start_payment, name='start_payment'),
+    path('confirm-payment/', views.confirm_payment, name='confirm_payment'),
 
-    path(
-        'unlock/',
-        unlock,
-        name='unlock'
-    ),
-
-    path(
-        'first-time/',
-        first_time,
-        name='first_time'
-    ),
-
-
-    # =====================================================
-    # RAZORPAY PAYMENT
-    # =====================================================
-
-    # Creates Razorpay order
-    path(
-        'start-payment/',
-        views.start_payment,
-        name='start_payment'
-    ),
-
-    # Verifies Razorpay payment
-    path(
-        'confirm-payment/',
-        views.confirm_payment,
-        name='confirm_payment'
-    ),
-
-
-    # =====================================================
-    # FORGOT PASSWORD
-    # =====================================================
-
-    path(
-        'forgot-password/',
-        views.forgot_password,
-        name='forgot_password'
-    ),
-
-    path(
-        'verify-otp/',
-        views.verify_otp,
-        name='verify_otp'
-    ),
-
-    path(
-        'reset-password/',
-        views.reset_password,
-        name='reset_password'
-    ),
+    path('forgot-password/', views.forgot_password, name='forgot_password'),
+    path('verify-otp/', views.verify_otp, name='verify_otp'),
+    path('reset-password/', views.reset_password, name='reset_password'),
 ]

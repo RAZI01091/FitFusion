@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}FitFusion - Connect Your Health{% endblock %}</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
+    
     <style>
         :root {
             --bg-primary: #0a0f1d;
@@ -32,34 +32,22 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        html {
-            -webkit-text-size-adjust: 100%;
-            text-size-adjust: 100%;
-        }
-
         body {
             background-color: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
-            min-height: 100dvh;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow-x: hidden;
             position: relative;
-            /* Breathing room on every screen + notch/safe-area support */
-            padding:
-                max(1rem, env(safe-area-inset-top))
-                max(1rem, env(safe-area-inset-right))
-                max(1rem, env(safe-area-inset-bottom))
-                max(1rem, env(safe-area-inset-left));
         }
 
         /* Abstract Gradient Background Objects */
         .bg-blob {
-            position: fixed;
-            width: clamp(220px, 50vw, 400px);
-            height: clamp(220px, 50vw, 400px);
+            position: absolute;
+            width: 400px;
+            height: 400px;
             border-radius: 50%;
             filter: blur(120px);
             opacity: 0.15;
@@ -68,14 +56,14 @@
         }
 
         .blob-1 {
-            top: -80px;
-            left: -80px;
+            top: -100px;
+            left: -100px;
             background: var(--accent-primary);
         }
 
         .blob-2 {
-            bottom: -80px;
-            right: -80px;
+            bottom: -100px;
+            right: -100px;
             background: var(--accent-secondary);
         }
 
@@ -85,8 +73,8 @@
             z-index: 1;
             width: 100%;
             max-width: 480px;
-            padding: clamp(1.25rem, 5vw, 2.5rem);
-            border-radius: clamp(18px, 4vw, 24px);
+            padding: 2.5rem;
+            border-radius: 24px;
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
             backdrop-filter: blur(20px);
@@ -109,16 +97,15 @@
         /* Brand Styling */
         .brand-logo {
             text-align: center;
-            margin-bottom: clamp(1.25rem, 4vw, 2rem);
+            margin-bottom: 2rem;
         }
 
         .brand-logo h1 {
-            font-size: clamp(1.75rem, 7vw, 2.25rem);
+            font-size: 2.25rem;
             font-weight: 800;
             letter-spacing: -0.5px;
             background: var(--accent-gradient);
             -webkit-background-clip: text;
-            background-clip: text;
             -webkit-text-fill-color: transparent;
             display: inline-block;
         }
@@ -134,7 +121,6 @@
         .form-group {
             margin-bottom: 1.25rem;
             position: relative;
-            min-width: 0; /* lets grid children shrink instead of overflowing */
         }
 
         .form-group label {
@@ -148,13 +134,12 @@
 
         .form-group input, .form-group select {
             width: 100%;
-            min-height: 48px; /* comfortable touch target */
             padding: 0.875rem 1.25rem;
             border-radius: 12px;
             background: rgba(10, 15, 29, 0.6);
             border: 1px solid var(--glass-border);
             color: var(--text-primary);
-            font-size: 1rem; /* 16px prevents iOS zoom-on-focus */
+            font-size: 0.95rem;
             transition: all 0.3s ease;
             outline: none;
         }
@@ -172,15 +157,14 @@
         /* Two columns for inline fields */
         .form-row {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 0 1rem;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
         }
 
         /* Buttons styling */
         .btn-submit {
             display: block;
             width: 100%;
-            min-height: 48px;
             padding: 0.875rem;
             border-radius: 12px;
             border: none;
@@ -192,24 +176,15 @@
             transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
             margin-top: 1.5rem;
-            -webkit-tap-highlight-color: transparent;
         }
 
-        .btn-submit:focus-visible {
-            outline: 2px solid #fff;
-            outline-offset: 3px;
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
         }
 
         .btn-submit:active {
             transform: translateY(0);
-        }
-
-        /* Only lift on devices that actually hover (avoids sticky hover on touch) */
-        @media (hover: hover) {
-            .btn-submit:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
-            }
         }
 
         /* Notification messages styling */
@@ -224,7 +199,6 @@
             font-size: 0.9rem;
             font-weight: 500;
             margin-bottom: 0.5rem;
-            overflow-wrap: anywhere;
             animation: slideIn 0.3s ease-out;
         }
 
@@ -254,7 +228,7 @@
         /* Redirection styling */
         .auth-footer {
             text-align: center;
-            margin-top: clamp(1.25rem, 4vw, 2rem);
+            margin-top: 2rem;
             font-size: 0.9rem;
             color: var(--text-secondary);
         }
@@ -277,52 +251,6 @@
             font-size: 0.8rem;
             margin-top: 0.35rem;
             font-weight: 500;
-            overflow-wrap: anywhere;
-        }
-
-        /* ---------- Responsive breakpoints ---------- */
-
-        /* Phones: stack paired fields */
-        @media (max-width: 520px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .form-group input, .form-group select {
-                padding: 0.8rem 1rem;
-            }
-        }
-
-        /* Very small phones */
-        @media (max-width: 360px) {
-            body {
-                padding-left: 0.75rem;
-                padding-right: 0.75rem;
-            }
-
-            .brand-logo p,
-            .auth-footer {
-                font-size: 0.85rem;
-            }
-        }
-
-        /* Short landscape screens: let the page scroll from the top */
-        @media (max-height: 560px) {
-            body {
-                align-items: flex-start;
-            }
-
-            .auth-container {
-                margin: auto;
-            }
-        }
-
-        /* Respect reduced-motion preferences */
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation: none !important;
-                transition: none !important;
-            }
         }
     </style>
 </head>

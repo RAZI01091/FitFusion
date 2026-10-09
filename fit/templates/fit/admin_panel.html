@@ -1,110 +1,169 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Admin Panel - FitFusion</title>
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <!-- Google Font -->
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
 
     <style>
 
+        /* =====================================================
+           ROOT
+        ===================================================== */
+
         :root {
+
             --bg-primary: #070a13;
             --bg-secondary: #0f1424;
 
             --accent-primary: #6366f1;
             --accent-secondary: #ec4899;
-            --accent-tertiary: #a855f7;
+            --accent-purple: #a855f7;
 
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
+            --text-muted: #64748b;
 
-            --glass-bg: rgba(15, 20, 36, 0.45);
+            --glass-bg: rgba(15, 20, 36, 0.60);
             --glass-border: rgba(255, 255, 255, 0.08);
 
             --success: #10b981;
+            --danger: #ef4444;
             --warning: #f59e0b;
+
         }
 
+
+        /* =====================================================
+           RESET
+        ===================================================== */
+
         * {
-            box-sizing: border-box;
+
             margin: 0;
             padding: 0;
+
+            box-sizing: border-box;
 
             font-family: 'Outfit', sans-serif;
 
             -webkit-font-smoothing: antialiased;
+
         }
 
+
+        /* =====================================================
+           BODY
+        ===================================================== */
+
         body {
-            background-color: var(--bg-primary);
+
+            background:
+                radial-gradient(
+                    circle at top left,
+                    rgba(99, 102, 241, 0.10),
+                    transparent 35%
+                ),
+
+                radial-gradient(
+                    circle at bottom right,
+                    rgba(236, 72, 153, 0.08),
+                    transparent 35%
+                ),
+
+                var(--bg-primary);
 
             color: var(--text-primary);
 
             min-height: 100vh;
 
-            display: flex;
-            flex-direction: column;
-
             overflow-x: hidden;
 
-            position: relative;
         }
 
 
-        /* ================================
-           BACKGROUND
-        ================================= */
+        /* =====================================================
+           BACKGROUND BLOBS
+        ===================================================== */
 
         .bg-blob {
-            position: absolute;
 
-            width: 600px;
-            height: 600px;
+            position: fixed;
+
+            width: 500px;
+            height: 500px;
 
             border-radius: 50%;
 
-            filter: blur(140px);
+            filter: blur(150px);
 
-            opacity: 0.12;
+            opacity: 0.10;
+
+            pointer-events: none;
 
             z-index: 0;
 
-            pointer-events: none;
         }
 
-        .blob-1 {
-            top: -150px;
-            left: -150px;
+
+        .blob-one {
+
+            top: -200px;
+            left: -200px;
 
             background: var(--accent-primary);
+
         }
 
-        .blob-2 {
-            bottom: -150px;
-            right: -150px;
+
+        .blob-two {
+
+            bottom: -200px;
+            right: -200px;
 
             background: var(--accent-secondary);
+
         }
 
 
-        /* ================================
+        /* =====================================================
            NAVBAR
-        ================================= */
+        ===================================================== */
 
         nav {
+
             position: relative;
 
             z-index: 10;
+
+            width: 100%;
 
             display: flex;
 
@@ -112,933 +171,1215 @@
 
             align-items: center;
 
-            padding: 1.25rem 5%;
+            padding: 20px 5%;
 
-            background: rgba(7, 10, 19, 0.5);
+            background:
+                rgba(7, 10, 19, 0.75);
 
-            backdrop-filter: blur(16px);
+            backdrop-filter: blur(18px);
 
-            border-bottom: 1px solid var(--glass-border);
+            border-bottom:
+                1px solid
+                var(--glass-border);
+
         }
 
+
+        /* Logo */
+
         .nav-logo h1 {
-            font-size: 1.75rem;
+
+            font-size: 28px;
 
             font-weight: 800;
 
-            background: linear-gradient(
-                135deg,
-                #6366f1 0%,
-                #ec4899 100%
-            );
+            background:
+                linear-gradient(
+                    135deg,
+                    #6366f1,
+                    #ec4899
+                );
 
             -webkit-background-clip: text;
 
             -webkit-text-fill-color: transparent;
 
-            letter-spacing: -0.5px;
         }
 
-        .nav-user {
+
+        /* Navbar right */
+
+        .nav-right {
+
             display: flex;
 
             align-items: center;
 
-            gap: 1.5rem;
+            gap: 12px;
+
         }
 
-        .role-badge {
-            background: rgba(236, 72, 153, 0.12);
 
-            border: 1px solid rgba(236, 72, 153, 0.3);
+        /* Admin badge */
 
-            padding: 0.5rem 1.25rem;
+        .admin-portal {
+
+            padding: 9px 16px;
 
             border-radius: 50px;
 
-            font-size: 0.85rem;
+            background:
+                rgba(236, 72, 153, 0.10);
+
+            border:
+                1px solid
+                rgba(236, 72, 153, 0.30);
+
+            color: #f472b6;
+
+            font-size: 13px;
 
             font-weight: 600;
 
-            color: var(--accent-secondary);
+            letter-spacing: 0.4px;
 
-            letter-spacing: 0.5px;
-
-            text-transform: uppercase;
         }
 
-        .btn-view-site {
-            background: rgba(255, 255, 255, 0.05);
+
+        /* View site */
+
+        .view-site {
+
+            text-decoration: none;
+
+            padding: 9px 16px;
+
+            border-radius: 10px;
 
             color: var(--text-primary);
 
-            border: 1px solid var(--glass-border);
+            background:
+                rgba(255, 255, 255, 0.04);
 
-            padding: 0.5rem 1.25rem;
+            border:
+                1px solid
+                var(--glass-border);
 
-            border-radius: 12px;
+            font-size: 14px;
 
             font-weight: 600;
 
-            text-decoration: none;
+            transition: 0.25s ease;
 
-            font-size: 0.9rem;
-
-            transition: all 0.3s;
         }
 
-        .btn-view-site:hover {
-            background: rgba(255, 255, 255, 0.1);
+
+        .view-site:hover {
+
+            background:
+                rgba(255, 255, 255, 0.10);
 
             transform: translateY(-1px);
+
         }
 
-        .btn-logout {
+
+        /* Logout */
+
+        .logout-form {
+
+            margin: 0;
+
+        }
+
+
+        .logout-btn {
+
+            padding: 9px 16px;
+
+            border-radius: 10px;
+
+            color: #cbd5e1;
+
             background: transparent;
 
-            color: var(--text-secondary);
+            border:
+                1px solid
+                var(--glass-border);
 
-            border: 1px solid var(--glass-border);
-
-            padding: 0.5rem 1.25rem;
-
-            border-radius: 12px;
+            font-size: 14px;
 
             font-weight: 600;
 
-            text-decoration: none;
-
-            font-size: 0.9rem;
-
-            transition: all 0.3s;
-
             cursor: pointer;
-        }
 
-        .btn-logout:hover {
-            color: #ffffff;
+            transition: 0.25s ease;
 
-            background: rgba(239, 68, 68, 0.15);
-
-            border-color: rgba(239, 68, 68, 0.4);
         }
 
 
-        /* ================================
+        .logout-btn:hover {
+
+            color: white;
+
+            background:
+                rgba(239, 68, 68, 0.15);
+
+            border-color:
+                rgba(239, 68, 68, 0.40);
+
+        }
+
+
+        /* =====================================================
            MAIN
-        ================================= */
+        ===================================================== */
 
         main {
+
             position: relative;
 
             z-index: 1;
 
-            flex-grow: 1;
+            width: 92%;
 
-            padding: 3rem 5%;
+            max-width: 1250px;
 
-            max-width: 1400px;
+            margin: auto;
 
-            margin: 0 auto;
+            padding: 45px 0 70px;
 
-            width: 100%;
         }
 
 
-        /* ================================
+        /* =====================================================
            WELCOME
-        ================================= */
+        ===================================================== */
 
-        .welcome-header {
-            margin-bottom: 3rem;
+        .welcome-section {
 
-            animation:
-                slideUp
-                0.6s
-                cubic-bezier(0.16, 1, 0.3, 1)
-                forwards;
+            margin-bottom: 35px;
+
         }
 
-        .welcome-header h2 {
-            font-size: 2.5rem;
+
+        .welcome-section h2 {
+
+            font-size: 38px;
 
             font-weight: 700;
 
-            margin-bottom: 0.5rem;
+            margin-bottom: 8px;
+
         }
 
-        .welcome-header p {
+
+        .welcome-section p {
+
             color: var(--text-secondary);
 
-            font-size: 1.1rem;
+            font-size: 16px;
+
         }
 
 
-        /* ================================
-           MESSAGES
-        ================================= */
+        /* =====================================================
+           DJANGO MESSAGES
+        ===================================================== */
 
         .messages {
+
             list-style: none;
 
-            margin-bottom: 2rem;
+            margin-bottom: 25px;
+
         }
+
 
         .message {
-            padding: 1rem 1.5rem;
 
-            border-radius: 16px;
+            padding: 14px 18px;
 
-            font-size: 0.95rem;
+            border-radius: 12px;
 
-            font-weight: 500;
+            margin-bottom: 10px;
 
-            margin-bottom: 0.75rem;
+            font-size: 14px;
 
-            animation:
-                slideIn
-                0.3s
-                ease-out;
-
-            max-width: 600px;
         }
+
 
         .message.success {
-            background-color: rgba(16, 185, 129, 0.15);
-
-            border: 1px solid rgba(16, 185, 129, 0.3);
 
             color: #34d399;
+
+            background:
+                rgba(16, 185, 129, 0.10);
+
+            border:
+                1px solid
+                rgba(16, 185, 129, 0.25);
+
         }
 
 
-        /* ================================
+        .message.error {
+
+            color: #f87171;
+
+            background:
+                rgba(239, 68, 68, 0.10);
+
+            border:
+                1px solid
+                rgba(239, 68, 68, 0.25);
+
+        }
+
+
+        /* =====================================================
            STATISTICS
-        ================================= */
+        ===================================================== */
 
         .stats-grid {
+
             display: grid;
 
             grid-template-columns:
                 repeat(
-                    auto-fit,
-                    minmax(210px, 1fr)
+                    4,
+                    1fr
                 );
 
-            gap: 1.5rem;
+            gap: 18px;
 
-            margin-bottom: 3.5rem;
+            margin-bottom: 35px;
 
-            animation:
-                slideUp
-                0.7s
-                cubic-bezier(0.16, 1, 0.3, 1)
-                forwards;
         }
 
+
         .stat-card {
-            background: var(--glass-bg);
-
-            border: 1px solid var(--glass-border);
-
-            border-radius: 20px;
-
-            padding: 1.75rem;
-
-            backdrop-filter: blur(12px);
-
-            transition: all 0.3s ease;
 
             position: relative;
 
+            padding: 24px;
+
+            border-radius: 18px;
+
+            background:
+                var(--glass-bg);
+
+            border:
+                1px solid
+                var(--glass-border);
+
+            backdrop-filter: blur(15px);
+
             overflow: hidden;
+
+            transition: 0.3s ease;
+
         }
 
+
+        .stat-card:hover {
+
+            transform:
+                translateY(-4px);
+
+            border-color:
+                rgba(255, 255, 255, 0.14);
+
+        }
+
+
         .stat-card::after {
-            content: '';
+
+            content: "";
 
             position: absolute;
 
-            bottom: 0;
             left: 0;
-
-            width: 100%;
+            right: 0;
+            bottom: 0;
 
             height: 3px;
 
-            transition: background 0.3s ease;
         }
 
-        .stat-card.total::after {
+
+        .stat-total::after {
+
             background:
                 linear-gradient(
                     90deg,
                     #6366f1,
                     #3b82f6
                 );
+
         }
 
-        .stat-card.male::after {
+
+        .stat-male::after {
+
             background:
                 linear-gradient(
                     90deg,
-                    #a855f7,
+                    #8b5cf6,
                     #6366f1
                 );
+
         }
 
-        .stat-card.female::after {
+
+        .stat-female::after {
+
             background:
                 linear-gradient(
                     90deg,
                     #ec4899,
                     #f43f5e
                 );
+
         }
 
-        .stat-card.premium::after {
-            background:
-                linear-gradient(
-                    90deg,
-                    #f59e0b,
-                    #f97316
-                );
-        }
 
-        .stat-card.normal::after {
-            background:
-                linear-gradient(
-                    90deg,
-                    #64748b,
-                    #94a3b8
-                );
-        }
+        .stat-age::after {
 
-        .stat-card.age::after {
             background:
                 linear-gradient(
                     90deg,
                     #10b981,
                     #06b6d4
                 );
+
         }
 
-        .stat-card:hover {
-            transform: translateY(-3px);
-
-            box-shadow:
-                0 12px 24px
-                rgba(0, 0, 0, 0.2);
-
-            border-color:
-                rgba(255, 255, 255, 0.15);
-        }
 
         .stat-label {
-            font-size: 0.85rem;
+
+            display: block;
+
+            color:
+                var(--text-secondary);
+
+            font-size: 13px;
 
             font-weight: 600;
-
-            color: var(--text-secondary);
 
             text-transform: uppercase;
 
             letter-spacing: 0.5px;
 
-            margin-bottom: 0.5rem;
+            margin-bottom: 8px;
 
-            display: block;
         }
 
-        .stat-value {
-            font-size: 2.25rem;
+
+        .stat-number {
+
+            font-size: 34px;
 
             font-weight: 700;
 
-            color: var(--text-primary);
         }
 
 
-        /* ================================
-           TABLE
-        ================================= */
+        /* =====================================================
+           USER SECTION
+        ===================================================== */
 
-        .table-section {
-            background: var(--glass-bg);
+        .user-section {
 
-            border: 1px solid var(--glass-border);
+            background:
+                var(--glass-bg);
 
-            border-radius: 24px;
+            border:
+                1px solid
+                var(--glass-border);
 
-            padding: 2rem;
+            border-radius: 22px;
 
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(15px);
 
-            animation:
-                slideUp
-                0.8s
-                cubic-bezier(0.16, 1, 0.3, 1)
-                forwards;
+            overflow: hidden;
 
             box-shadow:
-                0 20px 40px
-                rgba(0, 0, 0, 0.15);
+                0 20px 50px
+                rgba(0, 0, 0, 0.20);
+
         }
 
-        .table-header {
+
+        /* Header */
+
+        .section-header {
+
             display: flex;
 
             justify-content: space-between;
 
             align-items: center;
 
-            margin-bottom: 1.5rem;
+            padding: 25px 28px;
 
-            flex-wrap: wrap;
+            border-bottom:
+                1px solid
+                var(--glass-border);
 
-            gap: 1rem;
         }
 
-        .table-header h3 {
-            font-size: 1.5rem;
+
+        .section-title {
+
+            font-size: 21px;
 
             font-weight: 700;
+
         }
 
-        .table-container {
+
+        .user-count {
+
+            color:
+                var(--text-secondary);
+
+            font-size: 14px;
+
+        }
+
+
+        /* =====================================================
+           TABLE
+        ===================================================== */
+
+        .table-wrapper {
+
             width: 100%;
 
             overflow-x: auto;
+
         }
 
+
         table {
+
             width: 100%;
 
             border-collapse: collapse;
 
-            text-align: left;
+            min-width: 950px;
 
-            min-width: 900px;
         }
 
-        th {
-            padding: 1rem 1.25rem;
 
-            font-size: 0.85rem;
+        thead {
+
+            background:
+                rgba(255, 255, 255, 0.025);
+
+        }
+
+
+        th {
+
+            padding: 17px 20px;
+
+            text-align: left;
+
+            color:
+                var(--text-secondary);
+
+            font-size: 12px;
 
             font-weight: 600;
-
-            color: var(--text-secondary);
 
             text-transform: uppercase;
 
-            letter-spacing: 0.5px;
+            letter-spacing: 0.6px;
 
             border-bottom:
                 1px solid
                 var(--glass-border);
+
         }
 
+
         td {
-            padding: 1.1rem 1.25rem;
 
-            font-size: 0.95rem;
-
-            color: var(--text-primary);
+            padding: 18px 20px;
 
             border-bottom:
                 1px solid
-                rgba(255, 255, 255, 0.04);
+                rgba(255, 255, 255, 0.045);
 
-            white-space: nowrap;
+            vertical-align: middle;
+
         }
 
-        tr:last-child td {
-            border-bottom: none;
+
+        tbody tr {
+
+            transition: 0.2s ease;
+
         }
 
-        tr:hover td {
+
+        tbody tr:hover {
+
             background:
-                rgba(255, 255, 255, 0.02);
+                rgba(255, 255, 255, 0.025);
+
         }
 
 
-        /* ================================
+        tbody tr:last-child td {
+
+            border-bottom: none;
+
+        }
+
+
+        /* =====================================================
+           USER NAME
+        ===================================================== */
+
+        .user-name {
+
+            color:
+                var(--text-primary);
+
+            font-size: 15px;
+
+            font-weight: 600;
+
+            margin-bottom: 4px;
+
+        }
+
+
+        .user-id {
+
+            color:
+                var(--text-muted);
+
+            font-size: 12px;
+
+        }
+
+
+        /* =====================================================
+           EMAIL
+        ===================================================== */
+
+        .email {
+
+            color:
+                var(--text-secondary);
+
+            font-size: 14px;
+
+        }
+
+
+        /* =====================================================
+           AGE
+        ===================================================== */
+
+        .age {
+
+            color:
+                var(--text-primary);
+
+            font-size: 14px;
+
+            font-weight: 500;
+
+        }
+
+
+        /* =====================================================
+           GENDER
+        ===================================================== */
+
+        .gender {
+
+            color:
+                var(--text-secondary);
+
+            font-size: 14px;
+
+        }
+
+
+        /* =====================================================
            BADGES
-        ================================= */
+        ===================================================== */
 
         .badge {
-            display: inline-block;
 
-            padding: 0.25rem 0.75rem;
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 5px;
+
+            padding: 7px 11px;
 
             border-radius: 50px;
 
-            font-size: 0.8rem;
+            font-size: 12px;
 
             font-weight: 600;
 
-            text-transform: capitalize;
+            white-space: nowrap;
+
         }
 
+
+        /* Admin */
+
         .badge.admin {
-            background:
-                rgba(236, 72, 153, 0.15);
 
             color: #f472b6;
 
-            border:
-                1px solid
-                rgba(236, 72, 153, 0.3);
-        }
-
-        .badge.user {
             background:
-                rgba(99, 102, 241, 0.15);
-
-            color: #818cf8;
+                rgba(236, 72, 153, 0.12);
 
             border:
                 1px solid
-                rgba(99, 102, 241, 0.3);
+                rgba(236, 72, 153, 0.28);
+
         }
 
-        /* Premium Badge */
+
+        /* Premium */
+
         .badge.premium {
-            background:
-                rgba(245, 158, 11, 0.15);
 
             color: #fbbf24;
 
-            border:
-                1px solid
-                rgba(245, 158, 11, 0.35);
-
-            box-shadow:
-                0 0 10px
-                rgba(245, 158, 11, 0.08);
-        }
-
-        .badge.male {
             background:
-                rgba(59, 130, 246, 0.1);
-
-            color: #60a5fa;
-        }
-
-        .badge.female {
-            background:
-                rgba(236, 72, 153, 0.1);
-
-            color: #f472b6;
-        }
-
-        .badge.other {
-            background:
-                rgba(168, 85, 247, 0.1);
-
-            color: #c084fc;
-        }
-
-        .badge.active {
-            background:
-                rgba(16, 185, 129, 0.15);
-
-            color: #34d399;
+                rgba(245, 158, 11, 0.12);
 
             border:
                 1px solid
-                rgba(16, 185, 129, 0.3);
+                rgba(245, 158, 11, 0.28);
+
         }
 
-        .badge.blocked {
-            background:
-                rgba(239, 68, 68, 0.15);
 
-            color: #f87171;
+        /* Normal User */
+
+        .badge.user {
+
+            color: #818cf8;
+
+            background:
+                rgba(99, 102, 241, 0.12);
 
             border:
                 1px solid
-                rgba(239, 68, 68, 0.3);
+                rgba(99, 102, 241, 0.28);
+
         }
 
 
-        /* ================================
-           ACTION BUTTONS
-        ================================= */
+        /* =====================================================
+           STATUS
+        ===================================================== */
 
-        .btn-action {
-            padding: 0.4rem 0.9rem;
+        .status {
 
-            border-radius: 8px;
+            display: inline-flex;
 
-            font-size: 0.825rem;
+            align-items: center;
+
+            gap: 7px;
+
+            padding: 7px 11px;
+
+            border-radius: 50px;
+
+            font-size: 12px;
 
             font-weight: 600;
 
-            border: none;
+        }
 
-            cursor: pointer;
 
-            transition: all 0.2s ease;
+        .status-dot {
 
-            text-transform: capitalize;
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
 
             display: inline-block;
 
-            outline: none;
         }
 
-        .btn-action.block {
-            background:
-                rgba(239, 68, 68, 0.15);
 
-            color: #ef4444;
+        .status.active {
+
+            color: #34d399;
+
+            background:
+                rgba(16, 185, 129, 0.10);
 
             border:
                 1px solid
-                rgba(239, 68, 68, 0.3);
+                rgba(16, 185, 129, 0.22);
+
         }
 
-        .btn-action.block:hover {
-            background:
-                rgba(239, 68, 68, 0.3);
 
-            transform: translateY(-1px);
+        .status.active .status-dot {
+
+            background: #10b981;
+
+            box-shadow:
+                0 0 7px
+                rgba(16, 185, 129, 0.7);
+
         }
 
-        .btn-action.unblock {
-            background:
-                rgba(16, 185, 129, 0.15);
 
-            color: #10b981;
+        .status.blocked {
+
+            color: #f87171;
+
+            background:
+                rgba(239, 68, 68, 0.10);
 
             border:
                 1px solid
-                rgba(16, 185, 129, 0.3);
+                rgba(239, 68, 68, 0.22);
+
         }
 
-        .btn-action.unblock:hover {
-            background:
-                rgba(16, 185, 129, 0.3);
 
-            transform: translateY(-1px);
+        .status.blocked .status-dot {
+
+            background: #ef4444;
+
         }
 
-        .btn-action.disabled {
+
+        /* =====================================================
+           ACTION FORM
+        ===================================================== */
+
+        .action-form {
+
+            margin: 0;
+
+        }
+
+
+        /* Action button */
+
+        .action-btn {
+
+            border: none;
+
+            padding: 8px 13px;
+
+            border-radius: 9px;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: 0.25s ease;
+
+        }
+
+
+        /* Block */
+
+        .action-btn.block {
+
+            color: #f87171;
+
             background:
-                rgba(255, 255, 255, 0.05);
+                rgba(239, 68, 68, 0.10);
+
+            border:
+                1px solid
+                rgba(239, 68, 68, 0.25);
+
+        }
+
+
+        .action-btn.block:hover {
+
+            background:
+                rgba(239, 68, 68, 0.20);
+
+            transform:
+                translateY(-1px);
+
+        }
+
+
+        /* Unblock */
+
+        .action-btn.unblock {
+
+            color: #34d399;
+
+            background:
+                rgba(16, 185, 129, 0.10);
+
+            border:
+                1px solid
+                rgba(16, 185, 129, 0.25);
+
+        }
+
+
+        .action-btn.unblock:hover {
+
+            background:
+                rgba(16, 185, 129, 0.20);
+
+            transform:
+                translateY(-1px);
+
+        }
+
+
+        /* =====================================================
+           EMPTY STATE
+        ===================================================== */
+
+        .empty-state {
+
+            padding: 70px 20px;
+
+            text-align: center;
+
+        }
+
+
+        .empty-icon {
+
+            font-size: 45px;
+
+            margin-bottom: 15px;
+
+            opacity: 0.7;
+
+        }
+
+
+        .empty-state h3 {
+
+            font-size: 20px;
+
+            margin-bottom: 7px;
+
+        }
+
+
+        .empty-state p {
 
             color:
-                rgba(255, 255, 255, 0.3);
+                var(--text-secondary);
 
-            border:
-                1px solid
-                var(--glass-border);
+            font-size: 14px;
 
-            cursor: not-allowed;
         }
 
 
-        /* ================================
-           ANIMATIONS
-        ================================= */
-
-        @keyframes slideUp {
-
-            from {
-                opacity: 0;
-
-                transform:
-                    translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-
-                transform:
-                    translateY(0);
-            }
-        }
-
-        @keyframes slideIn {
-
-            from {
-                opacity: 0;
-
-                transform:
-                    translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-
-                transform:
-                    translateY(0);
-            }
-        }
-
-
-        /* ================================
+        /* =====================================================
            RESPONSIVE
-        ================================= */
+        ===================================================== */
 
-        @media (max-width: 768px) {
-
-            nav {
-                padding:
-                    1rem 4%;
-            }
-
-            .nav-user {
-                gap: 0.5rem;
-            }
-
-            .role-badge {
-                display: none;
-            }
-
-            .btn-view-site,
-            .btn-logout {
-                padding:
-                    0.45rem 0.75rem;
-
-                font-size: 0.8rem;
-            }
-
-            main {
-                padding:
-                    2rem 4%;
-            }
-
-            .welcome-header h2 {
-                font-size: 2rem;
-            }
-
-            .welcome-header p {
-                font-size: 0.95rem;
-            }
+        @media (max-width: 900px) {
 
             .stats-grid {
+
                 grid-template-columns:
                     repeat(2, 1fr);
 
-                gap: 1rem;
             }
 
-            .stat-card {
-                padding: 1.25rem;
+
+            .nav-right {
+
+                gap: 7px;
+
             }
 
-            .stat-value {
-                font-size: 1.8rem;
+
+            .admin-portal {
+
+                display: none;
+
             }
 
-            .table-section {
-                padding: 1.25rem;
+
+            .welcome-section h2 {
+
+                font-size: 30px;
+
             }
+
         }
 
 
-        @media (max-width: 500px) {
+        @media (max-width: 600px) {
 
-            .stats-grid {
-                grid-template-columns: 1fr;
+            nav {
+
+                padding: 16px 4%;
+
             }
+
 
             .nav-logo h1 {
-                font-size: 1.4rem;
+
+                font-size: 23px;
+
             }
 
-            .welcome-header h2 {
-                font-size: 1.7rem;
+
+            .view-site {
+
+                display: none;
+
             }
+
+
+            main {
+
+                width: 94%;
+
+                padding-top: 30px;
+
+            }
+
+
+            .stats-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .welcome-section h2 {
+
+                font-size: 27px;
+
+            }
+
+
+            .section-header {
+
+                padding: 20px;
+
+                align-items: flex-start;
+
+                flex-direction: column;
+
+                gap: 7px;
+
+            }
+
         }
 
     </style>
+
 </head>
 
 
 <body>
 
+
     <!-- Background -->
-    <div class="bg-blob blob-1"></div>
-    <div class="bg-blob blob-2"></div>
+
+    <div class="bg-blob blob-one"></div>
+
+    <div class="bg-blob blob-two"></div>
 
 
-    <!-- ================================
+    <!-- =====================================================
          NAVBAR
-    ================================= -->
+    ====================================================== -->
 
     <nav>
 
+        <!-- Logo -->
+
         <div class="nav-logo">
-            <h1>FitFusion</h1>
+
+            <h1>
+                FitFusion
+            </h1>
+
         </div>
 
-        <div class="nav-user">
 
-            <span class="role-badge">
+        <!-- Right -->
+
+        <div class="nav-right">
+
+
+            <span class="admin-portal">
                 🛡️ Admin Portal
             </span>
 
+
             <a
                 href="{% url 'home' %}"
-                class="btn-view-site"
+                class="view-site"
             >
                 View User Site
             </a>
 
-            <a
-                href="{% url 'logout' %}"
-                class="btn-logout"
+
+            <!-- POST LOGOUT -->
+
+            <form
+                method="POST"
+                action="{% url 'logout' %}"
+                class="logout-form"
             >
-                Logout
-            </a>
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="logout-btn"
+                >
+                    Logout
+                </button>
+
+            </form>
+
 
         </div>
 
     </nav>
 
 
-    <!-- ================================
+
+    <!-- =====================================================
          MAIN
-    ================================= -->
+    ====================================================== -->
 
     <main>
 
 
-        <!-- Messages -->
+        <!-- Django Messages -->
 
         {% if messages %}
 
-        <ul class="messages">
+            <ul class="messages">
 
-            {% for message in messages %}
+                {% for message in messages %}
 
-            <li class="message {{ message.tags }}">
-                {{ message }}
-            </li>
+                    <li class="message {{ message.tags }}">
+                        {{ message }}
+                    </li>
 
-            {% endfor %}
+                {% endfor %}
 
-        </ul>
+            </ul>
 
         {% endif %}
 
 
-        <!-- Welcome -->
 
-        <div class="welcome-header">
+        <!-- =================================================
+             WELCOME
+        ================================================== -->
+
+        <section class="welcome-section">
 
             <h2>
-                Welcome, Admin Chief {{ request.user.name }}!
+                Welcome, Admin Chief
+                {{ request.user.name }}!
             </h2>
 
             <p>
-                Here is an administrative overview of
-                the registered FitFusion community and
-                user registrations.
+                Manage your FitFusion users and monitor
+                the community from your admin dashboard.
             </p>
 
-        </div>
+        </section>
 
 
-        <!-- ================================
+
+        <!-- =================================================
              STATISTICS
-        ================================= -->
+        ================================================== -->
 
-        <div class="stats-grid">
+        <section class="stats-grid">
 
 
-            <!-- Total Users -->
+            <!-- Total -->
 
-            <div class="stat-card total">
+            <div class="stat-card stat-total">
 
                 <span class="stat-label">
                     Total Registered Users
                 </span>
 
-                <span class="stat-value">
+                <div class="stat-number">
                     {{ total_users }}
-                </span>
+                </div>
 
             </div>
 
 
             <!-- Male -->
 
-            <div class="stat-card male">
+            <div class="stat-card stat-male">
 
                 <span class="stat-label">
                     Male Registrants
                 </span>
 
-                <span class="stat-value">
+                <div class="stat-number">
                     {{ male_users }}
-                </span>
+                </div>
 
             </div>
 
 
             <!-- Female -->
 
-            <div class="stat-card female">
+            <div class="stat-card stat-female">
 
                 <span class="stat-label">
                     Female Registrants
                 </span>
 
-                <span class="stat-value">
+                <div class="stat-number">
                     {{ female_users }}
-                </span>
-
-            </div>
-
-
-            <!-- Premium -->
-
-            <div class="stat-card premium">
-
-                <span class="stat-label">
-                    ⭐ Premium Users
-                </span>
-
-                <span class="stat-value">
-                    {{ premium_users }}
-                </span>
-
-            </div>
-
-
-            <!-- Normal -->
-
-            <div class="stat-card normal">
-
-                <span class="stat-label">
-                    Normal Users
-                </span>
-
-                <span class="stat-value">
-                    {{ normal_users }}
-                </span>
+                </div>
 
             </div>
 
 
             <!-- Average Age -->
 
-            <div class="stat-card age">
+            <div class="stat-card stat-age">
 
                 <span class="stat-label">
                     Average User Age
                 </span>
 
-                <span class="stat-value">
+                <div class="stat-number">
 
                     {% if avg_age %}
 
-                        {{ avg_age }} yrs
+                        {{ avg_age }}
 
                     {% else %}
 
@@ -1046,43 +1387,51 @@
 
                     {% endif %}
 
-                </span>
+                </div>
 
             </div>
 
 
-        </div>
+        </section>
 
 
-        <!-- ================================
-             USER TABLE
-        ================================= -->
 
-        <div class="table-section">
+        <!-- =================================================
+             USER MANAGEMENT
+        ================================================== -->
+
+        <section class="user-section">
 
 
-            <div class="table-header">
+            <!-- Section Header -->
 
-                <h3>
+            <div class="section-header">
+
+                <div class="section-title">
                     FitFusion Member Directory
-                </h3>
+                </div>
 
-                <span
-                    style="
-                        color: var(--text-secondary);
-                        font-size: 0.9rem;
-                        font-weight: 500;
-                    "
-                >
-                    Showing {{ users|length }} records
-                </span>
+
+                <div class="user-count">
+
+                    Showing
+                    {{ users|length }}
+                    registered users
+
+                </div>
 
             </div>
 
 
-            <div class="table-container">
+
+            <!-- Table -->
+
+            <div class="table-wrapper">
 
                 <table>
+
+
+                    <!-- TABLE HEADER -->
 
                     <thead>
 
@@ -1121,227 +1470,291 @@
                     </thead>
 
 
+
+                    <!-- TABLE BODY -->
+
                     <tbody>
 
 
                         {% for user in users %}
 
+
                         <tr>
 
 
-                            <!-- Name -->
-
-                            <td
-                                style="
-                                    font-weight: 600;
-                                "
-                            >
-                                {{ user.name }}
-                            </td>
-
-
-                            <!-- Email -->
-
-                            <td
-                                style="
-                                    color:
-                                    var(--text-secondary);
-                                "
-                            >
-                                {{ user.email }}
-                            </td>
-
-
-                            <!-- Age -->
+                            <!-- =================================
+                                 NAME
+                            ================================== -->
 
                             <td>
 
-                                {% if user.age %}
+                                <div class="user-name">
+                                    {{ user.name }}
+                                </div>
 
-                                    {{ user.age }}
+                                <div class="user-id">
+                                    ID #{{ user.id }}
+                                </div>
 
-                                {% else %}
+                            </td>
 
-                                    <span
-                                        style="
-                                            color:
-                                            rgba(
-                                                255,
-                                                255,
-                                                255,
-                                                0.25
-                                            );
-                                        "
-                                    >
+
+
+                            <!-- =================================
+                                 EMAIL
+                            ================================== -->
+
+                            <td>
+
+                                <div class="email">
+                                    {{ user.email }}
+                                </div>
+
+                            </td>
+
+
+
+                            <!-- =================================
+                                 AGE
+                            ================================== -->
+
+                            <td>
+
+                                <span class="age">
+
+                                    {% if user.age %}
+
+                                        {{ user.age }}
+
+                                    {% else %}
+
                                         —
-                                    </span>
 
-                                {% endif %}
+                                    {% endif %}
+
+                                </span>
 
                             </td>
 
 
-                            <!-- Gender -->
+
+                            <!-- =================================
+                                 GENDER
+                            ================================== -->
 
                             <td>
 
-                                {% if user.gender == 'M' %}
+                                <span class="gender">
 
-                                    <span class="badge male">
+                                    {% if user.gender == 'M' %}
+
                                         Male
-                                    </span>
 
-                                {% elif user.gender == 'F' %}
+                                    {% elif user.gender == 'F' %}
 
-                                    <span class="badge female">
                                         Female
-                                    </span>
 
-                                {% elif user.gender == 'O' %}
+                                    {% elif user.gender == 'O' %}
 
-                                    <span class="badge other">
                                         Other
-                                    </span>
 
-                                {% else %}
+                                    {% else %}
 
-                                    <span
-                                        style="
-                                            color:
-                                            rgba(
-                                                255,
-                                                255,
-                                                255,
-                                                0.25
-                                            );
-                                        "
-                                    >
                                         —
-                                    </span>
 
-                                {% endif %}
+                                    {% endif %}
+
+                                </span>
 
                             </td>
 
 
-                            <!-- ACCOUNT TYPE -->
+
+                            <!-- =================================
+                                 ACCOUNT TYPE
+                            ================================== -->
 
                             <td>
 
                                 {% if user.is_staff or user.is_superuser %}
 
+
                                     <span class="badge admin">
+
                                         🛡️ Admin Staff
+
                                     </span>
 
-                                {% elif user.is_premium %}
+
+                                {% elif user.is_paid %}
+
 
                                     <span class="badge premium">
-                                        ⭐ Premium
+
+                                        ⭐ Premium User
+
                                     </span>
+
 
                                 {% else %}
 
+
                                     <span class="badge user">
+
                                         Normal User
+
                                     </span>
+
 
                                 {% endif %}
 
                             </td>
 
 
-                            <!-- STATUS -->
+
+                            <!-- =================================
+                                 STATUS
+                            ================================== -->
 
                             <td>
 
                                 {% if user.is_active %}
 
-                                    <span class="badge active">
+
+                                    <span class="status active">
+
+                                        <span class="status-dot"></span>
+
                                         Active
+
                                     </span>
+
 
                                 {% else %}
 
-                                    <span class="badge blocked">
+
+                                    <span class="status blocked">
+
+                                        <span class="status-dot"></span>
+
                                         Blocked
+
                                     </span>
+
 
                                 {% endif %}
 
                             </td>
 
 
-                            <!-- ACTIONS -->
+
+                            <!-- =================================
+                                 ACTION
+                            ================================== -->
 
                             <td>
 
-                                {% if user == request.user %}
 
-                                    <button
-                                        class="btn-action disabled"
-                                        disabled
-                                    >
-                                        Self
-                                    </button>
+                                {% if not user.is_staff and not user.is_superuser %}
 
-                                {% else %}
 
                                     <form
                                         method="POST"
                                         action="{% url 'toggle_user_status' user.id %}"
-                                        style="display: inline;"
+                                        class="action-form"
                                     >
 
                                         {% csrf_token %}
 
+
                                         {% if user.is_active %}
+
 
                                             <button
                                                 type="submit"
-                                                class="btn-action block"
+                                                class="action-btn block"
                                             >
-                                                Block
+
+                                                🚫 Block
+
                                             </button>
+
 
                                         {% else %}
 
+
                                             <button
                                                 type="submit"
-                                                class="btn-action unblock"
+                                                class="action-btn unblock"
                                             >
-                                                Unblock
+
+                                                ✓ Unblock
+
                                             </button>
+
 
                                         {% endif %}
 
+
                                     </form>
+
+
+                                {% else %}
+
+
+                                    <span class="badge admin">
+
+                                        Protected
+
+                                    </span>
+
 
                                 {% endif %}
 
+
                             </td>
 
 
                         </tr>
 
+
+                        <!-- =================================
+                             EMPTY
+                        ================================== -->
 
                         {% empty %}
 
+
                         <tr>
 
-                            <td
-                                colspan="7"
-                                style="
-                                    text-align: center;
-                                    color:
-                                    var(--text-secondary);
-                                    padding: 3rem;
-                                "
-                            >
-                                No registered users found.
+                            <td colspan="7">
+
+
+                                <div class="empty-state">
+
+
+                                    <div class="empty-icon">
+                                        👥
+                                    </div>
+
+
+                                    <h3>
+                                        No Users Found
+                                    </h3>
+
+
+                                    <p>
+                                        There are no registered users yet.
+                                    </p>
+
+
+                                </div>
+
+
                             </td>
 
                         </tr>
+
 
                         {% endfor %}
 
@@ -1352,10 +1765,11 @@
 
             </div>
 
-        </div>
+        </section>
 
 
     </main>
+
 
 </body>
 
