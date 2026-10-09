@@ -1,0 +1,1176 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>FitFusion Premium Payment</title>
+
+
+    <!-- =================================================
+         POPPINS FONT
+    ================================================== -->
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        /* =================================================
+           BODY
+        ================================================= */
+
+        body {
+
+            font-family: 'Poppins', sans-serif;
+
+            min-height: 100vh;
+
+            color: #ffffff;
+
+            background:
+                radial-gradient(
+                    circle at 15% 10%,
+                    rgba(99, 102, 241, 0.22),
+                    transparent 30%
+                ),
+
+                radial-gradient(
+                    circle at 85% 90%,
+                    rgba(168, 85, 247, 0.18),
+                    transparent 30%
+                ),
+
+                linear-gradient(
+                    135deg,
+                    #080b16,
+                    #101426,
+                    #080b16
+                );
+
+            overflow-x: hidden;
+        }
+
+
+        /* =================================================
+           ANIMATED BACKGROUND
+        ================================================= */
+
+        .background {
+
+            position: fixed;
+
+            inset: 0;
+
+            overflow: hidden;
+
+            pointer-events: none;
+
+            z-index: 0;
+        }
+
+
+        .orb {
+
+            position: absolute;
+
+            border-radius: 50%;
+
+            filter: blur(90px);
+
+            opacity: 0.25;
+
+            animation:
+                floatOrb 8s ease-in-out infinite;
+        }
+
+
+        .orb-one {
+
+            width: 280px;
+
+            height: 280px;
+
+            background: #6366f1;
+
+            top: -100px;
+
+            left: -80px;
+        }
+
+
+        .orb-two {
+
+            width: 260px;
+
+            height: 260px;
+
+            background: #a855f7;
+
+            right: -80px;
+
+            bottom: -80px;
+
+            animation-delay: 2s;
+        }
+
+
+        .orb-three {
+
+            width: 150px;
+
+            height: 150px;
+
+            background: #06b6d4;
+
+            left: 50%;
+
+            top: 45%;
+
+            animation-delay: 4s;
+        }
+
+
+        @keyframes floatOrb {
+
+            0%,
+            100% {
+
+                transform:
+                    translate(0, 0);
+            }
+
+            50% {
+
+                transform:
+                    translate(25px, -25px);
+            }
+        }
+
+
+        /* =================================================
+           NAVBAR
+        ================================================= */
+
+        .navbar {
+
+            position: relative;
+
+            z-index: 10;
+
+            width: 100%;
+
+            padding: 18px 6%;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            border-bottom: 1px solid
+                rgba(255, 255, 255, 0.08);
+
+            background:
+                rgba(8, 11, 22, 0.65);
+
+            backdrop-filter: blur(18px);
+        }
+
+
+        .logo {
+
+            font-size: 25px;
+
+            font-weight: 800;
+
+            letter-spacing: 1px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #818cf8,
+                    #c084fc
+                );
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+        }
+
+
+        .nav-user {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            color: #cbd5e1;
+
+            font-size: 14px;
+        }
+
+
+        .user-icon {
+
+            width: 38px;
+
+            height: 38px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #6366f1,
+                    #a855f7
+                );
+
+            box-shadow:
+                0 0 20px
+                rgba(99, 102, 241, 0.4);
+        }
+
+
+        /* =================================================
+           PAYMENT AREA
+        ================================================= */
+
+        .payment-wrapper {
+
+            position: relative;
+
+            z-index: 2;
+
+            min-height:
+                calc(100vh - 75px);
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 40px 20px;
+        }
+
+
+        /* =================================================
+           PAYMENT CARD
+        ================================================= */
+
+        .payment-card {
+
+            width: 100%;
+
+            max-width: 470px;
+
+            padding: 38px;
+
+            border-radius: 28px;
+
+            text-align: center;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255, 255, 255, 0.09),
+                    rgba(255, 255, 255, 0.035)
+                );
+
+            border: 1px solid
+                rgba(255, 255, 255, 0.12);
+
+            backdrop-filter: blur(25px);
+
+            box-shadow:
+                0 30px 80px
+                rgba(0, 0, 0, 0.5);
+
+            animation:
+                cardAppear 0.8s ease forwards;
+
+            opacity: 0;
+
+            transform:
+                translateY(30px);
+        }
+
+
+        @keyframes cardAppear {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                    translateY(30px)
+                    scale(0.96);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                    translateY(0)
+                    scale(1);
+            }
+        }
+
+
+        /* =================================================
+           PREMIUM ICON
+        ================================================= */
+
+        .premium-icon {
+
+            width: 82px;
+
+            height: 82px;
+
+            margin: 0 auto 22px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 24px;
+
+            font-size: 34px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #6366f1,
+                    #a855f7
+                );
+
+            box-shadow:
+                0 15px 40px
+                rgba(99, 102, 241, 0.4);
+
+            animation:
+                iconPulse 3s ease-in-out infinite;
+        }
+
+
+        @keyframes iconPulse {
+
+            0%,
+            100% {
+
+                transform: scale(1);
+
+                box-shadow:
+                    0 15px 40px
+                    rgba(99, 102, 241, 0.35);
+            }
+
+            50% {
+
+                transform: scale(1.06);
+
+                box-shadow:
+                    0 18px 50px
+                    rgba(168, 85, 247, 0.45);
+            }
+        }
+
+
+        /* =================================================
+           TITLE
+        ================================================= */
+
+        .payment-card h1 {
+
+            font-size: 28px;
+
+            font-weight: 700;
+
+            margin-bottom: 8px;
+        }
+
+
+        .gradient-title {
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #818cf8,
+                    #c084fc,
+                    #f0abfc
+                );
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+        }
+
+
+        .subtitle {
+
+            color: #94a3b8;
+
+            font-size: 13px;
+
+            margin-bottom: 30px;
+        }
+
+
+        /* =================================================
+           PRICE
+        ================================================= */
+
+        .price-box {
+
+            padding: 25px 20px;
+
+            margin-bottom: 25px;
+
+            border-radius: 20px;
+
+            background:
+                rgba(0, 0, 0, 0.20);
+
+            border: 1px solid
+                rgba(255, 255, 255, 0.07);
+        }
+
+
+        .price {
+
+            font-size: 52px;
+
+            line-height: 1;
+
+            font-weight: 800;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #818cf8,
+                    #c084fc
+                );
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+        }
+
+
+        .price-period {
+
+            margin-top: 10px;
+
+            color: #64748b;
+
+            font-size: 12px;
+        }
+
+
+        /* =================================================
+           PAYMENT BUTTON
+        ================================================= */
+
+        .pay-button {
+
+            width: 100%;
+
+            padding: 17px 20px;
+
+            border: none;
+
+            border-radius: 15px;
+
+            cursor: pointer;
+
+            color: white;
+
+            font-family:
+                'Poppins',
+                sans-serif;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #6366f1,
+                    #8b5cf6,
+                    #a855f7
+                );
+
+            box-shadow:
+                0 12px 30px
+                rgba(99, 102, 241, 0.30);
+
+            transition:
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        .pay-button:hover {
+
+            transform:
+                translateY(-3px);
+
+            box-shadow:
+                0 18px 45px
+                rgba(99, 102, 241, 0.45);
+        }
+
+
+        .pay-button:active {
+
+            transform:
+                translateY(0);
+        }
+
+
+        .pay-button:disabled {
+
+            opacity: 0.6;
+
+            cursor: not-allowed;
+
+            transform: none;
+        }
+
+
+        /* =================================================
+           PAYMENT METHODS
+        ================================================= */
+
+        .payment-methods {
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            gap: 8px;
+
+            flex-wrap: wrap;
+
+            margin-top: 20px;
+        }
+
+
+        .method {
+
+            padding: 6px 10px;
+
+            border-radius: 8px;
+
+            font-size: 10px;
+
+            color: #94a3b8;
+
+            background:
+                rgba(255, 255, 255, 0.04);
+
+            border: 1px solid
+                rgba(255, 255, 255, 0.06);
+        }
+
+
+        /* =================================================
+           SECURITY
+        ================================================= */
+
+        .secure {
+
+            margin-top: 18px;
+
+            color: #64748b;
+
+            font-size: 11px;
+        }
+
+
+        /* =================================================
+           BACK LINK
+        ================================================= */
+
+        .back-link {
+
+            display: inline-block;
+
+            margin-top: 22px;
+
+            color: #64748b;
+
+            font-size: 12px;
+
+            text-decoration: none;
+
+            transition:
+                color 0.3s ease;
+        }
+
+
+        .back-link:hover {
+
+            color: #c4b5fd;
+        }
+
+
+        /* =================================================
+           MOBILE
+        ================================================= */
+
+        @media (max-width: 600px) {
+
+            .navbar {
+
+                padding:
+                    16px 20px;
+            }
+
+
+            .logo {
+
+                font-size: 21px;
+            }
+
+
+            .nav-user span {
+
+                display: none;
+            }
+
+
+            .payment-wrapper {
+
+                padding:
+                    30px 15px;
+            }
+
+
+            .payment-card {
+
+                padding:
+                    30px 20px;
+
+                border-radius: 23px;
+            }
+
+
+            .payment-card h1 {
+
+                font-size: 24px;
+            }
+
+
+            .price {
+
+                font-size: 46px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =================================================
+     ANIMATED BACKGROUND
+================================================== -->
+
+<div class="background">
+
+    <div class="orb orb-one"></div>
+
+    <div class="orb orb-two"></div>
+
+    <div class="orb orb-three"></div>
+
+</div>
+
+
+<!-- =================================================
+     NAVBAR
+================================================== -->
+
+<nav class="navbar">
+
+    <div class="logo">
+        FitFusion
+    </div>
+
+
+    <div class="nav-user">
+
+        <div class="user-icon">
+            👤
+        </div>
+
+        <span>
+            {{ user_name }}
+        </span>
+
+    </div>
+
+</nav>
+
+
+<!-- =================================================
+     PAYMENT SECTION
+================================================== -->
+
+<main class="payment-wrapper">
+
+
+    <section class="payment-card">
+
+
+        <!-- Premium Icon -->
+
+        <div class="premium-icon">
+            👑
+        </div>
+
+
+        <!-- Title -->
+
+        <h1>
+
+            <span class="gradient-title">
+                FitFusion Premium
+            </span>
+
+        </h1>
+
+
+        <p class="subtitle">
+
+            Unlock premium fitness access
+            for one month
+
+        </p>
+
+
+        <!-- =================================================
+             PRICE
+        ================================================== -->
+
+        <div class="price-box">
+
+            <div class="price">
+
+                ₹{{ razorpay_amount_display }}
+
+            </div>
+
+
+            <div class="price-period">
+
+                1 Month Premium Access
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             PAYMENT BUTTON
+        ================================================== -->
+
+        <button
+            type="button"
+            id="pay-button"
+            class="pay-button"
+        >
+
+            🔒 Continue to Secure Payment
+
+        </button>
+
+
+        <!-- =================================================
+             PAYMENT METHODS
+        ================================================== -->
+
+        <div class="payment-methods">
+
+            <span class="method">
+                UPI
+            </span>
+
+            <span class="method">
+                Cards
+            </span>
+
+            <span class="method">
+                Net Banking
+            </span>
+
+            <span class="method">
+                Wallets
+            </span>
+
+        </div>
+
+
+        <!-- =================================================
+             SECURITY
+        ================================================== -->
+
+        <p class="secure">
+
+            🔐 Secure payment powered by Razorpay
+
+        </p>
+
+
+        <!-- =================================================
+             BACK
+        ================================================== -->
+
+        <a
+            href="{% url 'first_time' %}"
+            class="back-link"
+        >
+
+            ← Back to Premium
+
+        </a>
+
+
+    </section>
+
+
+</main>
+
+
+<!-- =====================================================
+     RAZORPAY CHECKOUT SCRIPT
+===================================================== -->
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
+<script>
+
+    /* =====================================================
+       RAZORPAY OPTIONS
+    ===================================================== */
+
+    const options = {
+
+        // Razorpay TEST Key ID
+        key: "{{ razorpay_key_id }}",
+
+        // Amount in paise
+        // ₹9 = 900 paise
+        amount: "{{ razorpay_amount }}",
+
+        // Currency
+        currency: "{{ razorpay_currency }}",
+
+        // Business name
+        name: "FitFusion",
+
+        // Payment description
+        description:
+            "FitFusion Premium - 1 Month",
+
+        // Order created by Django
+        order_id:
+            "{{ razorpay_order_id }}",
+
+        // Customer details
+        prefill: {
+
+            name:
+                "{{ user_name|escapejs }}",
+
+            email:
+                "{{ user_email|escapejs }}"
+
+        },
+
+        // Razorpay checkout theme
+        theme: {
+
+            color: "#6366f1"
+
+        },
+
+
+        /* =================================================
+           SUCCESS HANDLER
+        ================================================== */
+
+        handler: function(response) {
+
+            console.log(
+                "Payment successful"
+            );
+
+            console.log(
+                "Payment ID:",
+                response.razorpay_payment_id
+            );
+
+            console.log(
+                "Order ID:",
+                response.razorpay_order_id
+            );
+
+            console.log(
+                "Signature:",
+                response.razorpay_signature
+            );
+
+
+            /* =============================================
+               CREATE FORM
+            ============================================= */
+
+            const form =
+                document.createElement("form");
+
+
+            form.method = "POST";
+
+
+            form.action =
+                "{% url 'confirm_payment' %}";
+
+
+            /* =============================================
+               CSRF TOKEN
+            ============================================= */
+
+            const csrfToken =
+                document.createElement("input");
+
+
+            csrfToken.type =
+                "hidden";
+
+
+            csrfToken.name =
+                "csrfmiddlewaretoken";
+
+
+            csrfToken.value =
+                "{{ csrf_token }}";
+
+
+            form.appendChild(
+                csrfToken
+            );
+
+
+            /* =============================================
+               PAYMENT ID
+            ============================================= */
+
+            const paymentId =
+                document.createElement("input");
+
+
+            paymentId.type =
+                "hidden";
+
+
+            paymentId.name =
+                "razorpay_payment_id";
+
+
+            paymentId.value =
+                response.razorpay_payment_id;
+
+
+            form.appendChild(
+                paymentId
+            );
+
+
+            /* =============================================
+               ORDER ID
+            ============================================= */
+
+            const orderId =
+                document.createElement("input");
+
+
+            orderId.type =
+                "hidden";
+
+
+            orderId.name =
+                "razorpay_order_id";
+
+
+            orderId.value =
+                response.razorpay_order_id;
+
+
+            form.appendChild(
+                orderId
+            );
+
+
+            /* =============================================
+               SIGNATURE
+            ============================================= */
+
+            const signature =
+                document.createElement("input");
+
+
+            signature.type =
+                "hidden";
+
+
+            signature.name =
+                "razorpay_signature";
+
+
+            signature.value =
+                response.razorpay_signature;
+
+
+            form.appendChild(
+                signature
+            );
+
+
+            /* =============================================
+               ADD FORM TO PAGE
+            ============================================= */
+
+            document.body.appendChild(
+                form
+            );
+
+
+            /* =============================================
+               SEND TO DJANGO
+            ============================================= */
+
+            form.submit();
+
+        },
+
+
+        /* =================================================
+           CHECKOUT CLOSED
+        ================================================== */
+
+        modal: {
+
+            ondismiss: function() {
+
+                console.log(
+                    "Razorpay checkout closed."
+                );
+
+            }
+
+        }
+
+    };
+
+
+    /* =====================================================
+       CREATE RAZORPAY OBJECT
+    ===================================================== */
+
+    const razorpay =
+        new Razorpay(options);
+
+
+    /* =====================================================
+       PAYMENT FAILED
+    ===================================================== */
+
+    razorpay.on(
+        "payment.failed",
+        function(response) {
+
+            console.log(
+                "Payment failed:",
+                response.error
+            );
+
+
+            alert(
+                "Payment failed: " +
+                response.error.description
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       PAYMENT BUTTON CLICK
+    ===================================================== */
+
+    const payButton =
+        document.getElementById(
+            "pay-button"
+        );
+
+
+    payButton.addEventListener(
+        "click",
+        function(event) {
+
+            event.preventDefault();
+
+            razorpay.open();
+
+        }
+    );
+
+</script>
+
+
+</body>
+
+</html>

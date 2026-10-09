@@ -51,9 +51,15 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
 
+    # =====================================================
     # USER INFORMATION
+    # =====================================================
+
     email = models.EmailField(unique=True)
-    name = models.CharField(max_length=255)
+
+    name = models.CharField(
+        max_length=255
+    )
 
     age = models.PositiveIntegerField(
         null=True,
@@ -73,12 +79,25 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         blank=True
     )
 
+    # =====================================================
     # ACCOUNT STATUS
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
+    # =====================================================
 
+    is_active = models.BooleanField(
+        default=True
+    )
+
+    is_staff = models.BooleanField(
+        default=False
+    )
+
+    # =====================================================
     # PREMIUM / SUBSCRIPTION
-    is_paid = models.BooleanField(default=False)
+    # =====================================================
+
+    is_paid = models.BooleanField(
+        default=False
+    )
 
     subscription_start = models.DateTimeField(
         null=True,
@@ -90,11 +109,42 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         blank=True
     )
 
+    # =====================================================
+    # RAZORPAY PAYMENT DETAILS
+    # =====================================================
+
+    razorpay_order_id = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
+    )
+
+    razorpay_payment_id = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
+    )
+
+    razorpay_signature = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True
+    )
+
+    # =====================================================
     # MANAGER
+    # =====================================================
+
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
+
     REQUIRED_FIELDS = ['name']
 
     def __str__(self):
         return self.email
+    
+
+
+
+    
