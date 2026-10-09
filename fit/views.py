@@ -772,6 +772,8 @@ def unlock(request):
     lambda u: u.is_staff or u.is_superuser,
     login_url='home'
 )
+
+
 def admin_panel_view(request):
 
     users = User.objects.all().order_by('-id')
@@ -788,6 +790,15 @@ def admin_panel_view(request):
 
     other_users = users.filter(
         gender='O'
+    ).count()
+
+    # Premium and Normal users
+    premium_users = users.filter(
+        is_premium=True
+    ).count()
+
+    normal_users = users.filter(
+        is_premium=False
     ).count()
 
     ages = [
@@ -814,6 +825,10 @@ def admin_panel_view(request):
 
         'other_users': other_users,
 
+        'premium_users': premium_users,
+
+        'normal_users': normal_users,
+
         'avg_age': round(
             avg_age,
             1
@@ -825,8 +840,6 @@ def admin_panel_view(request):
         'fit/admin_panel.html',
         context
     )
-
-
 # =========================================================
 # TOGGLE USER STATUS
 # =========================================================
