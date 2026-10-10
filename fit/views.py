@@ -549,7 +549,6 @@ def start_payment(request):
 # =========================================================
 # VERIFY RAZORPAY PAYMENT
 # =========================================================
-
 @login_required(login_url='login')
 def confirm_payment(request):
 
@@ -558,6 +557,10 @@ def confirm_payment(request):
     # =========================================
 
     if request.method != 'POST':
+        messages.error(
+            request,
+            'Invalid payment request. Please try again.'
+        )
         return redirect('first_time')
 
     user = request.user
@@ -587,12 +590,10 @@ def confirm_payment(request):
         razorpay_order_id,
         razorpay_signature,
     ]):
-
         messages.error(
             request,
-            'Payment information is missing.'
+            'Payment information is missing. Please try again.'
         )
-
         return redirect('first_time')
 
     # =========================================
@@ -604,29 +605,26 @@ def confirm_payment(request):
     )
 
     if not session_order_id:
-
         messages.error(
             request,
             'Payment session expired. Please try again.'
         )
-
         return redirect('first_time')
 
     if razorpay_order_id != session_order_id:
-
         messages.error(
             request,
             'Invalid payment order.'
         )
-
         return redirect('first_time')
+
+    # =========================================
+    # VERIFY PAYMENT
+    # =========================================
 
     try:
 
-        # =====================================
-        # VERIFY RAZORPAY SIGNATURE
-        # =====================================
-
+        # Verify Razorpay signature
         payment_data = {
             'razorpay_order_id': razorpay_order_id,
             'razorpay_payment_id': razorpay_payment_id,
@@ -637,169 +635,108 @@ def confirm_payment(request):
             payment_data
         )
 
-        # =====================================
-        # FETCH ORDER
-        # =====================================
-
+        # Fetch Razorpay order
         razorpay_order = razorpay_client.order.fetch(
             razorpay_order_id
         )
 
-        # =====================================
-        # VERIFY ORDER AMOUNT
-        # =====================================
-
+        # Verify order amount
         if (
-            razorpay_order['amount']
+            razorpay_order.get('amount')
             != SUBSCRIPTION_AMOUNT_PAISE
         ):
-
-            messages.error(
-                request,
-                'Invalid payment amount.'
-            )
-
-            return redirect('first_time')
-
-        # =====================================
-        # VERIFY ORDER CURRENCY
-        # =====================================
-
-        if (
-            razorpay_order['currency']
-            != SUBSCRIPTION_CURRENCY
-        ):
-
-            messages.error(
-                request,
-                'Invalid payment currency.'
-            )
-
-            return redirect('first_time')
-
-        # =====================================
-        # FETCH PAYMENT
-        # =====================================
-
-        payment = razorpay_client.payment.fetch(
-            razorpay_payment_id
-        )
-
-        # =====================================
-        # VERIFY PAYMENT BELONGS TO ORDER
-        # =====================================
-
-        if payment.get('order_id') != razorpay_order_id:
-
-            messages.error(
-                request,
-                'Payment does not belong to this order.'
-            )
-
-            return redirect('first_time')
-
-        # =====================================
-        # VERIFY PAYMENT AMOUNT
-        # =====================================
-
-        if (
-            payment['amount']
-            != SUBSCRIPTION_AMOUNT_PAISE
-        ):
-
             messages.error(
                 request,
                 'Payment amount verification failed.'
             )
-
             return redirect('first_time')
 
-        # =====================================
-        # VERIFY PAYMENT CURRENCY
-        # =====================================
-
+        # Verify order currency
         if (
-            payment['currency']
+            razorpay_order.get('currency')
             != SUBSCRIPTION_CURRENCY
         ):
-
             messages.error(
                 request,
                 'Payment currency verification failed.'
             )
-
             return redirect('first_time')
 
-        # =====================================
-        # VERIFY PAYMENT STATUS
-        # =====================================
+        # Fetch payment details
+        payment = razorpay_client.payment.fetch(
+            razorpay_payment_id
+        )
 
-        payment_status = payment.get('status')
-
-        if payment_status != 'captured':
-
+        # Verify payment belongs to this order
+        if payment.get('order_id') != razorpay_order_id:
             messages.error(
                 request,
-                'Payment was not captured successfully.'
+                'Payment does not belong to this order.'
             )
+            return redirect('first_time')
 
+        # Verify payment amount
+        if (
+            payment.get('amount')
+            != SUBSCRIPTION_AMOUNT_PAISE
+        ):
+            messages.error(
+                request,
+                'Payment amount verification failed.'
+            )
+            return redirect('first_time')
+
+        # Verify payment currency
+        if (
+            payment.get('currency')
+            != SUBSCRIPTION_CURRENCY
+        ):
+            messages.error(
+                request,
+                'Payment currency verification failed.'
+            )
+            return redirect('first_time')
+
+        # Verify payment status
+        if payment.get('status') != 'captured':
+            messages.error(
+                request,
+                'Payment has not been captured successfully.'
+            )
             return redirect('first_time')
 
         # =========================================
-        # PAYMENT VERIFIED SUCCESSFULLY
+        # ACTIVATE PREMIUM SUBSCRIPTION
         # =========================================
 
         now = timezone.now()
 
-        # =========================================
-        # CALCULATE SUBSCRIPTION END DATE
-        # =========================================
-
+        # Extend an existing active subscription.
+        # Otherwise, start a new one-month subscription.
         if (
-            user.subscription_end
+            user.is_paid
+            and user.subscription_end
             and user.subscription_end > now
         ):
-
-            # Existing active subscription
             subscription_end = (
                 user.subscription_end
                 + relativedelta(months=1)
             )
-
         else:
-
-            # New / expired subscription
             subscription_end = (
-                now
-                + relativedelta(months=1)
+                now + relativedelta(months=1)
             )
 
-        # =========================================
-        # ACTIVATE PREMIUM
-        # =========================================
-
         user.is_paid = True
-
         user.subscription_start = now
-
         user.subscription_end = subscription_end
 
-        # =========================================
-        # SAVE RAZORPAY DETAILS
-        # =========================================
+        # Save Razorpay payment details
+        user.razorpay_order_id = razorpay_order_id
+        user.razorpay_payment_id = razorpay_payment_id
+        user.razorpay_signature = razorpay_signature
 
-        user.razorpay_order_id = (
-            razorpay_order_id
-        )
-
-        user.razorpay_payment_id = (
-            razorpay_payment_id
-        )
-
-        user.razorpay_signature = (
-            razorpay_signature
-        )
-
+        # Save everything to the database
         user.save(
             update_fields=[
                 'is_paid',
@@ -840,41 +777,45 @@ def confirm_payment(request):
             'Your Premium subscription is now active.'
         )
 
+        # =========================================
+        # REDIRECT TO HOME PAGE
+        # =========================================
+
         return redirect('home')
 
     # =========================================
-    # RAZORPAY SIGNATURE ERROR
+    # SIGNATURE VERIFICATION ERROR
     # =========================================
 
     except razorpay.errors.SignatureVerificationError:
 
         messages.error(
             request,
-            'Payment verification failed. '
-            'Invalid payment signature.'
+            'Payment verification failed. Invalid signature.'
         )
 
         return redirect('first_time')
 
     # =========================================
-    # OTHER RAZORPAY ERRORS
+    # OTHER ERRORS
     # =========================================
 
-    except Exception as e:
+    except Exception:
+        import logging
 
-        print(
-            "Razorpay payment verification error:",
-            e
+        logger = logging.getLogger(__name__)
+
+        logger.exception(
+            'Razorpay payment verification failed.'
         )
 
         messages.error(
             request,
-            'Payment verification failed. '
-            'Please contact support if money was deducted.'
+            'Unable to verify payment. Please check your '
+            'payment status or contact support.'
         )
 
         return redirect('first_time')
-
 
 # =========================================================
 # UNLOCK PAGE
