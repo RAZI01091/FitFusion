@@ -254,10 +254,6 @@
             box-shadow: 0 18px 45px rgba(99, 102, 241, 0.45);
         }
 
-        .pay-button:active {
-            transform: translateY(0);
-        }
-
         .pay-button:disabled {
             opacity: 0.6;
             cursor: not-allowed;
@@ -345,12 +341,12 @@
 
 <body>
 
-    <!-- CSRF token rendered by Django -->
+    <!-- Django CSRF token -->
     <form id="csrf-form" hidden>
         {% csrf_token %}
     </form>
 
-    <!-- Animated background -->
+    <!-- Background -->
     <div class="background">
         <div class="orb orb-one"></div>
         <div class="orb orb-two"></div>
@@ -367,8 +363,9 @@
         </div>
     </nav>
 
-    <!-- Payment section -->
+    <!-- Payment -->
     <main class="payment-wrapper">
+
         <section class="payment-card">
 
             <div class="premium-icon">👑</div>
@@ -403,7 +400,9 @@
                 type="button"
                 id="pay-button"
                 class="pay-button">
+
                 🔒 Continue to Secure Payment
+
             </button>
 
             <div class="payment-methods">
@@ -417,13 +416,12 @@
                 🔐 Secure payment powered by Razorpay
             </p>
 
-            <a
-                href="{% url 'first_time' %}"
-                class="back-link">
+            <a href="{% url 'first_time' %}" class="back-link">
                 ← Back to Premium
             </a>
 
         </section>
+
     </main>
 
     <!-- Razorpay Checkout -->
@@ -434,25 +432,36 @@
 
             const payButton = document.getElementById("pay-button");
 
-            let paymentInProgress = false;
-
-            // Read the CSRF token rendered by Django.
             const csrfInput = document.querySelector(
                 '#csrf-form input[name="csrfmiddlewaretoken"]'
             );
 
             if (!csrfInput) {
                 payButton.disabled = true;
+
                 alert(
-                    "Security token is missing. Please refresh the page."
+                    "Security token is missing. Refresh the page and try again."
                 );
+
                 return;
             }
 
             const csrfToken = csrfInput.value;
 
-            // Razorpay options
+            // Check Razorpay script
+            if (typeof Razorpay === "undefined") {
+                payButton.disabled = true;
+
+                alert(
+                    "Razorpay could not load. Please check your internet connection."
+                );
+
+                return;
+            }
+
+            // Razorpay checkout options
             const options = {
+
                 key: "{{ razorpay_key_id|escapejs }}",
 
                 amount: "{{ razorpay_amount }}",
@@ -474,7 +483,7 @@
                     color: "#6366f1"
                 },
 
-                // Send payment information to Django.
+                // Runs after Razorpay reports successful checkout.
                 handler: function (response) {
 
                     payButton.disabled = true;
@@ -485,7 +494,7 @@
                     form.method = "POST";
                     form.action = "{% url 'confirm_payment' %}";
 
-                    // Add CSRF token.
+                    // Add CSRF token
                     const csrfField = document.createElement("input");
 
                     csrfField.type = "hidden";
@@ -494,8 +503,8 @@
 
                     form.appendChild(csrfField);
 
-                    // Add payment details.
-                    const fields = {
+                    // Add Razorpay response fields
+                    const paymentFields = {
                         razorpay_payment_id:
                             response.razorpay_payment_id,
 
@@ -506,49 +515,51 @@
                             response.razorpay_signature
                     };
 
-                    Object.entries(fields).forEach(function ([name, value]) {
+                    for (const name in paymentFields) {
+
+                        if (!paymentFields[name]) {
+                            alert(
+                                "Payment details are incomplete. Please contact support."
+                            );
+
+                            payButton.disabled = false;
+                            payButton.textContent =
+                                "🔒 Continue to Secure Payment";
+
+                            return;
+                        }
 
                         const input = document.createElement("input");
 
                         input.type = "hidden";
                         input.name = name;
-                        input.value = value;
+                        input.value = paymentFields[name];
 
                         form.appendChild(input);
-                    });
+                    }
 
                     document.body.appendChild(form);
 
-                    // Submit payment details to Django.
-                    form.submit();
+                    // Submit to Django.
+                    // Django verifies the payment and redirects to home.
+                    HTMLFormElement.prototype.submit.call(form);
                 },
 
                 modal: {
                     ondismiss: function () {
-                        paymentInProgress = false;
+
                         payButton.disabled = false;
+
                         payButton.textContent =
                             "🔒 Continue to Secure Payment";
                     }
                 }
             };
 
-            // Check that Razorpay Checkout loaded.
-            if (typeof Razorpay === "undefined") {
-                payButton.disabled = true;
-
-                alert(
-                    "Razorpay could not load. Please check your internet connection and try again."
-                );
-
-                return;
-            }
-
             const razorpay = new Razorpay(options);
 
             razorpay.on("payment.failed", function (response) {
 
-                paymentInProgress = false;
                 payButton.disabled = false;
 
                 payButton.textContent =
@@ -563,43 +574,43 @@
                 alert("Payment failed: " + description);
             });
 
-            // Open Razorpay only after the button is clicked.
+            // Open Razorpay when the user clicks the button.
             payButton.addEventListener("click", function () {
 
-                if (paymentInProgress) {
-                    return;
-                }
-
-                paymentInProgress = true;
                 payButton.disabled = true;
                 payButton.textContent = "Opening secure payment...";
 
                 try {
+
                     razorpay.open();
 
-                    // Allow the button to be restored if Checkout
-                    // closes without a successful payment.
                     setTimeout(function () {
-                        if (paymentInProgress) {
+
+                        if (payButton.disabled) {
                             payButton.textContent =
                                 "Complete payment in Razorpay...";
                         }
+
                     }, 1000);
 
                 } catch (error) {
-                    paymentInProgress = false;
+
                     payButton.disabled = false;
 
                     payButton.textContent =
                         "🔒 Continue to Secure Payment";
 
+                    console.error(
+                        "Razorpay Checkout error:",
+                        error
+                    );
+
                     alert(
                         "Unable to open Razorpay. Please refresh and try again."
                     );
-
-                    console.error("Razorpay Checkout error:", error);
                 }
             });
+
         });
     </script>
 
