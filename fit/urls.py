@@ -4,11 +4,7 @@ from .views import unlock, first_time
 
 urlpatterns = [
     # Root entry point
-    path(
-        '',
-        views.entry_view,
-        name='home'
-    ),
+   path('', views.home_view, name='home'),
 
     path('signup/', views.signup_view, name='signup'),
     path('login/', views.login_view, name='login'),
