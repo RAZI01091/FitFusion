@@ -46,7 +46,7 @@ ALLOWED_HOSTS = [
 
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://*.onrender.com",
+    "https://fitfusion-r34a.onrender.com",
 ]
 
 
