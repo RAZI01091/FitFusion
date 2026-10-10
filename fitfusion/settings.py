@@ -279,6 +279,6 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # RAZORPAY CONFIGURATION
 # =========================================================
 
-RAZORPAY_KEY_ID = "rzp_live_Tm4eW9XTeztxGe"
+RAZORPAY_KEY_ID = "rzp_test_TlhViFCyKAX75C"
 
-RAZORPAY_KEY_SECRET = "Vrs6oLTvkx3qLgBsIOyFVKWO"
+RAZORPAY_KEY_SECRET = "bm0eeLQNMOQG4mEC2C9F7YY5"
