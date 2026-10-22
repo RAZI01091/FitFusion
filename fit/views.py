@@ -4,6 +4,7 @@
 
 import random
 import time
+import logging
 import razorpay
 
 from django.conf import settings
@@ -26,8 +27,6 @@ from django.shortcuts import (
 )
 from django.utils import timezone
 from django.views.decorators.cache import never_cache
-
-from dateutil.relativedelta import relativedelta
 
 from .forms import (
     SignupForm,
@@ -58,7 +57,7 @@ razorpay_client = razorpay.Client(
 
 
 # =========================================================
-# SUBSCRIPTION PAYMENT SETTINGS
+# LIFETIME PREMIUM PAYMENT SETTINGS
 # =========================================================
 
 SUBSCRIPTION_AMOUNT = 9
@@ -72,7 +71,7 @@ SUBSCRIPTION_CURRENCY = "INR"
 
 def entry_view(request):
 
-    # User is NOT logged in
+    # User is not logged in
     if not request.user.is_authenticated:
         return redirect('login')
 
@@ -80,28 +79,11 @@ def entry_view(request):
     if request.user.is_staff or request.user.is_superuser:
         return redirect('admin_panel')
 
-    # Premium / Paid user
+    # Lifetime Premium user
     if request.user.is_paid:
+        return redirect('home')
 
-        # Make sure subscription is still active
-        if (
-            request.user.subscription_end
-            and request.user.subscription_end > timezone.now()
-        ):
-            return redirect('home')
-
-        # Subscription expired
-        request.user.is_paid = False
-        request.user.subscription_end = None
-
-        request.user.save(
-            update_fields=[
-                'is_paid',
-                'subscription_end',
-            ]
-        )
-
-    # Normal unpaid user
+    # Normal user
     return redirect('first_time')
 
 
@@ -111,52 +93,33 @@ def entry_view(request):
 
 def signup_view(request):
 
-    # If user is already logged in
+    # Already logged in
     if request.user.is_authenticated:
 
         # Admin
         if request.user.is_staff or request.user.is_superuser:
             return redirect('admin_panel')
 
-        # Paid user
+        # Lifetime Premium user
         if request.user.is_paid:
+            return redirect('home')
 
-            if (
-                request.user.subscription_end
-                and request.user.subscription_end > timezone.now()
-            ):
-                return redirect('home')
-
-            # Subscription expired
-            request.user.is_paid = False
-            request.user.subscription_end = None
-
-            request.user.save(
-                update_fields=[
-                    'is_paid',
-                    'subscription_end',
-                ]
-            )
-
-        # Unpaid user
+        # Normal user
         return redirect('first_time')
 
-    # Signup form submitted
     if request.method == 'POST':
 
         form = SignupForm(request.POST)
 
         if form.is_valid():
 
-            # Create user
-            user = form.save()
+            form.save()
 
             messages.success(
                 request,
                 'Account created successfully! Please login.'
             )
 
-            # Do NOT login automatically
             return redirect('login')
 
     else:
@@ -175,38 +138,20 @@ def signup_view(request):
 
 def login_view(request):
 
-    # If user is already logged in
+    # Already logged in
     if request.user.is_authenticated:
 
-        # Admin / Staff
+        # Admin
         if request.user.is_staff or request.user.is_superuser:
             return redirect('admin_panel')
 
-        # Paid user
+        # Lifetime Premium
         if request.user.is_paid:
+            return redirect('home')
 
-            # Check active subscription
-            if (
-                request.user.subscription_end
-                and request.user.subscription_end > timezone.now()
-            ):
-                return redirect('home')
-
-            # Subscription expired
-            request.user.is_paid = False
-            request.user.subscription_end = None
-
-            request.user.save(
-                update_fields=[
-                    'is_paid',
-                    'subscription_end',
-                ]
-            )
-
-        # Unpaid user
+        # Normal user
         return redirect('first_time')
 
-    # Login form submitted
     if request.method == 'POST':
 
         form = LoginForm(request.POST)
@@ -223,10 +168,9 @@ def login_view(request):
                 password=password
             )
 
-            # User found
             if user is not None:
 
-                # Check account status
+                # Blocked account
                 if not user.is_active:
 
                     messages.error(
@@ -241,7 +185,7 @@ def login_view(request):
                         {'form': form}
                     )
 
-                # Login
+                # Login user
                 login(request, user)
 
                 messages.success(
@@ -249,49 +193,21 @@ def login_view(request):
                     f'Welcome back, {user.name}!'
                 )
 
-                # =========================================
-                # ADMIN
-                # =========================================
-
+                # Admin
                 if user.is_staff or user.is_superuser:
                     return redirect('admin_panel')
 
-                # =========================================
-                # PREMIUM USER
-                # =========================================
-
+                # Lifetime Premium
                 if user.is_paid:
+                    return redirect('home')
 
-                    # Active subscription
-                    if (
-                        user.subscription_end
-                        and user.subscription_end > timezone.now()
-                    ):
-                        return redirect('home')
-
-                    # Subscription expired
-                    user.is_paid = False
-                    user.subscription_end = None
-
-                    user.save(
-                        update_fields=[
-                            'is_paid',
-                            'subscription_end',
-                        ]
-                    )
-
-                # =========================================
-                # NORMAL / UNPAID USER
-                # =========================================
-
+                # Normal user
                 return redirect('first_time')
 
-            else:
-
-                messages.error(
-                    request,
-                    'Invalid email or password.'
-                )
+            messages.error(
+                request,
+                'Invalid email or password.'
+            )
 
     else:
         form = LoginForm()
@@ -326,64 +242,15 @@ def logout_view(request):
 @login_required(login_url='login')
 def home_view(request):
 
-    # =========================================
-    # ADMIN / STAFF
-    # =========================================
-
+    # Admin
     if request.user.is_staff or request.user.is_superuser:
         return redirect('admin_panel')
 
-    # =========================================
-    # NORMAL USER - NOT PAID
-    # =========================================
-
+    # Normal user without Premium
     if not request.user.is_paid:
         return redirect('first_time')
 
-    # =========================================
-    # PAID USER - CHECK SUBSCRIPTION
-    # =========================================
-
-    if request.user.subscription_end is None:
-
-        request.user.is_paid = False
-
-        request.user.save(
-            update_fields=[
-                'is_paid'
-            ]
-        )
-
-        return redirect('first_time')
-
-    # =========================================
-    # SUBSCRIPTION EXPIRED
-    # =========================================
-
-    if request.user.subscription_end <= timezone.now():
-
-        request.user.is_paid = False
-        request.user.subscription_end = None
-
-        request.user.save(
-            update_fields=[
-                'is_paid',
-                'subscription_end'
-            ]
-        )
-
-        messages.warning(
-            request,
-            'Your Premium subscription has expired. '
-            'Please renew to continue.'
-        )
-
-        return redirect('first_time')
-
-    # =========================================
-    # PAID AND ACTIVE
-    # =========================================
-
+    # Lifetime Premium user
     return render(
         request,
         'fit/home.html'
@@ -397,40 +264,13 @@ def home_view(request):
 @login_required(login_url='login')
 def first_time(request):
 
-    # =========================================
-    # ADMIN DOES NOT NEED PREMIUM
-    # =========================================
-
+    # Admin
     if request.user.is_staff or request.user.is_superuser:
         return redirect('admin_panel')
 
-    # =========================================
-    # ALREADY PAID
-    # =========================================
-
+    # Already has lifetime Premium
     if request.user.is_paid:
-
-        # Subscription active
-        if (
-            request.user.subscription_end
-            and request.user.subscription_end > timezone.now()
-        ):
-            return redirect('home')
-
-        # Subscription expired
-        request.user.is_paid = False
-        request.user.subscription_end = None
-
-        request.user.save(
-            update_fields=[
-                'is_paid',
-                'subscription_end'
-            ]
-        )
-
-    # =========================================
-    # PAYMENT STATUS
-    # =========================================
+        return redirect('home')
 
     payment_started = request.session.get(
         'payment_started',
@@ -453,38 +293,21 @@ def first_time(request):
 @login_required(login_url='login')
 def start_payment(request):
 
-    # =========================================
-    # ADMIN DOES NOT NEED PAYMENT
-    # =========================================
-
+    # Admin does not need payment
     if request.user.is_staff or request.user.is_superuser:
         return redirect('admin_panel')
 
-    # =========================================
-    # ALREADY PAID
-    # =========================================
-
+    # Lifetime Premium users cannot purchase again
     if request.user.is_paid:
+        return redirect('home')
 
-        if (
-            request.user.subscription_end
-            and request.user.subscription_end > timezone.now()
-        ):
-            return redirect('home')
-
-    # =========================================
-    # ONLY POST REQUEST
-    # =========================================
-
+    # Only POST requests allowed
     if request.method != 'POST':
         return redirect('first_time')
 
     try:
 
-        # =====================================
-        # CREATE RAZORPAY ORDER
-        # =====================================
-
+        # Create Razorpay order
         order_data = {
             'amount': SUBSCRIPTION_AMOUNT_PAISE,
             'currency': SUBSCRIPTION_CURRENCY,
@@ -499,10 +322,7 @@ def start_payment(request):
             data=order_data
         )
 
-        # =====================================
-        # SAVE PAYMENT INFORMATION IN SESSION
-        # =====================================
-
+        # Store payment details in session
         request.session['payment_started'] = True
 
         request.session['razorpay_order_id'] = (
@@ -513,10 +333,7 @@ def start_payment(request):
             SUBSCRIPTION_AMOUNT_PAISE
         )
 
-        # =====================================
-        # RAZORPAY CHECKOUT
-        # =====================================
-
+        # Razorpay Checkout context
         context = {
             'razorpay_key_id': settings.RAZORPAY_KEY_ID,
             'razorpay_order_id': razorpay_order['id'],
@@ -533,10 +350,13 @@ def start_payment(request):
             context
         )
 
-    except Exception as e:
+    except Exception:
 
-        import traceback
-        traceback.print_exc()
+        logger = logging.getLogger(__name__)
+
+        logger.exception(
+            'Unable to start Razorpay payment.'
+        )
 
         messages.error(
             request,
@@ -549,26 +369,32 @@ def start_payment(request):
 # =========================================================
 # VERIFY RAZORPAY PAYMENT
 # =========================================================
+
 @login_required(login_url='login')
 def confirm_payment(request):
 
-    # =========================================
-    # ONLY POST REQUEST
-    # =========================================
-
+    # Only POST requests allowed
     if request.method != 'POST':
+
         messages.error(
             request,
             'Invalid payment request. Please try again.'
         )
+
         return redirect('first_time')
 
     user = request.user
 
-    # =========================================
-    # GET RAZORPAY PAYMENT DETAILS
-    # =========================================
+    # Admin does not need payment
+    if user.is_staff or user.is_superuser:
+        return redirect('admin_panel')
 
+    # Do not process another payment for a user
+    # who already has lifetime Premium
+    if user.is_paid:
+        return redirect('home')
+
+    # Get Razorpay payment details
     razorpay_payment_id = request.POST.get(
         'razorpay_payment_id'
     )
@@ -581,46 +407,42 @@ def confirm_payment(request):
         'razorpay_signature'
     )
 
-    # =========================================
-    # CHECK REQUIRED VALUES
-    # =========================================
-
+    # Check required values
     if not all([
         razorpay_payment_id,
         razorpay_order_id,
         razorpay_signature,
     ]):
+
         messages.error(
             request,
             'Payment information is missing. Please try again.'
         )
+
         return redirect('first_time')
 
-    # =========================================
-    # CHECK SESSION ORDER
-    # =========================================
-
+    # Verify session order
     session_order_id = request.session.get(
         'razorpay_order_id'
     )
 
     if not session_order_id:
+
         messages.error(
             request,
             'Payment session expired. Please try again.'
         )
+
         return redirect('first_time')
 
     if razorpay_order_id != session_order_id:
+
         messages.error(
             request,
             'Invalid payment order.'
         )
-        return redirect('first_time')
 
-    # =========================================
-    # VERIFY PAYMENT
-    # =========================================
+        return redirect('first_time')
 
     try:
 
@@ -645,10 +467,12 @@ def confirm_payment(request):
             razorpay_order.get('amount')
             != SUBSCRIPTION_AMOUNT_PAISE
         ):
+
             messages.error(
                 request,
                 'Payment amount verification failed.'
             )
+
             return redirect('first_time')
 
         # Verify order currency
@@ -656,10 +480,12 @@ def confirm_payment(request):
             razorpay_order.get('currency')
             != SUBSCRIPTION_CURRENCY
         ):
+
             messages.error(
                 request,
                 'Payment currency verification failed.'
             )
+
             return redirect('first_time')
 
         # Fetch payment details
@@ -669,10 +495,12 @@ def confirm_payment(request):
 
         # Verify payment belongs to this order
         if payment.get('order_id') != razorpay_order_id:
+
             messages.error(
                 request,
                 'Payment does not belong to this order.'
             )
+
             return redirect('first_time')
 
         # Verify payment amount
@@ -680,10 +508,12 @@ def confirm_payment(request):
             payment.get('amount')
             != SUBSCRIPTION_AMOUNT_PAISE
         ):
+
             messages.error(
                 request,
                 'Payment amount verification failed.'
             )
+
             return redirect('first_time')
 
         # Verify payment currency
@@ -691,52 +521,45 @@ def confirm_payment(request):
             payment.get('currency')
             != SUBSCRIPTION_CURRENCY
         ):
+
             messages.error(
                 request,
                 'Payment currency verification failed.'
             )
+
             return redirect('first_time')
 
-        # Verify payment status
+        # Verify captured payment status
         if payment.get('status') != 'captured':
+
             messages.error(
                 request,
                 'Payment has not been captured successfully.'
             )
+
             return redirect('first_time')
 
         # =========================================
-        # ACTIVATE PREMIUM SUBSCRIPTION
+        # ACTIVATE LIFETIME PREMIUM
         # =========================================
 
         now = timezone.now()
 
-        # Extend an existing active subscription.
-        # Otherwise, start a new one-month subscription.
-        if (
-            user.is_paid
-            and user.subscription_end
-            and user.subscription_end > now
-        ):
-            subscription_end = (
-                user.subscription_end
-                + relativedelta(months=1)
-            )
-        else:
-            subscription_end = (
-                now + relativedelta(months=1)
-            )
-
+        # Grant lifetime access
         user.is_paid = True
+
+        # Record activation date
         user.subscription_start = now
-        user.subscription_end = subscription_end
+
+        # Lifetime Premium has no expiry date
+        user.subscription_end = None
 
         # Save Razorpay payment details
         user.razorpay_order_id = razorpay_order_id
         user.razorpay_payment_id = razorpay_payment_id
         user.razorpay_signature = razorpay_signature
 
-        # Save everything to the database
+        # Save to database
         user.save(
             update_fields=[
                 'is_paid',
@@ -748,10 +571,7 @@ def confirm_payment(request):
             ]
         )
 
-        # =========================================
-        # CLEAR PAYMENT SESSION
-        # =========================================
-
+        # Clear payment session
         request.session.pop(
             'payment_started',
             None
@@ -767,25 +587,15 @@ def confirm_payment(request):
             None
         )
 
-        # =========================================
-        # SUCCESS MESSAGE
-        # =========================================
-
+        # Success message
         messages.success(
             request,
             'Payment successful! '
-            'Your Premium subscription is now active.'
+            'Your Lifetime Premium access is now active.'
         )
 
-        # =========================================
-        # REDIRECT TO HOME PAGE
-        # =========================================
-
+        # Redirect to home
         return redirect('home')
-
-    # =========================================
-    # SIGNATURE VERIFICATION ERROR
-    # =========================================
 
     except razorpay.errors.SignatureVerificationError:
 
@@ -796,12 +606,7 @@ def confirm_payment(request):
 
         return redirect('first_time')
 
-    # =========================================
-    # OTHER ERRORS
-    # =========================================
-
     except Exception:
-        import logging
 
         logger = logging.getLogger(__name__)
 
@@ -817,6 +622,7 @@ def confirm_payment(request):
 
         return redirect('first_time')
 
+
 # =========================================================
 # UNLOCK PAGE
 # =========================================================
@@ -824,40 +630,15 @@ def confirm_payment(request):
 @login_required(login_url='login')
 def unlock(request):
 
-    # =========================================
-    # ADMIN
-    # =========================================
-
+    # Admin
     if request.user.is_staff or request.user.is_superuser:
         return redirect('admin_panel')
 
-    # =========================================
-    # ALREADY PAID
-    # =========================================
-
+    # Lifetime Premium user
     if request.user.is_paid:
+        return redirect('home')
 
-        if (
-            request.user.subscription_end
-            and request.user.subscription_end > timezone.now()
-        ):
-            return redirect('home')
-
-        # Expired
-        request.user.is_paid = False
-        request.user.subscription_end = None
-
-        request.user.save(
-            update_fields=[
-                'is_paid',
-                'subscription_end',
-            ]
-        )
-
-    # =========================================
-    # NOT PAID
-    # =========================================
-
+    # Normal user
     return render(
         request,
         'fit/unlock.html'
@@ -877,16 +658,10 @@ def admin_panel_view(request):
 
     users = User.objects.all().order_by('-id')
 
-    # =========================================
-    # TOTAL USERS
-    # =========================================
-
+    # Total users
     total_users = users.count()
 
-    # =========================================
-    # GENDER COUNTS
-    # =========================================
-
+    # Gender counts
     male_users = users.filter(
         gender='M'
     ).count()
@@ -899,10 +674,7 @@ def admin_panel_view(request):
         gender='O'
     ).count()
 
-    # =========================================
-    # PREMIUM / NORMAL COUNTS
-    # =========================================
-
+    # Premium / Normal counts
     premium_users = users.filter(
         is_paid=True
     ).count()
@@ -911,10 +683,7 @@ def admin_panel_view(request):
         is_paid=False
     ).count()
 
-    # =========================================
-    # AVERAGE AGE
-    # =========================================
-
+    # Average age
     ages = [
         user.age
         for user in users
@@ -927,29 +696,16 @@ def admin_panel_view(request):
         else 0
     )
 
-    # =========================================
-    # CONTEXT
-    # =========================================
-
+    # Context
     context = {
         'users': users,
-
         'total_users': total_users,
-
         'male_users': male_users,
-
         'female_users': female_users,
-
         'other_users': other_users,
-
         'premium_users': premium_users,
-
         'normal_users': normal_users,
-
-        'avg_age': round(
-            avg_age,
-            1
-        ),
+        'avg_age': round(avg_age, 1),
     }
 
     return render(
@@ -968,10 +724,7 @@ def admin_panel_view(request):
     lambda u: u.is_staff or u.is_superuser,
     login_url='home'
 )
-def toggle_user_status_view(
-    request,
-    user_id
-):
+def toggle_user_status_view(request, user_id):
 
     if request.method == 'POST':
 
@@ -980,10 +733,7 @@ def toggle_user_status_view(
             id=user_id
         )
 
-        # =====================================
-        # DO NOT BLOCK ADMIN'S OWN ACCOUNT
-        # =====================================
-
+        # Do not block admin's own account
         if user_to_toggle == request.user:
 
             messages.error(
@@ -1032,8 +782,7 @@ def forgot_password(request):
         if form.is_valid():
 
             email = (
-                form.cleaned_data['email']
-                .lower()
+                form.cleaned_data['email'].lower()
             )
 
             try:
@@ -1042,35 +791,18 @@ def forgot_password(request):
                     email__iexact=email
                 )
 
-                # =====================================
-                # GENERATE 6 DIGIT OTP
-                # =====================================
-
+                # Generate six-digit OTP
                 otp = str(
-                    random.randint(
-                        100000,
-                        999999
-                    )
+                    random.randint(100000, 999999)
                 )
 
-                # =====================================
-                # STORE RESET INFORMATION
-                # =====================================
-
+                # Store reset information
                 request.session['reset_email'] = email
-
                 request.session['reset_otp'] = otp
+                request.session['reset_otp_time'] = time.time()
 
-                request.session['reset_otp_time'] = (
-                    time.time()
-                )
-
-                # =====================================
-                # SEND EMAIL
-                # =====================================
-
+                # Send email
                 send_mail(
-
                     subject="FitFusion Password Reset OTP",
 
                     message=(
@@ -1099,25 +831,20 @@ def forgot_password(request):
                     "OTP has been sent to your email."
                 )
 
-                return redirect(
-                    'verify_otp'
-                )
+                return redirect('verify_otp')
 
             except User.DoesNotExist:
 
-                # Don't reveal whether email exists
+                # Do not reveal whether the email exists
                 messages.success(
                     request,
                     "If this email is registered, "
                     "an OTP has been sent."
                 )
 
-                return redirect(
-                    'forgot_password'
-                )
+                return redirect('forgot_password')
 
     else:
-
         form = ForgotPasswordForm()
 
     return render(
@@ -1146,10 +873,7 @@ def verify_otp(request):
         'reset_otp_time'
     )
 
-    # =========================================
-    # NO OTP
-    # =========================================
-
+    # No OTP available
     if not reset_email or not stored_otp:
 
         messages.error(
@@ -1157,22 +881,14 @@ def verify_otp(request):
             "Please request a new OTP."
         )
 
-        return redirect(
-            'forgot_password'
-        )
+        return redirect('forgot_password')
 
-    # =========================================
-    # CHECK OTP EXPIRY
-    # =========================================
-
+    # Check OTP expiry
     if otp_time:
 
-        elapsed_time = (
-            time.time()
-            - otp_time
-        )
+        elapsed_time = time.time() - otp_time
 
-        # 5 minutes
+        # Five minutes
         if elapsed_time > 300:
 
             request.session.pop(
@@ -1191,14 +907,9 @@ def verify_otp(request):
                 "Please request a new OTP."
             )
 
-            return redirect(
-                'forgot_password'
-            )
+            return redirect('forgot_password')
 
-    # =========================================
-    # VERIFY OTP
-    # =========================================
-
+    # Verify OTP
     if request.method == "POST":
 
         form = VerifyOTPForm(
@@ -1207,15 +918,11 @@ def verify_otp(request):
 
         if form.is_valid():
 
-            entered_otp = form.cleaned_data[
-                'otp'
-            ]
+            entered_otp = form.cleaned_data['otp']
 
             if entered_otp == stored_otp:
 
-                request.session[
-                    'otp_verified'
-                ] = True
+                request.session['otp_verified'] = True
 
                 # OTP cannot be reused
                 request.session.pop(
@@ -1233,19 +940,14 @@ def verify_otp(request):
                     "OTP verified successfully."
                 )
 
-                return redirect(
-                    'reset_password'
-                )
+                return redirect('reset_password')
 
-            else:
-
-                messages.error(
-                    request,
-                    "Invalid OTP."
-                )
+            messages.error(
+                request,
+                "Invalid OTP."
+            )
 
     else:
-
         form = VerifyOTPForm()
 
     return render(
@@ -1270,10 +972,7 @@ def reset_password(request):
         'otp_verified'
     )
 
-    # =========================================
-    # OTP NOT VERIFIED
-    # =========================================
-
+    # OTP not verified
     if not reset_email or not otp_verified:
 
         messages.error(
@@ -1281,14 +980,9 @@ def reset_password(request):
             "Please verify your OTP first."
         )
 
-        return redirect(
-            'forgot_password'
-        )
+        return redirect('forgot_password')
 
-    # =========================================
-    # FIND USER
-    # =========================================
-
+    # Find user
     try:
 
         user = User.objects.get(
@@ -1302,14 +996,9 @@ def reset_password(request):
             "User account not found."
         )
 
-        return redirect(
-            'forgot_password'
-        )
+        return redirect('forgot_password')
 
-    # =========================================
-    # RESET PASSWORD
-    # =========================================
-
+    # Reset password
     if request.method == "POST":
 
         form = ResetPasswordForm(
@@ -1318,21 +1007,13 @@ def reset_password(request):
 
         if form.is_valid():
 
-            new_password = form.cleaned_data[
-                'password'
-            ]
+            new_password = form.cleaned_data['password']
 
             # Always use set_password()
-            user.set_password(
-                new_password
-            )
-
+            user.set_password(new_password)
             user.save()
 
-            # =====================================
-            # CLEAR PASSWORD RESET SESSION
-            # =====================================
-
+            # Clear password reset session
             request.session.pop(
                 'reset_email',
                 None
@@ -1359,12 +1040,9 @@ def reset_password(request):
                 "Please login."
             )
 
-            return redirect(
-                'login'
-            )
+            return redirect('login')
 
     else:
-
         form = ResetPasswordForm()
 
     return render(
