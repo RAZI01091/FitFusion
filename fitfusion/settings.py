@@ -20,15 +20,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY SETTINGS
 # =========================================================
 
-SECRET_KEY = os.environ.get("SECRET_KEY")
 
-if not SECRET_KEY:
-    if os.environ.get("RENDER"):
-        raise RuntimeError(
-            "SECRET_KEY must be configured in Render environment variables."
-        )
-
-    SECRET_KEY = "django-insecure-local-development-key"
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY",
+    "django-insecure-local-development-key"
+)
 
 DEBUG = "RENDER" not in os.environ
 
