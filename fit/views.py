@@ -6,6 +6,7 @@ import random
 import time
 import logging
 import razorpay
+from django.db.models import Avg, Q
 
 from django.conf import settings
 from django.contrib import messages
@@ -654,65 +655,148 @@ def unlock(request):
     lambda u: u.is_staff or u.is_superuser,
     login_url='home'
 )
+
+
+
+
+
+@login_required
 def admin_panel_view(request):
 
-    users = User.objects.all().order_by('-id')
+    # ==========================================
+    # SECURITY: ADMIN ACCESS ONLY
+    # ==========================================
 
-    # Total users
-    total_users = users.count()
+    if not (request.user.is_staff or request.user.is_superuser):
+        messages.error(
+            request,
+            "You are not authorized to access the admin panel."
+        )
+        return redirect("home")
 
-    # Gender counts
-    male_users = users.filter(
-        gender='M'
+    # ==========================================
+    # GET ALL USERS
+    # ==========================================
+
+    all_users = User.objects.all().order_by("-id")
+
+    # ==========================================
+    # TOTAL USER STATISTICS
+    # ==========================================
+
+    total_users = all_users.count()
+
+    male_users = all_users.filter(gender="M").count()
+
+    female_users = all_users.filter(gender="F").count()
+
+    other_users = all_users.filter(gender="O").count()
+
+    premium_users = all_users.filter(is_paid=True).count()
+
+    normal_users = all_users.filter(
+        is_paid=False,
+        is_staff=False,
+        is_superuser=False
     ).count()
 
-    female_users = users.filter(
-        gender='F'
-    ).count()
+    # ==========================================
+    # AVERAGE AGE
+    # ==========================================
 
-    other_users = users.filter(
-        gender='O'
-    ).count()
+    avg_age = all_users.aggregate(
+        average_age=Avg("age")
+    )["average_age"]
 
-    # Premium / Normal counts
-    premium_users = users.filter(
-        is_paid=True
-    ).count()
+    avg_age = round(avg_age, 1) if avg_age is not None else 0
 
-    normal_users = users.filter(
-        is_paid=False
-    ).count()
+    # ==========================================
+    # SEARCH BY NAME OR EMAIL
+    # ==========================================
 
-    # Average age
-    ages = [
-        user.age
-        for user in users
-        if user.age is not None
-    ]
+    search_query = request.GET.get("search", "").strip()
 
-    avg_age = (
-        sum(ages) / len(ages)
-        if ages
-        else 0
-    )
+    users = all_users
 
-    # Context
+    if search_query:
+        users = users.filter(
+            Q(name__icontains=search_query)
+            | Q(email__icontains=search_query)
+        )
+
+    # ==========================================
+    # FILTER BY ACCOUNT TYPE
+    # ==========================================
+
+    account_type = request.GET.get(
+        "account_type",
+        "all"
+    ).strip().lower()
+
+    if account_type == "premium":
+
+        users = users.filter(is_paid=True)
+
+    elif account_type == "normal":
+
+        users = users.filter(
+            is_paid=False,
+            is_staff=False,
+            is_superuser=False
+        )
+
+    # ==========================================
+    # FILTER BY ACCOUNT STATUS
+    # ==========================================
+
+    status_filter = request.GET.get(
+        "status",
+        "all"
+    ).strip().lower()
+
+    if status_filter == "active":
+
+        users = users.filter(is_active=True)
+
+    elif status_filter == "blocked":
+
+        users = users.filter(is_active=False)
+
+    # ==========================================
+    # FINAL FILTERED USER LIST
+    # ==========================================
+
+    users = users.distinct().order_by("-id")
+
+    # ==========================================
+    # CONTEXT
+    # ==========================================
+
     context = {
-        'users': users,
-        'total_users': total_users,
-        'male_users': male_users,
-        'female_users': female_users,
-        'other_users': other_users,
-        'premium_users': premium_users,
-        'normal_users': normal_users,
-        'avg_age': round(avg_age, 1),
+        "users": users,
+
+        # Overall statistics
+        "total_users": total_users,
+        "male_users": male_users,
+        "female_users": female_users,
+        "other_users": other_users,
+        "premium_users": premium_users,
+        "normal_users": normal_users,
+        "avg_age": avg_age,
+
+        # Search and filter values
+        "search_query": search_query,
+        "account_type": account_type,
+        "status_filter": status_filter,
     }
 
     return render(
         request,
-        'fit/admin_panel.html',
+        "fit/admin_panel.html",
         context
     )
+
+
 
 
 # =========================================================

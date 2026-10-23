@@ -2,1308 +2,693 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <title>Admin Panel | FitFusion</title>
 
-    <title>Admin Panel - FitFusion</title>
-
-
-    <!-- Google Font -->
-
-    <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
-    >
-
-    <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin
-    >
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet"
-    >
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
 
     <style>
-
-        /* =====================================================
-           ROOT
-        ===================================================== */
-
         :root {
-
             --bg-primary: #070a13;
             --bg-secondary: #0f1424;
-
             --accent-primary: #6366f1;
             --accent-secondary: #ec4899;
-            --accent-purple: #a855f7;
-
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-
-            --glass-bg: rgba(15, 20, 36, 0.60);
-            --glass-border: rgba(255, 255, 255, 0.08);
-
+            --glass-bg: rgba(15, 20, 36, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.09);
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
-
         }
-
-
-        /* =====================================================
-           RESET
-        ===================================================== */
 
         * {
-
             margin: 0;
             padding: 0;
-
             box-sizing: border-box;
-
             font-family: 'Outfit', sans-serif;
-
-            -webkit-font-smoothing: antialiased;
-
         }
-
-
-        /* =====================================================
-           BODY
-        ===================================================== */
 
         body {
-
             background:
-                radial-gradient(
-                    circle at top left,
-                    rgba(99, 102, 241, 0.10),
-                    transparent 35%
-                ),
-
-                radial-gradient(
-                    circle at bottom right,
-                    rgba(236, 72, 153, 0.08),
-                    transparent 35%
-                ),
-
+                radial-gradient(circle at top left,
+                    rgba(99, 102, 241, 0.10), transparent 35%),
+                radial-gradient(circle at bottom right,
+                    rgba(236, 72, 153, 0.08), transparent 35%),
                 var(--bg-primary);
-
             color: var(--text-primary);
-
             min-height: 100vh;
-
             overflow-x: hidden;
-
         }
 
+        /* NAVBAR */
 
-        /* =====================================================
-           BACKGROUND BLOBS
-        ===================================================== */
-
-        .bg-blob {
-
-            position: fixed;
-
-            width: 500px;
-            height: 500px;
-
-            border-radius: 50%;
-
-            filter: blur(150px);
-
-            opacity: 0.10;
-
-            pointer-events: none;
-
-            z-index: 0;
-
-        }
-
-
-        .blob-one {
-
-            top: -200px;
-            left: -200px;
-
-            background: var(--accent-primary);
-
-        }
-
-
-        .blob-two {
-
-            bottom: -200px;
-            right: -200px;
-
-            background: var(--accent-secondary);
-
-        }
-
-
-        /* =====================================================
-           NAVBAR
-        ===================================================== */
-
-        nav {
-
-            position: relative;
-
-            z-index: 10;
-
-            width: 100%;
-
+        .navbar {
             display: flex;
-
             justify-content: space-between;
-
             align-items: center;
-
+            gap: 20px;
             padding: 20px 5%;
-
-            background:
-                rgba(7, 10, 19, 0.75);
-
-            backdrop-filter: blur(18px);
-
-            border-bottom:
-                1px solid
-                var(--glass-border);
-
+            background: rgba(7, 10, 19, 0.95);
+            border-bottom: 1px solid var(--glass-border);
+            flex-wrap: wrap;
         }
 
-
-        /* Logo */
-
-        .nav-logo h1 {
-
+        .brand h1 {
             font-size: 28px;
-
             font-weight: 800;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #6366f1,
-                    #ec4899
-                );
-
+            background: linear-gradient(135deg, #6366f1, #ec4899);
             -webkit-background-clip: text;
-
             -webkit-text-fill-color: transparent;
-
         }
 
+        .brand span {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 12px;
+            margin-top: 3px;
+        }
 
-        /* Navbar right */
-
-        .nav-right {
-
+        .nav-actions {
             display: flex;
-
             align-items: center;
-
             gap: 12px;
-
+            flex-wrap: wrap;
         }
 
-
-        /* Admin badge */
-
-        .admin-portal {
-
-            padding: 9px 16px;
-
-            border-radius: 50px;
-
-            background:
-                rgba(236, 72, 153, 0.10);
-
-            border:
-                1px solid
-                rgba(236, 72, 153, 0.30);
-
-            color: #f472b6;
-
-            font-size: 13px;
-
-            font-weight: 600;
-
-            letter-spacing: 0.4px;
-
-        }
-
-
-        /* View site */
-
-        .view-site {
-
+        .nav-btn {
             text-decoration: none;
-
-            padding: 9px 16px;
-
+            padding: 10px 16px;
             border-radius: 10px;
-
             color: var(--text-primary);
-
-            background:
-                rgba(255, 255, 255, 0.04);
-
-            border:
-                1px solid
-                var(--glass-border);
-
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--glass-border);
             font-size: 14px;
-
             font-weight: 600;
-
-            transition: 0.25s ease;
-
+            transition: 0.2s ease;
         }
 
-
-        .view-site:hover {
-
-            background:
-                rgba(255, 255, 255, 0.10);
-
-            transform: translateY(-1px);
-
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.10);
         }
-
-
-        /* Logout */
 
         .logout-form {
-
             margin: 0;
-
         }
-
 
         .logout-btn {
-
-            padding: 9px 16px;
-
+            padding: 10px 16px;
             border-radius: 10px;
-
-            color: #cbd5e1;
-
-            background: transparent;
-
-            border:
-                1px solid
-                var(--glass-border);
-
+            color: #fca5a5;
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.25);
             font-size: 14px;
-
             font-weight: 600;
-
             cursor: pointer;
-
-            transition: 0.25s ease;
-
         }
-
 
         .logout-btn:hover {
-
-            color: white;
-
-            background:
-                rgba(239, 68, 68, 0.15);
-
-            border-color:
-                rgba(239, 68, 68, 0.40);
-
+            background: rgba(239, 68, 68, 0.18);
         }
 
-
-        /* =====================================================
-           MAIN
-        ===================================================== */
+        /* MAIN */
 
         main {
-
-            position: relative;
-
-            z-index: 1;
-
             width: 92%;
-
-            max-width: 1250px;
-
+            max-width: 1400px;
             margin: auto;
-
-            padding: 45px 0 70px;
-
+            padding: 40px 0 70px;
         }
-
-
-        /* =====================================================
-           WELCOME
-        ===================================================== */
 
         .welcome-section {
-
-            margin-bottom: 35px;
-
+            margin-bottom: 30px;
         }
-
 
         .welcome-section h2 {
-
-            font-size: 38px;
-
+            font-size: clamp(26px, 4vw, 38px);
             font-weight: 700;
-
             margin-bottom: 8px;
-
         }
-
 
         .welcome-section p {
-
             color: var(--text-secondary);
-
-            font-size: 16px;
-
+            line-height: 1.7;
         }
 
-
-        /* =====================================================
-           DJANGO MESSAGES
-        ===================================================== */
+        /* DJANGO MESSAGES */
 
         .messages {
-
             list-style: none;
-
             margin-bottom: 25px;
-
         }
-
 
         .message {
-
             padding: 14px 18px;
-
-            border-radius: 12px;
-
+            border-radius: 10px;
             margin-bottom: 10px;
-
-            font-size: 14px;
-
         }
-
 
         .message.success {
-
             color: #34d399;
-
-            background:
-                rgba(16, 185, 129, 0.10);
-
-            border:
-                1px solid
-                rgba(16, 185, 129, 0.25);
-
+            background: rgba(16, 185, 129, 0.10);
+            border: 1px solid rgba(16, 185, 129, 0.25);
         }
-
 
         .message.error {
-
             color: #f87171;
-
-            background:
-                rgba(239, 68, 68, 0.10);
-
-            border:
-                1px solid
-                rgba(239, 68, 68, 0.25);
-
+            background: rgba(239, 68, 68, 0.10);
+            border: 1px solid rgba(239, 68, 68, 0.25);
         }
 
+        .message.warning {
+            color: #fbbf24;
+            background: rgba(245, 158, 11, 0.10);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+        }
 
-        /* =====================================================
-           STATISTICS
-        ===================================================== */
+        /* STATISTICS */
 
         .stats-grid {
-
             display: grid;
-
-            grid-template-columns:
-                repeat(
-                    4,
-                    1fr
-                );
-
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 18px;
-
             margin-bottom: 35px;
-
         }
-
 
         .stat-card {
-
-            position: relative;
-
             padding: 24px;
-
             border-radius: 18px;
-
-            background:
-                var(--glass-bg);
-
-            border:
-                1px solid
-                var(--glass-border);
-
-            backdrop-filter: blur(15px);
-
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            transition: 0.25s ease;
+            position: relative;
             overflow: hidden;
-
-            transition: 0.3s ease;
-
         }
-
 
         .stat-card:hover {
-
-            transform:
-                translateY(-4px);
-
-            border-color:
-                rgba(255, 255, 255, 0.14);
-
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.18);
         }
 
-
         .stat-card::after {
-
             content: "";
-
             position: absolute;
-
             left: 0;
             right: 0;
             bottom: 0;
-
             height: 3px;
-
         }
-
 
         .stat-total::after {
-
-            background:
-                linear-gradient(
-                    90deg,
-                    #6366f1,
-                    #3b82f6
-                );
-
+            background: #6366f1;
         }
-
 
         .stat-male::after {
-
-            background:
-                linear-gradient(
-                    90deg,
-                    #8b5cf6,
-                    #6366f1
-                );
-
+            background: #8b5cf6;
         }
-
 
         .stat-female::after {
-
-            background:
-                linear-gradient(
-                    90deg,
-                    #ec4899,
-                    #f43f5e
-                );
-
+            background: #ec4899;
         }
-
 
         .stat-age::after {
-
-            background:
-                linear-gradient(
-                    90deg,
-                    #10b981,
-                    #06b6d4
-                );
-
+            background: #06b6d4;
         }
 
+        .stat-premium::after {
+            background: #f59e0b;
+        }
+
+        .stat-normal::after {
+            background: #10b981;
+        }
 
         .stat-label {
-
             display: block;
-
-            color:
-                var(--text-secondary);
-
+            color: var(--text-secondary);
             font-size: 13px;
-
             font-weight: 600;
-
             text-transform: uppercase;
-
             letter-spacing: 0.5px;
-
-            margin-bottom: 8px;
-
+            margin-bottom: 12px;
         }
-
 
         .stat-number {
-
             font-size: 34px;
-
             font-weight: 700;
-
         }
 
-
-        /* =====================================================
-           USER SECTION
-        ===================================================== */
+        /* USER DIRECTORY */
 
         .user-section {
-
-            background:
-                var(--glass-bg);
-
-            border:
-                1px solid
-                var(--glass-border);
-
-            border-radius: 22px;
-
-            backdrop-filter: blur(15px);
-
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
             overflow: hidden;
-
-            box-shadow:
-                0 20px 50px
-                rgba(0, 0, 0, 0.20);
-
         }
-
-
-        /* Header */
 
         .section-header {
-
+            padding: 24px;
             display: flex;
-
             justify-content: space-between;
-
             align-items: center;
-
-            padding: 25px 28px;
-
-            border-bottom:
-                1px solid
-                var(--glass-border);
-
+            gap: 15px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--glass-border);
         }
-
 
         .section-title {
-
             font-size: 21px;
-
             font-weight: 700;
-
         }
-
 
         .user-count {
-
-            color:
-                var(--text-secondary);
-
-            font-size: 14px;
-
+            color: var(--text-secondary);
+            font-size: 13px;
         }
 
+        /* SEARCH AND FILTERS */
 
-        /* =====================================================
-           TABLE
-        ===================================================== */
+        .filter-section {
+            padding: 22px 24px;
+            border-bottom: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.015);
+        }
+
+        .filter-form {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            align-items: end;
+            gap: 15px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .filter-input,
+        .filter-select {
+            width: 100%;
+            min-width: 0;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: #0b1020;
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .filter-input:focus,
+        .filter-select:focus {
+            border-color: var(--accent-primary);
+        }
+
+        .filter-input::placeholder {
+            color: #64748b;
+        }
+
+        .filter-select option {
+            background: #0f1424;
+            color: white;
+        }
+
+        .filter-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-btn {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .search-btn:hover {
+            opacity: 0.9;
+        }
+
+        .clear-btn {
+            display: inline-block;
+            padding: 12px 14px;
+            text-decoration: none;
+            text-align: center;
+            color: var(--text-secondary);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .clear-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .filter-results {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-top: 15px;
+        }
+
+        /* TABLE */
 
         .table-wrapper {
-
             width: 100%;
-
             overflow-x: auto;
-
         }
-
 
         table {
-
             width: 100%;
-
+            min-width: 850px;
             border-collapse: collapse;
-
-            min-width: 950px;
-
+            text-align: left;
         }
-
 
         thead {
-
-            background:
-                rgba(255, 255, 255, 0.025);
-
+            background: rgba(255, 255, 255, 0.025);
         }
-
 
         th {
-
-            padding: 17px 20px;
-
-            text-align: left;
-
-            color:
-                var(--text-secondary);
-
+            padding: 16px 20px;
+            color: var(--text-secondary);
             font-size: 12px;
-
-            font-weight: 600;
-
+            font-weight: 700;
             text-transform: uppercase;
-
-            letter-spacing: 0.6px;
-
-            border-bottom:
-                1px solid
-                var(--glass-border);
-
+            letter-spacing: 0.5px;
+            white-space: nowrap;
         }
-
 
         td {
-
             padding: 18px 20px;
-
-            border-bottom:
-                1px solid
-                rgba(255, 255, 255, 0.045);
-
+            border-top: 1px solid var(--glass-border);
+            font-size: 14px;
             vertical-align: middle;
-
         }
-
 
         tbody tr {
-
-            transition: 0.2s ease;
-
+            transition: background 0.2s ease;
         }
-
 
         tbody tr:hover {
-
-            background:
-                rgba(255, 255, 255, 0.025);
-
+            background: rgba(255, 255, 255, 0.025);
         }
-
-
-        tbody tr:last-child td {
-
-            border-bottom: none;
-
-        }
-
-
-        /* =====================================================
-           USER NAME
-        ===================================================== */
 
         .user-name {
-
-            color:
-                var(--text-primary);
-
-            font-size: 15px;
-
+            color: var(--text-primary);
             font-weight: 600;
-
-            margin-bottom: 4px;
-
+            margin-bottom: 5px;
         }
-
 
         .user-id {
-
-            color:
-                var(--text-muted);
-
+            color: var(--text-secondary);
             font-size: 12px;
-
         }
-
-
-        /* =====================================================
-           EMAIL
-        ===================================================== */
 
         .email {
-
-            color:
-                var(--text-secondary);
-
-            font-size: 14px;
-
+            color: var(--text-secondary);
+            overflow-wrap: anywhere;
         }
 
-
-        /* =====================================================
-           AGE
-        ===================================================== */
-
-        .age {
-
-            color:
-                var(--text-primary);
-
-            font-size: 14px;
-
-            font-weight: 500;
-
-        }
-
-
-        /* =====================================================
-           GENDER
-        ===================================================== */
-
+        .age,
         .gender {
-
-            color:
-                var(--text-secondary);
-
-            font-size: 14px;
-
+            color: #cbd5e1;
         }
 
-
-        /* =====================================================
-           BADGES
-        ===================================================== */
+        /* ACCOUNT BADGES */
 
         .badge {
-
-            display: inline-flex;
-
-            align-items: center;
-
-            gap: 5px;
-
+            display: inline-block;
             padding: 7px 11px;
-
             border-radius: 50px;
-
             font-size: 12px;
-
-            font-weight: 600;
-
+            font-weight: 700;
             white-space: nowrap;
-
         }
-
-
-        /* Admin */
 
         .badge.admin {
-
-            color: #f472b6;
-
-            background:
-                rgba(236, 72, 153, 0.12);
-
-            border:
-                1px solid
-                rgba(236, 72, 153, 0.28);
-
+            color: #c4b5fd;
+            background: rgba(139, 92, 246, 0.12);
+            border: 1px solid rgba(139, 92, 246, 0.25);
         }
-
-
-        /* Premium */
 
         .badge.premium {
-
-            color: #fbbf24;
-
-            background:
-                rgba(245, 158, 11, 0.12);
-
-            border:
-                1px solid
-                rgba(245, 158, 11, 0.28);
-
+            color: #fcd34d;
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.25);
         }
-
-
-        /* Normal User */
 
         .badge.user {
-
-            color: #818cf8;
-
-            background:
-                rgba(99, 102, 241, 0.12);
-
-            border:
-                1px solid
-                rgba(99, 102, 241, 0.28);
-
+            color: #93c5fd;
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid rgba(59, 130, 246, 0.25);
         }
 
-
-        /* =====================================================
-           STATUS
-        ===================================================== */
+        /* USER STATUS */
 
         .status {
-
             display: inline-flex;
-
             align-items: center;
-
             gap: 7px;
-
-            padding: 7px 11px;
-
-            border-radius: 50px;
-
-            font-size: 12px;
-
+            font-size: 13px;
             font-weight: 600;
-
+            white-space: nowrap;
         }
-
 
         .status-dot {
-
-            width: 7px;
-            height: 7px;
-
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-
             display: inline-block;
-
         }
-
 
         .status.active {
-
             color: #34d399;
-
-            background:
-                rgba(16, 185, 129, 0.10);
-
-            border:
-                1px solid
-                rgba(16, 185, 129, 0.22);
-
         }
-
 
         .status.active .status-dot {
-
             background: #10b981;
-
-            box-shadow:
-                0 0 7px
-                rgba(16, 185, 129, 0.7);
-
         }
-
 
         .status.blocked {
-
             color: #f87171;
-
-            background:
-                rgba(239, 68, 68, 0.10);
-
-            border:
-                1px solid
-                rgba(239, 68, 68, 0.22);
-
         }
-
 
         .status.blocked .status-dot {
-
             background: #ef4444;
-
         }
 
-
-        /* =====================================================
-           ACTION FORM
-        ===================================================== */
+        /* ACTION BUTTONS */
 
         .action-form {
-
             margin: 0;
-
         }
-
-
-        /* Action button */
 
         .action-btn {
-
-            border: none;
-
-            padding: 8px 13px;
-
+            padding: 9px 13px;
             border-radius: 9px;
-
             font-size: 12px;
-
-            font-weight: 600;
-
+            font-weight: 700;
             cursor: pointer;
-
-            transition: 0.25s ease;
-
+            white-space: nowrap;
+            transition: 0.2s ease;
         }
-
-
-        /* Block */
 
         .action-btn.block {
-
-            color: #f87171;
-
-            background:
-                rgba(239, 68, 68, 0.10);
-
-            border:
-                1px solid
-                rgba(239, 68, 68, 0.25);
-
+            color: #fca5a5;
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.25);
         }
-
 
         .action-btn.block:hover {
-
-            background:
-                rgba(239, 68, 68, 0.20);
-
-            transform:
-                translateY(-1px);
-
+            background: rgba(239, 68, 68, 0.18);
         }
-
-
-        /* Unblock */
 
         .action-btn.unblock {
-
-            color: #34d399;
-
-            background:
-                rgba(16, 185, 129, 0.10);
-
-            border:
-                1px solid
-                rgba(16, 185, 129, 0.25);
-
+            color: #6ee7b7;
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.25);
         }
-
 
         .action-btn.unblock:hover {
-
-            background:
-                rgba(16, 185, 129, 0.20);
-
-            transform:
-                translateY(-1px);
-
+            background: rgba(16, 185, 129, 0.18);
         }
 
-
-        /* =====================================================
-           EMPTY STATE
-        ===================================================== */
+        /* EMPTY STATE */
 
         .empty-state {
-
-            padding: 70px 20px;
-
             text-align: center;
-
+            padding: 55px 20px;
         }
-
 
         .empty-icon {
-
-            font-size: 45px;
-
+            font-size: 42px;
             margin-bottom: 15px;
-
-            opacity: 0.7;
-
         }
-
 
         .empty-state h3 {
-
             font-size: 20px;
-
-            margin-bottom: 7px;
-
+            margin-bottom: 8px;
         }
-
 
         .empty-state p {
-
-            color:
-                var(--text-secondary);
-
+            color: var(--text-secondary);
             font-size: 14px;
-
         }
 
+        /* RESPONSIVE */
 
-        /* =====================================================
-           RESPONSIVE
-        ===================================================== */
+        @media (max-width: 1000px) {
+            .filter-form {
+                grid-template-columns: 1fr 1fr;
+            }
 
-        @media (max-width: 900px) {
+            .filter-actions {
+                align-items: stretch;
+            }
 
             .stats-grid {
-
-                grid-template-columns:
-                    repeat(2, 1fr);
-
+                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
-
-
-            .nav-right {
-
-                gap: 7px;
-
-            }
-
-
-            .admin-portal {
-
-                display: none;
-
-            }
-
-
-            .welcome-section h2 {
-
-                font-size: 30px;
-
-            }
-
         }
-
 
         @media (max-width: 600px) {
-
-            nav {
-
-                padding: 16px 4%;
-
+            .navbar {
+                padding: 18px 4%;
             }
 
-
-            .nav-logo h1 {
-
-                font-size: 23px;
-
+            .nav-actions {
+                width: 100%;
             }
 
-
-            .view-site {
-
-                display: none;
-
+            .nav-btn,
+            .logout-form {
+                flex: 1;
             }
 
+            .logout-btn {
+                width: 100%;
+            }
 
             main {
-
                 width: 94%;
-
                 padding-top: 30px;
-
             }
-
 
             .stats-grid {
-
                 grid-template-columns: 1fr;
-
             }
 
-
-            .welcome-section h2 {
-
-                font-size: 27px;
-
+            .stat-card {
+                padding: 20px;
             }
-
 
             .section-header {
-
                 padding: 20px;
-
-                align-items: flex-start;
-
-                flex-direction: column;
-
-                gap: 7px;
-
             }
 
+            .filter-section {
+                padding: 20px;
+            }
+
+            .filter-form {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-actions {
+                width: 100%;
+            }
+
+            .search-btn,
+            .clear-btn {
+                flex: 1;
+            }
+
+            .welcome-section h2 {
+                font-size: 27px;
+            }
         }
-
     </style>
-
 </head>
-
 
 <body>
 
+    <!-- NAVBAR -->
 
-    <!-- Background -->
+    <nav class="navbar">
 
-    <div class="bg-blob blob-one"></div>
-
-    <div class="bg-blob blob-two"></div>
-
-
-    <!-- =====================================================
-         NAVBAR
-    ====================================================== -->
-
-    <nav>
-
-        <!-- Logo -->
-
-        <div class="nav-logo">
-
-            <h1>
-                FitFusion
-            </h1>
-
+        <div class="brand">
+            <h1>FitFusion</h1>
+            <span>Admin Portal</span>
         </div>
 
+        <div class="nav-actions">
 
-        <!-- Right -->
-
-        <div class="nav-right">
-
-
-            <span class="admin-portal">
-                🛡️ Admin Portal
-            </span>
-
-
-            <a
-                href="{% url 'home' %}"
-                class="view-site"
-            >
-                View User Site
+            <a href="{% url 'home' %}" class="nav-btn">
+                🌐 View User Site
             </a>
 
-
-            <!-- POST LOGOUT -->
-
-            <form
-                method="POST"
-                action="{% url 'logout' %}"
-                class="logout-form"
-            >
+            <form method="POST"
+                  action="{% url 'logout' %}"
+                  class="logout-form">
 
                 {% csrf_token %}
 
-                <button
-                    type="submit"
-                    class="logout-btn"
-                >
-                    Logout
+                <button type="submit" class="logout-btn">
+                    🚪 Logout
                 </button>
 
             </form>
-
 
         </div>
 
     </nav>
 
 
-
-    <!-- =====================================================
-         MAIN
-    ====================================================== -->
+    <!-- MAIN CONTENT -->
 
     <main>
 
-
-        <!-- Django Messages -->
+        <!-- DJANGO MESSAGES -->
 
         {% if messages %}
-
             <ul class="messages">
 
                 {% for message in messages %}
-
                     <li class="message {{ message.tags }}">
                         {{ message }}
                     </li>
-
                 {% endfor %}
 
             </ul>
-
         {% endif %}
 
 
-
-        <!-- =================================================
-             WELCOME
-        ================================================== -->
+        <!-- WELCOME SECTION -->
 
         <section class="welcome-section">
 
             <h2>
-                Welcome, Admin Chief
-                {{ request.user.name }}!
+                Welcome, Admin Chief {{ request.user.name }}!
             </h2>
 
             <p>
@@ -1314,18 +699,11 @@
         </section>
 
 
-
-        <!-- =================================================
-             STATISTICS
-        ================================================== -->
+        <!-- STATISTICS -->
 
         <section class="stats-grid">
 
-
-            <!-- Total -->
-
             <div class="stat-card stat-total">
-
                 <span class="stat-label">
                     Total Registered Users
                 </span>
@@ -1333,14 +711,10 @@
                 <div class="stat-number">
                     {{ total_users }}
                 </div>
-
             </div>
 
 
-            <!-- Male -->
-
             <div class="stat-card stat-male">
-
                 <span class="stat-label">
                     Male Registrants
                 </span>
@@ -1348,14 +722,10 @@
                 <div class="stat-number">
                     {{ male_users }}
                 </div>
-
             </div>
 
 
-            <!-- Female -->
-
             <div class="stat-card stat-female">
-
                 <span class="stat-label">
                     Female Registrants
                 </span>
@@ -1363,47 +733,53 @@
                 <div class="stat-number">
                     {{ female_users }}
                 </div>
-
             </div>
 
 
-            <!-- Average Age -->
-
             <div class="stat-card stat-age">
-
                 <span class="stat-label">
                     Average User Age
                 </span>
 
                 <div class="stat-number">
-
                     {% if avg_age %}
-
                         {{ avg_age }}
-
                     {% else %}
-
                         N/A
-
                     {% endif %}
-
                 </div>
-
             </div>
 
+
+            <div class="stat-card stat-premium">
+                <span class="stat-label">
+                    Premium Users
+                </span>
+
+                <div class="stat-number">
+                    {{ premium_users }}
+                </div>
+            </div>
+
+
+            <div class="stat-card stat-normal">
+                <span class="stat-label">
+                    Normal Users
+                </span>
+
+                <div class="stat-number">
+                    {{ normal_users }}
+                </div>
+            </div>
 
         </section>
 
 
-
-        <!-- =================================================
-             USER MANAGEMENT
-        ================================================== -->
+        <!-- USER MANAGEMENT -->
 
         <section class="user-section">
 
-
-            <!-- Section Header -->
+            <!-- DIRECTORY HEADER -->
 
             <div class="section-header">
 
@@ -1411,353 +787,370 @@
                     FitFusion Member Directory
                 </div>
 
-
                 <div class="user-count">
-
-                    Showing
-                    {{ users|length }}
-                    registered users
-
+                    {{ users|length }} matching users
                 </div>
 
             </div>
 
 
+            <!-- SEARCH AND FILTER FORM -->
 
-            <!-- Table -->
+            <div class="filter-section">
+
+                <form method="GET" class="filter-form">
+
+                    <!-- SEARCH BY NAME OR EMAIL -->
+
+                    <div class="filter-group">
+
+                        <label for="search">
+                            Search User
+                        </label>
+
+                        <input
+                            type="search"
+                            id="search"
+                            name="search"
+                            class="filter-input"
+                            placeholder="Enter user name or email..."
+                            value="{{ search_query }}"
+                        >
+
+                    </div>
+
+
+                    <!-- ACCOUNT TYPE FILTER -->
+
+                    <div class="filter-group">
+
+                        <label for="account_type">
+                            Account Type
+                        </label>
+
+                        <select
+                            id="account_type"
+                            name="account_type"
+                            class="filter-select"
+                        >
+
+                            <option
+                                value="all"
+                                {% if account_type == "all" %}selected{% endif %}
+                            >
+                                All Accounts
+                            </option>
+
+                            <option
+                                value="premium"
+                                {% if account_type == "premium" %}selected{% endif %}
+                            >
+                                Premium Users
+                            </option>
+
+                            <option
+                                value="normal"
+                                {% if account_type == "normal" %}selected{% endif %}
+                            >
+                                Normal Users
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- ACCOUNT STATUS FILTER -->
+
+                    <div class="filter-group">
+
+                        <label for="status">
+                            Account Status
+                        </label>
+
+                        <select
+                            id="status"
+                            name="status"
+                            class="filter-select"
+                        >
+
+                            <option
+                                value="all"
+                                {% if status_filter == "all" %}selected{% endif %}
+                            >
+                                All Statuses
+                            </option>
+
+                            <option
+                                value="active"
+                                {% if status_filter == "active" %}selected{% endif %}
+                            >
+                                Active
+                            </option>
+
+                            <option
+                                value="blocked"
+                                {% if status_filter == "blocked" %}selected{% endif %}
+                            >
+                                Blocked
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- SEARCH AND CLEAR BUTTONS -->
+
+                    <div class="filter-actions">
+
+                        <button type="submit" class="search-btn">
+                            🔍 Search
+                        </button>
+
+                        <a href="?" class="clear-btn">
+                            Clear
+                        </a>
+
+                    </div>
+
+                </form>
+
+
+                <div class="filter-results">
+                    Showing {{ users|length }} matching
+                    user{{ users|length|pluralize }}.
+                </div>
+
+            </div>
+
+
+            <!-- USERS TABLE -->
 
             <div class="table-wrapper">
 
                 <table>
 
-
-                    <!-- TABLE HEADER -->
-
                     <thead>
 
                         <tr>
-
-                            <th>
-                                Full Name
-                            </th>
-
-                            <th>
-                                Email Address
-                            </th>
-
-                            <th>
-                                Age
-                            </th>
-
-                            <th>
-                                Gender
-                            </th>
-
-                            <th>
-                                Account Type
-                            </th>
-
-                            <th>
-                                Status
-                            </th>
-
-                            <th>
-                                Actions
-                            </th>
-
+                            <th>Full Name</th>
+                            <th>Email Address</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Account Type</th>
+                            <th>Status</th>
+                            <th>Actions</th>
                         </tr>
 
                     </thead>
 
 
-
-                    <!-- TABLE BODY -->
-
                     <tbody>
-
 
                         {% for user in users %}
 
+                            <tr>
 
-                        <tr>
+                                <!-- NAME -->
 
+                                <td>
 
-                            <!-- =================================
-                                 NAME
-                            ================================== -->
+                                    <div class="user-name">
+                                        {{ user.name }}
+                                    </div>
 
-                            <td>
+                                    <div class="user-id">
+                                        ID #{{ user.id }}
+                                    </div>
 
-                                <div class="user-name">
-                                    {{ user.name }}
-                                </div>
-
-                                <div class="user-id">
-                                    ID #{{ user.id }}
-                                </div>
-
-                            </td>
+                                </td>
 
 
+                                <!-- EMAIL -->
 
-                            <!-- =================================
-                                 EMAIL
-                            ================================== -->
-
-                            <td>
-
-                                <div class="email">
-                                    {{ user.email }}
-                                </div>
-
-                            </td>
+                                <td>
+                                    <div class="email">
+                                        {{ user.email }}
+                                    </div>
+                                </td>
 
 
+                                <!-- AGE -->
 
-                            <!-- =================================
-                                 AGE
-                            ================================== -->
+                                <td>
 
-                            <td>
+                                    <span class="age">
 
-                                <span class="age">
-
-                                    {% if user.age %}
-
-                                        {{ user.age }}
-
-                                    {% else %}
-
-                                        —
-
-                                    {% endif %}
-
-                                </span>
-
-                            </td>
-
-
-
-                            <!-- =================================
-                                 GENDER
-                            ================================== -->
-
-                            <td>
-
-                                <span class="gender">
-
-                                    {% if user.gender == 'M' %}
-
-                                        Male
-
-                                    {% elif user.gender == 'F' %}
-
-                                        Female
-
-                                    {% elif user.gender == 'O' %}
-
-                                        Other
-
-                                    {% else %}
-
-                                        —
-
-                                    {% endif %}
-
-                                </span>
-
-                            </td>
-
-
-
-                            <!-- =================================
-                                 ACCOUNT TYPE
-                            ================================== -->
-
-                            <td>
-
-                                {% if user.is_staff or user.is_superuser %}
-
-
-                                    <span class="badge admin">
-
-                                        🛡️ Admin Staff
+                                        {% if user.age %}
+                                            {{ user.age }}
+                                        {% else %}
+                                            —
+                                        {% endif %}
 
                                     </span>
 
-
-                                {% elif user.is_paid %}
-
-
-                                    <span class="badge premium">
-
-                                        ⭐ Premium User
-
-                                    </span>
+                                </td>
 
 
-                                {% else %}
+                                <!-- GENDER -->
 
+                                <td>
 
-                                    <span class="badge user">
+                                    <span class="gender">
 
-                                        Normal User
+                                        {% if user.gender == "M" %}
 
-                                    </span>
+                                            Male
 
+                                        {% elif user.gender == "F" %}
 
-                                {% endif %}
+                                            Female
 
-                            </td>
+                                        {% elif user.gender == "O" %}
 
-
-
-                            <!-- =================================
-                                 STATUS
-                            ================================== -->
-
-                            <td>
-
-                                {% if user.is_active %}
-
-
-                                    <span class="status active">
-
-                                        <span class="status-dot"></span>
-
-                                        Active
-
-                                    </span>
-
-
-                                {% else %}
-
-
-                                    <span class="status blocked">
-
-                                        <span class="status-dot"></span>
-
-                                        Blocked
-
-                                    </span>
-
-
-                                {% endif %}
-
-                            </td>
-
-
-
-                            <!-- =================================
-                                 ACTION
-                            ================================== -->
-
-                            <td>
-
-
-                                {% if not user.is_staff and not user.is_superuser %}
-
-
-                                    <form
-                                        method="POST"
-                                        action="{% url 'toggle_user_status' user.id %}"
-                                        class="action-form"
-                                    >
-
-                                        {% csrf_token %}
-
-
-                                        {% if user.is_active %}
-
-
-                                            <button
-                                                type="submit"
-                                                class="action-btn block"
-                                            >
-
-                                                🚫 Block
-
-                                            </button>
-
+                                            Other
 
                                         {% else %}
 
-
-                                            <button
-                                                type="submit"
-                                                class="action-btn unblock"
-                                            >
-
-                                                ✓ Unblock
-
-                                            </button>
-
+                                            —
 
                                         {% endif %}
 
-
-                                    </form>
-
-
-                                {% else %}
-
-
-                                    <span class="badge admin">
-
-                                        Protected
-
                                     </span>
 
-
-                                {% endif %}
-
-
-                            </td>
+                                </td>
 
 
-                        </tr>
+                                <!-- ACCOUNT TYPE -->
+
+                                <td>
+
+                                    {% if user.is_staff or user.is_superuser %}
+
+                                        <span class="badge admin">
+                                            🛡️ Admin Staff
+                                        </span>
+
+                                    {% elif user.is_paid %}
+
+                                        <span class="badge premium">
+                                            ⭐ Premium User
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="badge user">
+                                            Normal User
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
 
 
-                        <!-- =================================
-                             EMPTY
-                        ================================== -->
+                                <!-- ACCOUNT STATUS -->
+
+                                <td>
+
+                                    {% if user.is_active %}
+
+                                        <span class="status active">
+                                            <span class="status-dot"></span>
+                                            Active
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="status blocked">
+                                            <span class="status-dot"></span>
+                                            Blocked
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- BLOCK / UNBLOCK -->
+
+                                <td>
+
+                                    {% if not user.is_staff and not user.is_superuser %}
+
+                                        <form
+                                            method="POST"
+                                            action="{% url 'toggle_user_status' user.id %}"
+                                            class="action-form"
+                                        >
+
+                                            {% csrf_token %}
+
+                                            {% if user.is_active %}
+
+                                                <button
+                                                    type="submit"
+                                                    class="action-btn block"
+                                                >
+                                                    🚫 Block
+                                                </button>
+
+                                            {% else %}
+
+                                                <button
+                                                    type="submit"
+                                                    class="action-btn unblock"
+                                                >
+                                                    ✓ Unblock
+                                                </button>
+
+                                            {% endif %}
+
+                                        </form>
+
+                                    {% else %}
+
+                                        <span class="badge admin">
+                                            Protected
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                            </tr>
+
 
                         {% empty %}
 
+                            <!-- NO USERS FOUND -->
 
-                        <tr>
+                            <tr>
 
-                            <td colspan="7">
+                                <td colspan="7">
 
+                                    <div class="empty-state">
 
-                                <div class="empty-state">
+                                        <div class="empty-icon">
+                                            👥
+                                        </div>
 
+                                        <h3>
+                                            No Users Found
+                                        </h3>
 
-                                    <div class="empty-icon">
-                                        👥
+                                        <p>
+                                            No users match your search
+                                            or selected filters.
+                                        </p>
+
                                     </div>
 
+                                </td>
 
-                                    <h3>
-                                        No Users Found
-                                    </h3>
-
-
-                                    <p>
-                                        There are no registered users yet.
-                                    </p>
-
-
-                                </div>
-
-
-                            </td>
-
-                        </tr>
-
+                            </tr>
 
                         {% endfor %}
-
 
                     </tbody>
 
@@ -1767,9 +1160,7 @@
 
         </section>
 
-
     </main>
-
 
 </body>
 
