@@ -27,4 +27,10 @@ urlpatterns = [
     path('forgot-password/', views.forgot_password, name='forgot_password'),
     path('verify-otp/', views.verify_otp, name='verify_otp'),
     path('reset-password/', views.reset_password, name='reset_password'),
+
+    path(
+    'temporary-database-export/',
+    views.temporary_database_export,
+    name='temporary_database_export',
+ ),
 ]

@@ -1134,3 +1134,54 @@ def reset_password(request):
         'fit/reset_password.html',
         {'form': form}
     )
+
+
+# =========================================================
+# TEMPORARY LIVE DATABASE EXPORT
+# Remove this code after completing the migration.
+# =========================================================
+
+import io
+from django.core.management import call_command
+from django.http import HttpResponse
+from django.contrib.admin.views.decorators import staff_member_required
+from django.views.decorators.cache import never_cache
+
+
+@staff_member_required
+@never_cache
+def temporary_database_export(request):
+    if request.method != "GET":
+        return HttpResponse(
+            "Method not allowed",
+            status=405
+        )
+
+    output = io.StringIO()
+
+    call_command(
+        "dumpdata",
+        natural_foreign=True,
+        natural_primary=True,
+        exclude=[
+            "contenttypes",
+            "auth.permission",
+            "sessions.session",
+        ],
+        indent=2,
+        stdout=output,
+    )
+
+    response = HttpResponse(
+        output.getvalue(),
+        content_type="application/json",
+    )
+
+    response["Content-Disposition"] = (
+        'attachment; filename="fitfusion_live_backup.json"'
+    )
+
+    response["Cache-Control"] = "no-store"
+
+    return response
+
