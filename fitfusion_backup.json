@@ -1,0 +1,134 @@
+[
+{
+  "model": "fit.customuser",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$qAw80FdiuPyp8rfyV0Ti1u$Z//gqkZXW5nFkepgvGJfwGyJ+aQZI3nCt2kXAyCsdRc=",
+    "last_login": "2026-05-18T07:27:22.223Z",
+    "is_superuser": false,
+    "email": "jane@example.com",
+    "name": "Jane Doe",
+    "age": 25,
+    "gender": "F",
+    "is_active": true,
+    "is_staff": false,
+    "is_paid": false,
+    "subscription_start": null,
+    "subscription_end": null,
+    "razorpay_order_id": null,
+    "razorpay_payment_id": null,
+    "razorpay_signature": null,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "fit.customuser",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$xRO4PtnOOdZGX5Rnl0MwKp$CKABaB8ps87WlJifVzRuLUgLM7QqmUXtcBTC2BY51yM=",
+    "last_login": "2026-10-22T05:40:48.132Z",
+    "is_superuser": false,
+    "email": "razi@gmail.com",
+    "name": "razi",
+    "age": 18,
+    "gender": "M",
+    "is_active": true,
+    "is_staff": false,
+    "is_paid": true,
+    "subscription_start": null,
+    "subscription_end": "2026-11-07T09:52:10.730Z",
+    "razorpay_order_id": null,
+    "razorpay_payment_id": null,
+    "razorpay_signature": null,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "fit.customuser",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$M5z3d6vDpFNthNsqsg6HZz$x5NgKy493cLJ/+bvPCHnrHL7SKiyISR7+XW6E+6TaOk=",
+    "last_login": "2026-10-22T08:07:16.909Z",
+    "is_superuser": true,
+    "email": "muhammedrazi01091@gmail.com",
+    "name": "Muhammed Razi",
+    "age": 25,
+    "gender": "M",
+    "is_active": true,
+    "is_staff": true,
+    "is_paid": false,
+    "subscription_start": null,
+    "subscription_end": null,
+    "razorpay_order_id": null,
+    "razorpay_payment_id": null,
+    "razorpay_signature": null,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "fit.customuser",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$jHvNeTrksHIyKrRYqcpiq2$2BvdFKKmrXubzIjJ+HOjNlSkgipEf/zYhlMe27bmUrc=",
+    "last_login": "2026-10-09T09:51:10.008Z",
+    "is_superuser": false,
+    "email": "shaheer@gmail.com",
+    "name": "shaheer",
+    "age": null,
+    "gender": null,
+    "is_active": true,
+    "is_staff": false,
+    "is_paid": false,
+    "subscription_start": null,
+    "subscription_end": null,
+    "razorpay_order_id": null,
+    "razorpay_payment_id": null,
+    "razorpay_signature": null,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "fit.customuser",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$RzjAzRQhIZcN00oLSsvaHk$1bFxktpBPmDW2ebUkKyYfcop+GIEnPwyAYsmhXjMGm4=",
+    "last_login": "2026-10-09T05:54:16.299Z",
+    "is_superuser": false,
+    "email": "gopikak75317@gmail.com",
+    "name": "gopi",
+    "age": 18,
+    "gender": "F",
+    "is_active": true,
+    "is_staff": false,
+    "is_paid": false,
+    "subscription_start": null,
+    "subscription_end": null,
+    "razorpay_order_id": null,
+    "razorpay_payment_id": null,
+    "razorpay_signature": null,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "fit.customuser",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$NcQGh3tQ2o6ewqNUNmj6HO$xwvFPB6syRDZzzcaC21nDnwWfWs1XvfCAVGK+zi4Teo=",
+    "last_login": "2026-10-22T08:02:32.937Z",
+    "is_superuser": false,
+    "email": "nothing@gmail.com",
+    "name": "nothing",
+    "age": 18,
+    "gender": null,
+    "is_active": true,
+    "is_staff": false,
+    "is_paid": false,
+    "subscription_start": null,
+    "subscription_end": null,
+    "razorpay_order_id": null,
+    "razorpay_payment_id": null,
+    "razorpay_signature": null,
+    "groups": [],
+    "user_permissions": []
+  }
+}
+]

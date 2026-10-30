@@ -154,10 +154,9 @@ WSGI_APPLICATION = "fitfusion.wsgi.application"
 # =========================================================
 # DATABASE
 # =========================================================
-
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
-if DATABASE_URL:
+if "RENDER" in os.environ and DATABASE_URL:
     DATABASES = {
         "default": dj_database_url.parse(
             DATABASE_URL,
@@ -168,11 +167,14 @@ if DATABASE_URL:
 else:
     DATABASES = {
         "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": "fitfusion_local",
+            "USER": "postgres",
+            "PASSWORD": os.environ.get("LOCAL_DB_PASSWORD"),
+            "HOST": "localhost",
+            "PORT": "5432",
         }
     }
-
 
 # =========================================================
 # PASSWORD VALIDATION
