@@ -154,9 +154,13 @@ WSGI_APPLICATION = "fitfusion.wsgi.application"
 # =========================================================
 # DATABASE
 # =========================================================
+
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
-if "RENDER" in os.environ and DATABASE_URL:
+if "RENDER" in os.environ:
+    if not DATABASE_URL:
+        raise Exception("DATABASE_URL is missing in Render Environment")
+
     DATABASES = {
         "default": dj_database_url.parse(
             DATABASE_URL,
@@ -164,6 +168,7 @@ if "RENDER" in os.environ and DATABASE_URL:
             ssl_require=True,
         )
     }
+
 else:
     DATABASES = {
         "default": {
@@ -175,7 +180,6 @@ else:
             "PORT": "5432",
         }
     }
-
 # =========================================================
 # PASSWORD VALIDATION
 # =========================================================
